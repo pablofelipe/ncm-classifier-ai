@@ -4,7 +4,10 @@ from collections import Counter
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from eval.schema import EvalSuite
+from eval.schema import CaseResult, EvalReport, EvalSuite
+from src.api.dependencies import build_classify_use_case
+from src.core.domain.ncm import ClassificationResult, ProductQuery
+from src.core.use_cases.classify_product import ClassifyProduct
 
 
 def load_eval_suite(path: str | Path) -> EvalSuite:
@@ -77,6 +80,55 @@ def cross_validate_against_tipi(
     )
 
 
+def classify_via_use_case(
+    query: ProductQuery, use_case: ClassifyProduct
+) -> ClassificationResult:
+    """Thin wrapper over use_case.execute.
+
+    Isolates the call site so future tests can mock the classification step,
+    and so the measurement layer never reaches past the use case into adapters.
+    Named ``via_use_case`` rather than ``real_system`` on purpose: what is
+    "real" shifts once the walking-skeleton adapters are replaced (ADR-0003).
+    """
+    return use_case.execute(query)
+
+
+def evaluate_suite(suite: EvalSuite, use_case: ClassifyProduct) -> EvalReport:
+    """Run every case through the use case and aggregate top-1/top-3 accuracy."""
+    per_case: list[CaseResult] = []
+    top_1_hits = 0
+    top_3_hits = 0
+
+    for case in suite.cases:
+        query = ProductQuery(
+            product_name=case.product_name, description=case.product_description
+        )
+        result = classify_via_use_case(query, use_case)
+        predicted = [c.ncm_code for c in result.top_candidates]
+
+        top_1 = predicted[0] == case.expected_ncm
+        top_3 = case.expected_ncm in predicted
+        top_1_hits += int(top_1)
+        top_3_hits += int(top_3)
+
+        per_case.append(
+            CaseResult(
+                case_id=case.id,
+                expected_ncm=case.expected_ncm,
+                predicted_ncms=predicted,
+                top_1_hit=top_1,
+                top_3_hit=top_3,
+            )
+        )
+
+    return EvalReport(
+        total=len(suite.cases),
+        top_1_hits=top_1_hits,
+        top_3_hits=top_3_hits,
+        per_case=per_case,
+    )
+
+
 def _find_latest_tipi_json(tipi_dir: str | Path, chapter: str) -> Path:
     files = sorted(Path(tipi_dir).glob(f"tipi_{chapter}_*.json"), reverse=True)
     if not files:
@@ -87,10 +139,10 @@ def _find_latest_tipi_json(tipi_dir: str | Path, chapter: str) -> Path:
     return files[0]
 
 
-def _load_tipi(path: Path) -> tuple[set[str], str]:
+def _load_tipi(path: Path) -> tuple[list[dict[str, object]], str]:
     payload = json.loads(path.read_text(encoding="utf-8"))
-    ncms = {entry["ncm"] for entry in payload["entries"]}
-    return ncms, payload.get("tipi_version", path.name)
+    entries: list[dict[str, object]] = payload["entries"]
+    return entries, payload.get("tipi_version", path.name)
 
 
 def _print_report(
@@ -118,6 +170,30 @@ def _print_report(
         print(f"Missing: {missing}")
 
 
+def _print_evaluation(suite: EvalSuite, report: EvalReport) -> None:
+    print("\nEvaluation: walking skeleton (Naive + Passthrough)")
+    print(
+        f"Top-1 accuracy:  {report.top_1_hits}/{report.total} "
+        f"= {report.top_1_accuracy:.1%}"
+    )
+    print(
+        f"Top-3 accuracy:  {report.top_3_hits}/{report.total} "
+        f"= {report.top_3_accuracy:.1%}"
+    )
+    print("ECE:             not applicable in skeleton (all scores = 0.0)")
+
+    difficulty_by_id = {c.id: c.difficulty for c in suite.cases}
+    print("\nPer-difficulty breakdown:")
+    for level in ("easy", "medium", "hard"):
+        cases = [
+            r for r in report.per_case if difficulty_by_id.get(r.case_id) == level
+        ]
+        n = len(cases)
+        t1 = sum(r.top_1_hit for r in cases)
+        t3 = sum(r.top_3_hit for r in cases)
+        print(f"  {level + ':':<8} {t1}/{n} top-1, {t3}/{n} top-3")
+
+
 def main(
     eval_path: str | Path = "eval/v1_cases.json",
     tipi_dir: str | Path = "data/tipi",
@@ -126,10 +202,18 @@ def main(
     _print_stats(suite)
 
     tipi_json = _find_latest_tipi_json(tipi_dir, suite.chapter_scope)
-    tipi_ncms, tipi_version = _load_tipi(tipi_json)
+    entries, tipi_version = _load_tipi(tipi_json)
+    tipi_ncms = {str(entry["ncm"]) for entry in entries}
 
     report = cross_validate_against_tipi(suite, tipi_ncms)
     _print_report(suite, report, tipi_version)
+
+    # Measurement layer: run the real walking-skeleton use case over the
+    # suite and report accuracy. Never gates the exit code (skeleton accuracy
+    # is ~0%); the CI gate stays governed solely by cross-validation below.
+    use_case = build_classify_use_case(entries)
+    eval_report = evaluate_suite(suite, use_case)
+    _print_evaluation(suite, eval_report)
 
     return 0 if report.ok else 1
 

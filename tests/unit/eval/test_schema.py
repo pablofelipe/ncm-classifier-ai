@@ -1,8 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from eval.schema import EvalCase, EvalSuite
-
+from eval.schema import CaseResult, EvalCase, EvalReport, EvalSuite
 
 # ---------------------------------------------------------------------------
 # Fixture: campos válidos reutilizáveis
@@ -220,3 +219,47 @@ def test_rejects_confusion_chapter_with_single_digit() -> None:
 def test_rejects_confusion_chapter_with_letters() -> None:
     with pytest.raises(ValidationError):
         EvalCase(**{**VALID_FIELDS, "confusion_chapters": ["AB"]})
+
+
+# ---------------------------------------------------------------------------
+# CaseResult — predicted_ncms length invariant
+# ---------------------------------------------------------------------------
+
+
+def _case_result(predicted: list[str]) -> dict:
+    return {
+        "case_id": "case-001",
+        "expected_ncm": "2203.00.00",
+        "predicted_ncms": predicted,
+        "top_1_hit": False,
+        "top_3_hit": False,
+    }
+
+
+def test_case_result_predicted_ncms_must_be_length_three() -> None:
+    with pytest.raises(ValidationError, match="3"):
+        CaseResult(**_case_result(["2203.00.00", "2202.10.00"]))
+
+
+def test_case_result_accepts_exactly_three_predicted_ncms() -> None:
+    result = CaseResult(
+        **_case_result(["2203.00.00", "2202.10.00", "2201.10.00"])
+    )
+    assert len(result.predicted_ncms) == 3
+
+
+# ---------------------------------------------------------------------------
+# EvalReport — accuracy derived from hit counts
+# ---------------------------------------------------------------------------
+
+
+def test_eval_report_accuracy_computed_from_hits() -> None:
+    report = EvalReport(total=30, top_1_hits=6, top_3_hits=12, per_case=[])
+    assert report.top_1_accuracy == pytest.approx(0.2)
+    assert report.top_3_accuracy == pytest.approx(0.4)
+
+
+def test_eval_report_accuracy_is_zero_when_total_is_zero() -> None:
+    report = EvalReport(total=0, top_1_hits=0, top_3_hits=0, per_case=[])
+    assert report.top_1_accuracy == 0.0
+    assert report.top_3_accuracy == 0.0
