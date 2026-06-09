@@ -5,6 +5,14 @@ description: Enforce strict Test-Driven Development discipline (Red-Green-Refact
 
 # TDD Discipline for ncm-classifier-ai
 
+## Domain Glossary
+
+Brazilian fiscal terms used throughout this project:
+
+- **NCM** (*Nomenclatura Comum do Mercosul*) — the 8-digit code that classifies a product for tax and customs purposes across Mercosur countries; the value this pipeline predicts.
+- **TIPI** (*Tabela de Incidência do Imposto sobre Produtos Industrializados*) — the official Brazilian table mapping each NCM code to its IPI tax rate; the authoritative source this system retrieves from.
+- **ex-tarifário** — a temporary exception entry nested under an NCM code that grants a reduced tax rate to a specific product variant. Kept in pt-BR: it is Brazilian fiscal jargon with no direct technical translation.
+
 This skill enforces strict Test-Driven Development for a RAG pipeline classifying products into Brazilian NCM codes. The project is eval-first (see `CLAUDE.md`), and TDD is the unit-level counterpart to that discipline: nothing ships without a failing test that motivated it.
 
 ## The Hard Rule

@@ -5,6 +5,14 @@ description: Enforce hexagonal architecture (ports and adapters) for Python code
 
 # Hexagonal Boundaries for ncm-classifier-ai
 
+## Domain Glossary
+
+Brazilian fiscal terms used throughout this project:
+
+- **NCM** (*Nomenclatura Comum do Mercosul*) — the 8-digit code that classifies a product for tax and customs purposes across Mercosur countries; the value this pipeline predicts.
+- **TIPI** (*Tabela de Incidência do Imposto sobre Produtos Industrializados*) — the official Brazilian table mapping each NCM code to its IPI tax rate; the authoritative source this system retrieves from.
+- **ex-tarifário** — a temporary exception entry nested under an NCM code that grants a reduced tax rate to a specific product variant. Kept in pt-BR: it is Brazilian fiscal jargon with no direct technical translation.
+
 This skill enforces the dependency rule and ports-and-adapters layout for a RAG pipeline. Architecture decisions:
 
 - **`core/` contains use cases and the domain**, with no I/O and no framework imports
