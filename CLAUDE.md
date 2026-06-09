@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 RAG pipeline that classifies Brazilian products into 8-digit NCM (Nomenclatura Comum do Mercosul) codes, grounded on the official TIPI table. Pure LLMs hallucinate NCM codes — this system retrieves before generating.
 
-v1 scope: **Capítulo 22** (Bebidas, líquidos alcoólicos e vinagres), text input (product name + description ≤ 300 chars), top-3 candidates with confidence scores and TIPI citations.
+v1 scope: **Chapter 22** (Beverages, spirits and vinegar), text input (product name + description ≤ 300 chars), top-3 candidates with confidence scores and TIPI citations.
 
 ## Tech Stack & Hard Constraints
 
@@ -61,17 +61,17 @@ make snapshot   # version embeddings for eval reproducibility
 
 ## TIPI Reference Data
 
-- **Source**: Decreto da TIPI vigente (versão consolidada — verificar versão atual antes de indexar)
+- **Source**: current TIPI decree (consolidated version — check the current version before indexing)
 - **File**: `data/tipi/tipi_YYYYMMDD.{json,parquet}`
-- **Update policy**: re-indexar ChromaDB a cada revisão da TIPI; a versão usada no eval fica registrada em `eval/tipi_version.txt` para reproducibilidade
+- **Update policy**: re-index ChromaDB on every TIPI revision; the version used in eval is recorded in `eval/tipi_version.txt` for reproducibility
 
 ## Decision Log
 
 All architectural decisions go in `docs/adr/NNNN-title.md`.
 
 Resolved:
-- **ADR-0001** — Capítulo 22 selecionado para v1 (ver `docs/adr/0001-chapter-selection.md`)
-- **ADR-0002** — Verification via deterministic TIPI metadata check (ver `docs/adr/0002-verification-deterministic-check.md`)
+- **ADR-0001** — Chapter 22 selected for v1 (see `docs/adr/0001-chapter-selection.md`)
+- **ADR-0002** — Verification via deterministic TIPI metadata check (see `docs/adr/0002-verification-deterministic-check.md`)
 
 Open:
 - Confidence threshold T (set after first calibration run, not arbitrarily)

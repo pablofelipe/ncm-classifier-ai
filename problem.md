@@ -72,8 +72,8 @@ piece — but framing decisions around real users keeps the design honest.
 - 30–150 NCM codes total (bounded, but not trivial)
 - Common in real catalogs (not obscure)
 - Public product examples easy to source
-- Candidates: Capítulo 33 (cosméticos), Capítulo 64 (calçados),
-  Capítulo 95 (brinquedos), Capítulo 39 (plásticos — too broad?)
+- Candidates: Chapter 33 (cosmetics), Chapter 64 (footwear),
+  Chapter 95 (toys), Chapter 39 (plastics — too broad?)
 
 ## Out of scope — v1
 

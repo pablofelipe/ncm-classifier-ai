@@ -4,7 +4,7 @@ from pydantic import ValidationError
 from eval.schema import CaseResult, EvalCase, EvalReport, EvalSuite
 
 # ---------------------------------------------------------------------------
-# Fixture: campos válidos reutilizáveis
+# Fixture: reusable valid fields
 # ---------------------------------------------------------------------------
 
 VALID_FIELDS: dict = {
@@ -83,7 +83,7 @@ def test_accepts_two_cases_with_distinct_ids() -> None:
 
 
 # ---------------------------------------------------------------------------
-# EvalSuite — escopo do capítulo (out-of-scope agora é legítimo)
+# EvalSuite — chapter scope (out-of-scope is now legitimate)
 # ---------------------------------------------------------------------------
 
 
@@ -93,7 +93,7 @@ def test_accepts_ncm_within_chapter_scope() -> None:
 
 
 def test_accepts_out_of_scope_answer_chapter_case() -> None:
-    # Caso fronteira: resposta correta vive em outro capítulo (ex.: suco -> Cap.20).
+    # Boundary case: correct answer lives in another chapter (e.g. juice -> Ch.20).
     cross = EvalCase(**{
         **VALID_FIELDS,
         "expected_ncm": "2009.12.00",
@@ -105,7 +105,7 @@ def test_accepts_out_of_scope_answer_chapter_case() -> None:
 
 
 # ---------------------------------------------------------------------------
-# EvalCase — campo id
+# EvalCase — id field
 # ---------------------------------------------------------------------------
 
 
@@ -125,7 +125,7 @@ def test_accepts_id_with_three_digits() -> None:
 
 
 # ---------------------------------------------------------------------------
-# EvalCase — comprimentos
+# EvalCase — lengths
 # ---------------------------------------------------------------------------
 
 

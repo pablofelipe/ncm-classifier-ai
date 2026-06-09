@@ -55,7 +55,7 @@ def test_document_starts_with_description(full_entry: dict) -> None:
 
 
 # ---------------------------------------------------------------------------
-# _find_latest_tipi_json (sem alterações de schema)
+# _find_latest_tipi_json (no schema changes)
 # ---------------------------------------------------------------------------
 
 def test_returns_most_recent_json_when_multiple_exist(tmp_path: Path) -> None:

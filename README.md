@@ -2,13 +2,13 @@
 
 [![eval](https://github.com/pablofelipe/ncm-classifier-ai/actions/workflows/eval.yml/badge.svg)](https://github.com/pablofelipe/ncm-classifier-ai/actions/workflows/eval.yml)
 
-RAG pipeline para classificação de produtos brasileiros em códigos NCM (Nomenclatura Comum do Mercosul), fundamentado na tabela TIPI oficial.
+RAG pipeline for classifying Brazilian products into NCM codes (Nomenclatura Comum do Mercosul), grounded on the official TIPI table.
 
 See [CLAUDE.md](CLAUDE.md) for architecture, constraints, and decision log.
 
 ## Status
 
-v1 em desenvolvimento — Capítulo 22 (Bebidas, líquidos alcoólicos e vinagres).
+v1 in development — Chapter 22 (Beverages, spirits and vinegar).
 
 ## Metrics
 

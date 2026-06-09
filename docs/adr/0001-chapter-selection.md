@@ -16,15 +16,15 @@ Candidates evaluated:
 
 | Chapter | Domain | Approx. codes | Notes |
 |---------|--------|---------------|-------|
-| Cap. 22 | Bebidas, líquidos alcoólicos e vinagres | ~40 | Author domain expertise in F&B |
-| Cap. 33 | Produtos de perfumaria / cosméticos | ~60 | Good variability; no domain edge |
-| Cap. 64 | Calçados | ~50 | Common; material distinctions are subtle |
-| Cap. 95 | Brinquedos e jogos | ~80 | Common; possibly too dependent on images |
-| Cap. 39 | Plásticos | 200+ | Too broad for v1 |
+| Ch. 22 | Beverages, spirits and vinegar | ~40 | Author domain expertise in F&B |
+| Ch. 33 | Perfumery / cosmetics products | ~60 | Good variability; no domain edge |
+| Ch. 64 | Footwear | ~50 | Common; material distinctions are subtle |
+| Ch. 95 | Toys and games | ~80 | Common; possibly too dependent on images |
+| Ch. 39 | Plastics | 200+ | Too broad for v1 |
 
 ## Decision
 
-**Capítulo 22 — Bebidas, líquidos alcoólicos e vinagres.**
+**Chapter 22 — Beverages, spirits and vinegar.**
 
 ## Rationale
 
@@ -34,17 +34,17 @@ Candidates evaluated:
 
 3. **Real fiscal value**: beverages are high-volume in retail NF-e data, so public SEFAZ samples will yield enough labeled examples without manual sourcing.
 
-4. **Bounded code count**: Cap. 22 has roughly 40 active NCMs — enough to require non-trivial retrieval, small enough that the eval set covers a meaningful fraction.
+4. **Bounded code count**: Ch. 22 has roughly 40 active NCMs — enough to require non-trivial retrieval, small enough that the eval set covers a meaningful fraction.
 
 ## Alternatives Considered
 
-- **Cap. 33 (cosméticos)**: good candidate, but no author domain edge for eval validation; rejected in favor of 22.
-- **Cap. 64 (calçados)**: material-based distinctions (leather vs. synthetic vs. textile) may require product attributes not present in a short text description; deferred.
-- **Cap. 95 (brinquedos)**: high dependency on visual product characteristics; may under-perform on text-only input; deferred to v2 if image input is added.
+- **Ch. 33 (cosmetics)**: good candidate, but no author domain edge for eval validation; rejected in favor of 22.
+- **Ch. 64 (footwear)**: material-based distinctions (leather vs. synthetic vs. textile) may require product attributes not present in a short text description; deferred.
+- **Ch. 95 (toys)**: high dependency on visual product characteristics; may under-perform on text-only input; deferred to v2 if image input is added.
 
 ## Consequences
 
-- `eval/v1_cases.json` will contain 30 products from Cap. 22 with verified NCM codes
-- TIPI data ingestion (`data/tipi/`) must extract Cap. 22 entries for ChromaDB indexing
+- `eval/v1_cases.json` will contain 30 products from Ch. 22 with verified NCM codes
+- TIPI data ingestion (`data/tipi/`) must extract Ch. 22 entries for ChromaDB indexing
 - The chapter filter is hardcoded in v1; multi-chapter routing is a v2 concern
-- Success metrics apply specifically to Cap. 22; generalization to other chapters is not claimed
+- Success metrics apply specifically to Ch. 22; generalization to other chapters is not claimed

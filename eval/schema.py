@@ -10,11 +10,11 @@ class EvalCase(BaseModel):
     product_name: str = Field(max_length=100)
     product_description: str = Field(max_length=300)
     expected_ncm: str = Field(pattern=r"^\d{4}\.\d{2}\.\d{2}$")
-    # Capítulo TIPI onde a resposta correta de fato vive (2 primeiros dígitos
-    # de expected_ncm). Obrigatório.
+    # TIPI chapter where the correct answer actually lives (first 2 digits
+    # of expected_ncm). Required.
     answer_chapter: ChapterCode
-    # Capítulos onde o produto poderia ser erroneamente classificado.
-    # Informacional, para análise de erros. Nunca contém answer_chapter.
+    # Chapters where the product could be wrongly classified.
+    # Informational, for error analysis. Never contains answer_chapter.
     confusion_chapters: list[ChapterCode] = Field(default_factory=list)
     difficulty: Literal["easy", "medium", "hard"]
     rationale: str = Field(min_length=20)

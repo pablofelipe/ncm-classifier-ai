@@ -4,27 +4,27 @@ from src.core.verification.deterministic import validate_ncm_format
 
 
 @pytest.mark.parametrize("code", [
-    "2202.10.00",  # bebidas aromatizadas/açucaradas (Cap. 22)
-    "2203.00.00",  # cervejas de malte
-    "2201.10.00",  # água mineral natural
-    "2208.40.00",  # aguardente de cana (cachaça)
-    "0101.21.00",  # capítulo diferente — formato ainda válido
+    "2202.10.00",  # flavored/sweetened beverages (Ch. 22)
+    "2203.00.00",  # malt beers
+    "2201.10.00",  # natural mineral water
+    "2208.40.00",  # sugarcane spirit (cachaça)
+    "0101.21.00",  # different chapter — format still valid
 ])
 def test_accepts_valid_dot_notation(code: str) -> None:
     assert validate_ncm_format(code) is True
 
 
 @pytest.mark.parametrize("code", [
-    "22021000",    # sem pontos
-    "2202.1.00",   # segundo grupo com 1 dígito
-    "2202.10.0",   # terceiro grupo com 1 dígito
-    "22022.10.00", # primeiro grupo com 5 dígitos
-    "2202.10.001", # terceiro grupo com 3 dígitos
-    "XXXX.XX.XX",  # letras
-    "2202.10",     # apenas dois grupos
-    "",            # string vazia
-    " 2202.10.00", # espaço líder
-    "2202.10.00 ", # espaço trailer
+    "22021000",    # no dots
+    "2202.1.00",   # second group with 1 digit
+    "2202.10.0",   # third group with 1 digit
+    "22022.10.00", # first group with 5 digits
+    "2202.10.001", # third group with 3 digits
+    "XXXX.XX.XX",  # letters
+    "2202.10",     # only two groups
+    "",            # empty string
+    " 2202.10.00", # leading space
+    "2202.10.00 ", # trailing space
 ])
 def test_rejects_malformed_code(code: str) -> None:
     assert validate_ncm_format(code) is False

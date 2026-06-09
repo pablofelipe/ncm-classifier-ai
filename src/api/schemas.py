@@ -9,15 +9,15 @@ class ClassifyRequest(BaseModel):
 
 
 class NCMCandidate(BaseModel):
-    ncm: str  # formato dotted, ex. "2202.10.00"
-    description: str  # descrição da TIPI
-    score: float  # score de confiança do candidato (0.0 a 1.0)
+    ncm: str  # dotted format, e.g. "2202.10.00"
+    description: str  # TIPI description
+    score: float  # candidate confidence score (0.0 to 1.0)
 
 
 class ClassifyResponse(BaseModel):
     confidence_label: Literal["high", "needs_review"]
-    candidates: list[NCMCandidate]  # exatamente 3 no v1
-    latency_ms: float  # medido na rota, não no domínio
+    candidates: list[NCMCandidate]  # exactly 3 in v1
+    latency_ms: float  # measured at the route, not in the domain
 
     @model_validator(mode="after")
     def _exactly_three_candidates(self) -> "ClassifyResponse":
