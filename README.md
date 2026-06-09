@@ -1,5 +1,7 @@
 # NCM Classifier AI
 
+[![eval](https://github.com/pablofelipe/ncm-classifier-ai/actions/workflows/eval.yml/badge.svg)](https://github.com/pablofelipe/ncm-classifier-ai/actions/workflows/eval.yml)
+
 RAG pipeline para classificação de produtos brasileiros em códigos NCM (Nomenclatura Comum do Mercosul), fundamentado na tabela TIPI oficial.
 
 See [CLAUDE.md](CLAUDE.md) for architecture, constraints, and decision log.

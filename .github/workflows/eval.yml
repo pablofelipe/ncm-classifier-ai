@@ -1,0 +1,26 @@
+name: eval
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    env:
+      # The skeleton never calls Gemini, but src.config.Settings() validates
+      # gemini_api_key at import time (module-level instantiation). A non-secret
+      # placeholder satisfies that validation; no real key is needed until
+      # ChromaRetrievalAdapter/Gemini land (ADR-0004).
+      GEMINI_API_KEY: dummy-not-used-in-skeleton
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: Install dependencies
+        run: pip install -e ".[dev]"
+      - name: Run eval gate
+        run: make eval

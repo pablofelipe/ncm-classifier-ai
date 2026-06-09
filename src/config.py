@@ -13,4 +13,7 @@ class Settings(BaseSettings):
     ncm_chapter: str = "22"
 
 
+# NOTE: instantiates at import time. CI environments must provide
+# GEMINI_API_KEY (placeholder OK for skeleton).
+# See .github/workflows/eval.yml.
 settings = Settings()
