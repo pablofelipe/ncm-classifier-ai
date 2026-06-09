@@ -1,0 +1,8 @@
+# Normalize all text files to LF in the repository (avoids CRLF noise on Windows)
+* text=auto eol=lf
+
+# Binary files — never apply line-ending conversion
+*.xlsx binary
+*.parquet binary
+*.png binary
+*.jpg binary

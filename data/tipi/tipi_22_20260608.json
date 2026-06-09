@@ -1,0 +1,512 @@
+{
+  "tipi_version": "Decreto 11.158/2022 (última atualização: Ato Declaratório Executivo RFB nº 1, de 30 de janeiro de 2026 (Retificado: DOU de 12/02/2026))",
+  "extracted_at": "2026-06-08T23:25:12.430606+00:00",
+  "chapter": "22",
+  "source": "tipi_20260608.xlsx",
+  "entries": [
+    {
+      "ncm": "2201.10.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.01",
+      "subheading": "2201.10",
+      "description": "- Águas minerais e águas gaseificadas",
+      "ipi_rate": "2.6",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Águas minerais naturais comercializadas em recipientes com capacidade nominal inferior a 10 (dez) litros",
+          "ipi_rate": "NT"
+        },
+        {
+          "ex": "2",
+          "description": "Águas minerais naturais comercializadas em recipientes com capacidade nominal igual ou superior a 10 (dez) litros",
+          "ipi_rate": "NT"
+        }
+      ],
+      "raw_row": 1926
+    },
+    {
+      "ncm": "2201.90.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.01",
+      "subheading": "2201.90",
+      "description": "- Outros",
+      "ipi_rate": "NT",
+      "ex_tipi": null,
+      "raw_row": 1929
+    },
+    {
+      "ncm": "2202.10.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.02",
+      "subheading": "2202.10",
+      "description": "- Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar ou de outros edulcorantes ou aromatizadas",
+      "ipi_rate": "2.6",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Refrescos",
+          "ipi_rate": "2.6"
+        }
+      ],
+      "raw_row": 1931
+    },
+    {
+      "ncm": "2202.91.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.02",
+      "subheading": "2202.91",
+      "description": "-- Cerveja sem álcool",
+      "ipi_rate": "3.9",
+      "ex_tipi": null,
+      "raw_row": 1934
+    },
+    {
+      "ncm": "2202.99.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.02",
+      "subheading": "2202.99",
+      "description": "-- Outras",
+      "ipi_rate": "2.6",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Bebidas alimentares à base de soja ou de leite e cacau",
+          "ipi_rate": "0"
+        },
+        {
+          "ex": "2",
+          "description": "Néctares de frutas",
+          "ipi_rate": "0"
+        },
+        {
+          "ex": "3",
+          "description": "Alimentos para praticantes de atividade física nos termos da Resolução RDC nº 18, de 27 de abril de 2010, da Agência Nacional de Vigilância Sanitária, do Ministério da Saúde: repositores hidroeletrolíticos e outros",
+          "ipi_rate": "2.6"
+        },
+        {
+          "ex": "4",
+          "description": "Compostos líquidos pronto para consumo nos termos da Resolução RDC nº 273, de 22 de\nsetembro de 2005, da Agência Nacional de Vigilância Sanitária, do Ministério da Saúde",
+          "ipi_rate": "2.6"
+        },
+        {
+          "ex": "5",
+          "description": "Bebidas alimentares à base ou elaboradas a partir de matérias-primas vegetais classificadas nas posições 08.01 ou 08.02, no Capítulo 10 ou no Capítulo 12, exceto a posição 12.01, que não contenham leite animal, produtos lácteos ou gorduras deles derivados em sua composição",
+          "ipi_rate": "0"
+        }
+      ],
+      "raw_row": 1935
+    },
+    {
+      "ncm": "2203.00.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.03",
+      "subheading": "2203.00",
+      "description": "Cervejas de malte.",
+      "ipi_rate": "3.9",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Chope",
+          "ipi_rate": "3.9"
+        }
+      ],
+      "raw_row": 1941
+    },
+    {
+      "ncm": "2204.10.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.10",
+      "description": "Tipo champanha (champagne)",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1945
+    },
+    {
+      "ncm": "2204.10.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.10",
+      "description": "Outros",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1946
+    },
+    {
+      "ncm": "2204.21.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.21",
+      "description": "-- Em recipientes de capacidade não superior a 2 l",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1948
+    },
+    {
+      "ncm": "2204.22.11",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.22",
+      "description": "Em recipientes de capacidade não superior a 5 l",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1952
+    },
+    {
+      "ncm": "2204.22.19",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.22",
+      "description": "Outros",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1954
+    },
+    {
+      "ncm": "2204.22.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.22",
+      "description": "Mostos",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1956
+    },
+    {
+      "ncm": "2204.29.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.29",
+      "description": "Vinhos",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1958
+    },
+    {
+      "ncm": "2204.29.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.29",
+      "description": "Mostos",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1960
+    },
+    {
+      "ncm": "2204.30.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.30",
+      "description": "- Outros mostos de uvas",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1961
+    },
+    {
+      "ncm": "2205.10.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.05",
+      "subheading": "2205.10",
+      "description": "- Em recipientes de capacidade não superior a 2 l",
+      "ipi_rate": "9.75",
+      "ex_tipi": null,
+      "raw_row": 1963
+    },
+    {
+      "ncm": "2205.90.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.05",
+      "subheading": "2205.90",
+      "description": "- Outros",
+      "ipi_rate": "9.75",
+      "ex_tipi": null,
+      "raw_row": 1964
+    },
+    {
+      "ncm": "2206.00.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.06",
+      "subheading": "2206.00",
+      "description": "Sidra",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1966
+    },
+    {
+      "ncm": "2206.00.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.06",
+      "subheading": "2206.00",
+      "description": "Outras",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Com teor alcoólico superior a 14%",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1967
+    },
+    {
+      "ncm": "2207.10.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.10",
+      "description": "Com um teor de água inferior ou igual a 1 % vol.",
+      "ipi_rate": "0",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        },
+        {
+          "ex": "2",
+          "description": "Retificado (álcool neutro)",
+          "ipi_rate": "5.2"
+        }
+      ],
+      "raw_row": 1971
+    },
+    {
+      "ncm": "2207.10.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.10",
+      "description": "Outros",
+      "ipi_rate": "0",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        },
+        {
+          "ex": "2",
+          "description": "Retificado (álcool neutro)",
+          "ipi_rate": "5.2"
+        }
+      ],
+      "raw_row": 1974
+    },
+    {
+      "ncm": "2207.20.11",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.20",
+      "description": "Com um teor de água inferior ou igual a 1 % vol.",
+      "ipi_rate": "5.2",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        }
+      ],
+      "raw_row": 1979
+    },
+    {
+      "ncm": "2207.20.19",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.20",
+      "description": "Outros",
+      "ipi_rate": "5.2",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        }
+      ],
+      "raw_row": 1981
+    },
+    {
+      "ncm": "2207.20.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.20",
+      "description": "Aguardente",
+      "ipi_rate": "5.2",
+      "ex_tipi": null,
+      "raw_row": 1983
+    },
+    {
+      "ncm": "2208.20.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.20",
+      "description": "- Aguardentes de vinho ou de bagaço, de uvas",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1985
+    },
+    {
+      "ncm": "2208.30.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.30",
+      "description": "Com um teor alcoólico, em volume, superior a 50 % vol., em recipientes de capacidade igual ou superior a 50 l",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1987
+    },
+    {
+      "ncm": "2208.30.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.30",
+      "description": "Em embalagens de capacidade inferior ou igual a 2 l",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1988
+    },
+    {
+      "ncm": "2208.30.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.30",
+      "description": "Outros",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1989
+    },
+    {
+      "ncm": "2208.40.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.40",
+      "description": "- Rum e outras aguardentes provenientes da destilação, após fermentação, de produtos da cana-de açúcar",
+      "ipi_rate": "16.25",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Rum e outras aguardentes obtidas do melaço da cana",
+          "ipi_rate": "19.5"
+        }
+      ],
+      "raw_row": 1990
+    },
+    {
+      "ncm": "2208.50.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.50",
+      "description": "- Gim e genebra",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1992
+    },
+    {
+      "ncm": "2208.60.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.60",
+      "description": "- Vodca",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1993
+    },
+    {
+      "ncm": "2208.70.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.70",
+      "description": "- Licores",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1994
+    },
+    {
+      "ncm": "2208.90.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.90",
+      "description": "- Outros",
+      "ipi_rate": "19.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Álcool etílico",
+          "ipi_rate": "5.2"
+        },
+        {
+          "ex": "2",
+          "description": "Bebida refrescante com teor alcoólico inferior a 8%",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1995
+    },
+    {
+      "ncm": "2209.00.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.09",
+      "subheading": "2209.00",
+      "description": "Vinagres e seus sucedâneos obtidos a partir do ácido acético, para uso alimentar.",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1998
+    }
+  ]
+}

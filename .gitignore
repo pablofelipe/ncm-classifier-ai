@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+.venv/
+venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+
+# Environment
+.env
+
+# Generated data
+data/chroma/
+data/tipi/raw/
+data/tipi/*.parquet
+
+# Claude Code (local, per-developer)
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
