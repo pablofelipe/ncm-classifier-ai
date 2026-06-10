@@ -1,14 +1,16 @@
 import json
 import sys
 from pathlib import Path
+from typing import Any, cast
 
 import chromadb
 from chromadb import Collection
 
 from src.config import settings
+from src.retrieval.embedding import E5EmbeddingFunction
 
 
-def build_document_text(entry: dict) -> str:
+def build_document_text(entry: dict[str, Any]) -> str:
     """Build the text to embed for a TIPI entry."""
     parts = [entry["description"]]
     for ex in entry.get("ex_tipi") or []:
@@ -35,14 +37,17 @@ def get_collection() -> Collection:
     )
 
 
-def rebuild_index() -> None:
-    """Rebuild ChromaDB collection from the latest tipi_<chapter>_*.json."""
-    data_dir = Path(settings.tipi_data_dir)
-    json_path = _find_latest_tipi_json(data_dir, settings.ncm_chapter)
+def index_entries(
+    collection: Collection,
+    entries: list[dict[str, Any]],
+    embedding_fn: E5EmbeddingFunction,
+) -> int:
+    """Embed and upsert TIPI entries into the collection, returning the count.
 
-    payload = json.loads(json_path.read_text(encoding="utf-8"))
-    entries: list[dict] = payload["entries"]
-
+    Idempotent: ids are the dotless NCM codes, so re-running replaces rather
+    than duplicates. Embeddings are computed via the injected embedding function
+    (passage-prefixed); the default Chroma embedder is never invoked.
+    """
     ids = [e["ncm"].replace(".", "") for e in entries]
     documents = [build_document_text(e) for e in entries]
     metadatas = [
@@ -56,12 +61,30 @@ def rebuild_index() -> None:
         }
         for e in entries
     ]
+    embeddings = embedding_fn.embed_documents(documents)
+
+    collection.upsert(
+        ids=ids,
+        embeddings=cast(Any, embeddings),
+        metadatas=cast(Any, metadatas),
+        documents=documents,
+    )
+    return len(ids)
+
+
+def rebuild_index() -> None:
+    """Rebuild ChromaDB collection from the latest tipi_<chapter>_*.json."""
+    data_dir = Path(settings.tipi_data_dir)
+    json_path = _find_latest_tipi_json(data_dir, settings.ncm_chapter)
+
+    payload = json.loads(json_path.read_text(encoding="utf-8"))
+    entries: list[dict[str, Any]] = payload["entries"]
 
     col = get_collection()
-    col.upsert(ids=ids, documents=documents, metadatas=metadatas)
+    count = index_entries(col, entries, E5EmbeddingFunction())
 
     source = payload.get("source", json_path.name)
-    print(f"Indexed {len(ids)} entries from {source} into '{col.name}'")
+    print(f"Indexed {count} entries from {source} into '{col.name}'")
 
 
 def snapshot() -> None:
