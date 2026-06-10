@@ -26,6 +26,13 @@ dev = [
 scripts = [
     "openpyxl>=3.1",
 ]
+# Semantic retrieval (ADR-0004): sentence-transformers + torch.
+# torch must be installed CPU-only first, from the dedicated index, to avoid
+# the ~2 GB CUDA wheel on Linux CI. See README "Install (development)".
+ml = [
+    "sentence-transformers>=3.0,<4",
+    "torch>=2.2,<3",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]
