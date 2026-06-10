@@ -27,6 +27,11 @@ pip install -e ".[dev,ml]"
 The base install (`pip install -e ".[dev]"`) stays light; the `ml` extra is only
 needed to build the ChromaDB index and run the classifier end-to-end.
 
+> **TODO (revisit in ADR-0004):** local dev currently runs on Python 3.14 while
+> CI pins 3.13 (`requires-python >=3.13`). Not yet reconciled — torch publishes
+> wheels for both, but the version split should be made explicit (pin a single
+> dev version, or test a matrix) before the eval baseline is locked.
+
 ## Metrics
 
 <!-- Updated by CI after each eval run -->
