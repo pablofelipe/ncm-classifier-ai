@@ -1,0 +1,771 @@
+{
+ "cases": [
+  {
+   "id": "case-001",
+   "product_name": "Água Mineral Crystal sem Gás 500ml",
+   "expected": "2201.10.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 2,
+   "top1_score": 0.8748,
+   "top3": [
+    {
+     "ncm": "2202.10.00",
+     "score": 0.8748
+    },
+    {
+     "ncm": "2201.10.00",
+     "score": 0.8744
+    },
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8685
+    }
+   ]
+  },
+  {
+   "id": "case-002",
+   "product_name": "Água Tônica Antarctica 350ml",
+   "expected": "2202.10.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8627,
+   "top3": [
+    {
+     "ncm": "2202.10.00",
+     "score": 0.8627
+    },
+    {
+     "ncm": "2208.60.00",
+     "score": 0.858
+    },
+    {
+     "ncm": "2208.40.00",
+     "score": 0.8573
+    }
+   ]
+  },
+  {
+   "id": "case-003",
+   "product_name": "Gelo em Cubos Saquinho 2kg",
+   "expected": "2201.90.00",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8651,
+   "top3": [
+    {
+     "ncm": "2208.30.20",
+     "score": 0.8651
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.865
+    },
+    {
+     "ncm": "2204.30.00",
+     "score": 0.8617
+    }
+   ]
+  },
+  {
+   "id": "case-004",
+   "product_name": "Coca-Cola Original Lata 350ml",
+   "expected": "2202.10.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": 4,
+   "top1_score": 0.8664,
+   "top3": [
+    {
+     "ncm": "2208.40.00",
+     "score": 0.8664
+    },
+    {
+     "ncm": "2202.99.00",
+     "score": 0.8596
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8594
+    }
+   ]
+  },
+  {
+   "id": "case-005",
+   "product_name": "Guaraná Antarctica Zero 2L",
+   "expected": "2202.10.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 2,
+   "top1_score": 0.8694,
+   "top3": [
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8694
+    },
+    {
+     "ncm": "2202.10.00",
+     "score": 0.8654
+    },
+    {
+     "ncm": "2208.40.00",
+     "score": 0.8621
+    }
+   ]
+  },
+  {
+   "id": "case-006",
+   "product_name": "Red Bull Energy Drink 250ml",
+   "expected": "2202.99.00",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8619,
+   "top3": [
+    {
+     "ncm": "2202.99.00",
+     "score": 0.8619
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8598
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.8568
+    }
+   ]
+  },
+  {
+   "id": "case-007",
+   "product_name": "Gatorade Sabor Laranja 500ml",
+   "expected": "2202.99.00",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.873,
+   "top3": [
+    {
+     "ncm": "2202.99.00",
+     "score": 0.873
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.864
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8533
+    }
+   ]
+  },
+  {
+   "id": "case-008",
+   "product_name": "Suco de Laranja Integral Natural One 900ml",
+   "expected": "2009.12.00",
+   "difficulty": "hard",
+   "confusion_chapters": [
+    "22"
+   ],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8687,
+   "top3": [
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8687
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8632
+    },
+    {
+     "ncm": "2202.10.00",
+     "score": 0.8589
+    }
+   ]
+  },
+  {
+   "id": "case-009",
+   "product_name": "Néctar de Pêssego Del Valle 1L",
+   "expected": "2202.99.00",
+   "difficulty": "hard",
+   "confusion_chapters": [
+    "20"
+   ],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 2,
+   "top1_score": 0.8677,
+   "top3": [
+    {
+     "ncm": "2203.00.00",
+     "score": 0.8677
+    },
+    {
+     "ncm": "2202.99.00",
+     "score": 0.8604
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.86
+    }
+   ]
+  },
+  {
+   "id": "case-010",
+   "product_name": "Bebida de Aveia Sem Açúcar Nesfit 1L",
+   "expected": "2202.99.00",
+   "difficulty": "hard",
+   "confusion_chapters": [
+    "21"
+   ],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8877,
+   "top3": [
+    {
+     "ncm": "2202.99.00",
+     "score": 0.8877
+    },
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8818
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.8734
+    }
+   ]
+  },
+  {
+   "id": "case-011",
+   "product_name": "Heineken Long Neck 330ml",
+   "expected": "2203.00.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 2,
+   "top1_score": 0.8725,
+   "top3": [
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8725
+    },
+    {
+     "ncm": "2203.00.00",
+     "score": 0.8691
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.865
+    }
+   ]
+  },
+  {
+   "id": "case-012",
+   "product_name": "Brahma Chopp Lata 269ml",
+   "expected": "2203.00.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8656,
+   "top3": [
+    {
+     "ncm": "2203.00.00",
+     "score": 0.8656
+    },
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8551
+    },
+    {
+     "ncm": "2208.60.00",
+     "score": 0.8534
+    }
+   ]
+  },
+  {
+   "id": "case-013",
+   "product_name": "Cerveja Sem Álcool Heineken 0.0 330ml",
+   "expected": "2202.91.00",
+   "difficulty": "hard",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8987,
+   "top3": [
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8987
+    },
+    {
+     "ncm": "2203.00.00",
+     "score": 0.8837
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8762
+    }
+   ]
+  },
+  {
+   "id": "case-014",
+   "product_name": "Vinho Tinto Cabernet Sauvignon Concha y Toro 750ml",
+   "expected": "2204.21.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": 5,
+   "top1_score": 0.8653,
+   "top3": [
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8653
+    },
+    {
+     "ncm": "2206.00.90",
+     "score": 0.8619
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.858
+    }
+   ]
+  },
+  {
+   "id": "case-015",
+   "product_name": "Vinho Espumante Chandon Brut 750ml",
+   "expected": "2204.10.90",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8618,
+   "top3": [
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8618
+    },
+    {
+     "ncm": "2204.10.10",
+     "score": 0.8583
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.856
+    }
+   ]
+  },
+  {
+   "id": "case-016",
+   "product_name": "Vinho do Porto Tawny 750ml",
+   "expected": "2204.21.00",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 3,
+   "top1_score": 0.8712,
+   "top3": [
+    {
+     "ncm": "2206.00.90",
+     "score": 0.8712
+    },
+    {
+     "ncm": "2204.22.19",
+     "score": 0.8659
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.8657
+    }
+   ]
+  },
+  {
+   "id": "case-017",
+   "product_name": "Vinho Tinto Galpão Crioulo 5L Bag-in-Box",
+   "expected": "2204.22.11",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 3,
+   "top1_score": 0.8844,
+   "top3": [
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8844
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.8797
+    },
+    {
+     "ncm": "2204.22.11",
+     "score": 0.8785
+    }
+   ]
+  },
+  {
+   "id": "case-018",
+   "product_name": "Martini Bianco Vermouth 750ml",
+   "expected": "2205.10.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8703,
+   "top3": [
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8703
+    },
+    {
+     "ncm": "2206.00.90",
+     "score": 0.8595
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.8554
+    }
+   ]
+  },
+  {
+   "id": "case-019",
+   "product_name": "Aperol 750ml",
+   "expected": "2205.10.00",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.875,
+   "top3": [
+    {
+     "ncm": "2206.00.90",
+     "score": 0.875
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8669
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8665
+    }
+   ]
+  },
+  {
+   "id": "case-020",
+   "product_name": "Sidra Cereser Rosé 660ml",
+   "expected": "2206.00.10",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8656,
+   "top3": [
+    {
+     "ncm": "2208.60.00",
+     "score": 0.8656
+    },
+    {
+     "ncm": "2206.00.90",
+     "score": 0.8639
+    },
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8632
+    }
+   ]
+  },
+  {
+   "id": "case-021",
+   "product_name": "Saquê Azuma Kirin 740ml",
+   "expected": "2206.00.90",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.875,
+   "top3": [
+    {
+     "ncm": "2206.00.90",
+     "score": 0.875
+    },
+    {
+     "ncm": "2208.60.00",
+     "score": 0.8598
+    },
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8584
+    }
+   ]
+  },
+  {
+   "id": "case-022",
+   "product_name": "Hidromel Brasileiro Artesanal 500ml",
+   "expected": "2206.00.90",
+   "difficulty": "hard",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 2,
+   "top1_score": 0.8798,
+   "top3": [
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8798
+    },
+    {
+     "ncm": "2206.00.90",
+     "score": 0.8743
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8722
+    }
+   ]
+  },
+  {
+   "id": "case-023",
+   "product_name": "Álcool em Gel 70% Antisséptico 500ml",
+   "expected": "2207.20.20",
+   "difficulty": "hard",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8792,
+   "top3": [
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8792
+    },
+    {
+     "ncm": "2207.10.90",
+     "score": 0.8669
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8661
+    }
+   ]
+  },
+  {
+   "id": "case-024",
+   "product_name": "Álcool Etílico Hidratado 92,8 INPM 1L",
+   "expected": "2207.10.90",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 2,
+   "top1_score": 0.8778,
+   "top3": [
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8778
+    },
+    {
+     "ncm": "2207.10.90",
+     "score": 0.8715
+    },
+    {
+     "ncm": "2207.20.19",
+     "score": 0.8633
+    }
+   ]
+  },
+  {
+   "id": "case-025",
+   "product_name": "Cachaça Ypióca Ouro 965ml",
+   "expected": "2208.40.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8643,
+   "top3": [
+    {
+     "ncm": "2208.70.00",
+     "score": 0.8643
+    },
+    {
+     "ncm": "2208.60.00",
+     "score": 0.8629
+    },
+    {
+     "ncm": "2202.91.00",
+     "score": 0.8617
+    }
+   ]
+  },
+  {
+   "id": "case-026",
+   "product_name": "Whisky Johnnie Walker Black Label 1L",
+   "expected": "2208.30.20",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": false,
+   "rank_in_top10": null,
+   "top1_score": 0.8865,
+   "top3": [
+    {
+     "ncm": "2206.00.90",
+     "score": 0.8865
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8684
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8675
+    }
+   ]
+  },
+  {
+   "id": "case-027",
+   "product_name": "Vodca Smirnoff Red 998ml",
+   "expected": "2208.60.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8839,
+   "top3": [
+    {
+     "ncm": "2208.60.00",
+     "score": 0.8839
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8613
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8591
+    }
+   ]
+  },
+  {
+   "id": "case-028",
+   "product_name": "Licor Stock 84 Curaçau Blue 720ml",
+   "expected": "2208.70.00",
+   "difficulty": "easy",
+   "confusion_chapters": [],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8642,
+   "top3": [
+    {
+     "ncm": "2208.70.00",
+     "score": 0.8642
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8612
+    },
+    {
+     "ncm": "2206.00.90",
+     "score": 0.8559
+    }
+   ]
+  },
+  {
+   "id": "case-029",
+   "product_name": "Smirnoff Ice Limão 275ml",
+   "expected": "2208.90.00",
+   "difficulty": "medium",
+   "confusion_chapters": [],
+   "top1_hit": false,
+   "top3_hit": true,
+   "rank_in_top10": 2,
+   "top1_score": 0.8744,
+   "top3": [
+    {
+     "ncm": "2208.60.00",
+     "score": 0.8744
+    },
+    {
+     "ncm": "2208.90.00",
+     "score": 0.8703
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.87
+    }
+   ]
+  },
+  {
+   "id": "case-030",
+   "product_name": "Suplemento Líquido Whey Protein Sabor Chocolate 250ml",
+   "expected": "2202.99.00",
+   "difficulty": "hard",
+   "confusion_chapters": [
+    "21"
+   ],
+   "top1_hit": true,
+   "top3_hit": true,
+   "rank_in_top10": 1,
+   "top1_score": 0.8827,
+   "top3": [
+    {
+     "ncm": "2202.99.00",
+     "score": 0.8827
+    },
+    {
+     "ncm": "2204.21.00",
+     "score": 0.8642
+    },
+    {
+     "ncm": "2208.30.10",
+     "score": 0.8591
+    }
+   ]
+  }
+ ],
+ "ece_top1_10bins": 0.5399,
+ "ece_bins": [
+  {
+   "bin": "[0.8,0.9)",
+   "n": 30,
+   "mean_conf": 0.8732,
+   "acc": 0.3333
+  }
+ ]
+}
