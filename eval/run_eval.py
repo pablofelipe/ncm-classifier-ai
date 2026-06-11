@@ -1,6 +1,7 @@
 import json
 import sys
 from collections import Counter
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -174,6 +175,7 @@ def _print_evaluation(suite: EvalSuite, report: EvalReport) -> None:
 def main(
     eval_path: str | Path = "eval/v1_cases.json",
     tipi_dir: str | Path = "data/tipi",
+    use_case_factory: Callable[[], ClassifyProduct] = build_classify_use_case,
 ) -> int:
     suite = load_eval_suite(eval_path)
     _print_stats(suite)
@@ -185,10 +187,11 @@ def main(
     report = cross_validate_against_tipi(suite, tipi_ncms)
     _print_report(suite, report, tipi_version)
 
-    # Measurement layer: run the real use case (Chroma + e5-small, ADR-0004)
-    # over the suite and report accuracy. Never gates the exit code; the CI
-    # gate stays governed solely by cross-validation below.
-    use_case = build_classify_use_case()
+    # Measurement layer: run the use case (default: real Chroma + e5-small,
+    # ADR-0004; injectable so unit tests need no index) over the suite and
+    # report accuracy. Never gates the exit code; the CI gate stays governed
+    # solely by cross-validation below.
+    use_case = use_case_factory()
     eval_report = evaluate_suite(suite, use_case)
     _print_evaluation(suite, eval_report)
 

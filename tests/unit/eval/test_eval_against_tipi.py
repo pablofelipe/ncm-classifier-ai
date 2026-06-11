@@ -170,10 +170,28 @@ def test_out_of_scope_cases_emit_warning_only(real_report) -> None:
 
 # ---------------------------------------------------------------------------
 # main() — CI gate (exit code + report formatting)
+#
+# The gate under test is cross-validation; the measurement layer is faked so
+# the unit tier never needs the Chroma index or the real embedding model.
 # ---------------------------------------------------------------------------
 
+class _FakeUseCase:
+    def execute(self, query) -> object:
+        from src.core.domain.ncm import ClassificationCandidate, ClassificationResult
+
+        candidates = [
+            ClassificationCandidate(ncm_code=f"2203.00.0{i}", description="x", score=0.0)
+            for i in range(3)
+        ]
+        return ClassificationResult(
+            top_candidates=candidates, confidence_label="needs_review"
+        )
+
+
 def test_main_exits_zero_when_ok(capsys) -> None:
-    code = main(eval_path=EVAL_PATH, tipi_dir=TIPI_PATH.parent)
+    code = main(
+        eval_path=EVAL_PATH, tipi_dir=TIPI_PATH.parent, use_case_factory=_FakeUseCase
+    )
     out = capsys.readouterr().out
     assert code == 0
     assert "Status: OK" in out
@@ -202,7 +220,7 @@ def test_main_exits_one_when_missing(tmp_path, capsys) -> None:
     p = tmp_path / "bad_cases.json"
     p.write_text(json.dumps(bad), encoding="utf-8")
 
-    code = main(eval_path=p, tipi_dir=TIPI_PATH.parent)
+    code = main(eval_path=p, tipi_dir=TIPI_PATH.parent, use_case_factory=_FakeUseCase)
     out = capsys.readouterr().out
     assert code == 1
     assert "Status: FAIL" in out
