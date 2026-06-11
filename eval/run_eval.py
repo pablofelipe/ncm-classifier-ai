@@ -41,9 +41,7 @@ class CrossValidationReport:
         return not self.in_scope_missing
 
 
-def cross_validate_against_tipi(
-    suite: EvalSuite, tipi_ncms: set[str]
-) -> CrossValidationReport:
+def cross_validate_against_tipi(suite: EvalSuite, tipi_ncms: set[str]) -> CrossValidationReport:
     in_scope = 0
     in_scope_present = 0
     in_scope_missing: list[str] = []
@@ -80,9 +78,7 @@ def cross_validate_against_tipi(
     )
 
 
-def classify_via_use_case(
-    query: ProductQuery, use_case: ClassifyProduct
-) -> ClassificationResult:
+def classify_via_use_case(query: ProductQuery, use_case: ClassifyProduct) -> ClassificationResult:
     """Thin wrapper over use_case.execute.
 
     Isolates the call site so future tests can mock the classification step,
@@ -100,9 +96,7 @@ def evaluate_suite(suite: EvalSuite, use_case: ClassifyProduct) -> EvalReport:
     top_3_hits = 0
 
     for case in suite.cases:
-        query = ProductQuery(
-            product_name=case.product_name, description=case.product_description
-        )
+        query = ProductQuery(product_name=case.product_name, description=case.product_description)
         result = classify_via_use_case(query, use_case)
         predicted = [c.ncm_code for c in result.top_candidates]
 
@@ -133,8 +127,7 @@ def _find_latest_tipi_json(tipi_dir: str | Path, chapter: str) -> Path:
     files = sorted(Path(tipi_dir).glob(f"tipi_{chapter}_*.json"), reverse=True)
     if not files:
         raise FileNotFoundError(
-            f"No tipi_{chapter}_*.json found in {tipi_dir}. "
-            "Run: python scripts/ingest_tipi.py"
+            f"No tipi_{chapter}_*.json found in {tipi_dir}. Run: python scripts/ingest_tipi.py"
         )
     return files[0]
 
@@ -145,16 +138,10 @@ def _load_tipi(path: Path) -> tuple[list[dict[str, object]], str]:
     return entries, payload.get("tipi_version", path.name)
 
 
-def _print_report(
-    suite: EvalSuite, report: CrossValidationReport, tipi_version: str
-) -> None:
+def _print_report(suite: EvalSuite, report: CrossValidationReport, tipi_version: str) -> None:
     ncm_by_id = {c.id: c.expected_ncm for c in suite.cases}
 
-    warned = (
-        f" ({', '.join(report.out_of_scope_warned)})"
-        if report.out_of_scope_warned
-        else ""
-    )
+    warned = f" ({', '.join(report.out_of_scope_warned)})" if report.out_of_scope_warned else ""
 
     print(f"\nCross-validation: TIPI {tipi_version}")
     print(f"In-scope:     {report.in_scope_present}/{report.in_scope} present")
@@ -164,30 +151,20 @@ def _print_report(
         print("Status: OK ✓")
     else:
         print("Status: FAIL ✗")
-        missing = ", ".join(
-            f"{cid} ({ncm_by_id.get(cid, '?')})" for cid in report.in_scope_missing
-        )
+        missing = ", ".join(f"{cid} ({ncm_by_id.get(cid, '?')})" for cid in report.in_scope_missing)
         print(f"Missing: {missing}")
 
 
 def _print_evaluation(suite: EvalSuite, report: EvalReport) -> None:
-    print("\nEvaluation: walking skeleton (Naive + Passthrough)")
-    print(
-        f"Top-1 accuracy:  {report.top_1_hits}/{report.total} "
-        f"= {report.top_1_accuracy:.1%}"
-    )
-    print(
-        f"Top-3 accuracy:  {report.top_3_hits}/{report.total} "
-        f"= {report.top_3_accuracy:.1%}"
-    )
-    print("ECE:             not applicable in skeleton (all scores = 0.0)")
+    print("\nEvaluation: semantic retrieval (Chroma e5-small + Passthrough rerank)")
+    print(f"Top-1 accuracy:  {report.top_1_hits}/{report.total} = {report.top_1_accuracy:.1%}")
+    print(f"Top-3 accuracy:  {report.top_3_hits}/{report.total} = {report.top_3_accuracy:.1%}")
+    print("ECE:             informative only (1 - cosine distance is not calibrated)")
 
     difficulty_by_id = {c.id: c.difficulty for c in suite.cases}
     print("\nPer-difficulty breakdown:")
     for level in ("easy", "medium", "hard"):
-        cases = [
-            r for r in report.per_case if difficulty_by_id.get(r.case_id) == level
-        ]
+        cases = [r for r in report.per_case if difficulty_by_id.get(r.case_id) == level]
         n = len(cases)
         t1 = sum(r.top_1_hit for r in cases)
         t3 = sum(r.top_3_hit for r in cases)
@@ -208,10 +185,10 @@ def main(
     report = cross_validate_against_tipi(suite, tipi_ncms)
     _print_report(suite, report, tipi_version)
 
-    # Measurement layer: run the real walking-skeleton use case over the
-    # suite and report accuracy. Never gates the exit code (skeleton accuracy
-    # is ~0%); the CI gate stays governed solely by cross-validation below.
-    use_case = build_classify_use_case(entries)
+    # Measurement layer: run the real use case (Chroma + e5-small, ADR-0004)
+    # over the suite and report accuracy. Never gates the exit code; the CI
+    # gate stays governed solely by cross-validation below.
+    use_case = build_classify_use_case()
     eval_report = evaluate_suite(suite, use_case)
     _print_evaluation(suite, eval_report)
 
