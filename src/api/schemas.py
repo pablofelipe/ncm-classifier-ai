@@ -22,7 +22,5 @@ class ClassifyResponse(BaseModel):
     @model_validator(mode="after")
     def _exactly_three_candidates(self) -> "ClassifyResponse":
         if len(self.candidates) != 3:
-            raise ValueError(
-                f"candidates must contain exactly 3 items, got {len(self.candidates)}"
-            )
+            raise ValueError(f"candidates must contain exactly 3 items, got {len(self.candidates)}")
         return self

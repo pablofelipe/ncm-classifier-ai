@@ -24,9 +24,7 @@ class NaiveRetrievalAdapter:
     def __init__(self, entries: list[dict[str, object]]) -> None:
         self._entries = entries
 
-    def retrieve_candidates(
-        self, query: ProductQuery, k: int
-    ) -> list[ClassificationCandidate]:
+    def retrieve_candidates(self, query: ProductQuery, k: int) -> list[ClassificationCandidate]:
         return [
             ClassificationCandidate(
                 ncm_code=str(entry["ncm"]),

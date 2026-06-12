@@ -33,8 +33,7 @@ class EvalCase(BaseModel):
     def _confusion_excludes_answer(self) -> "EvalCase":
         if self.answer_chapter in self.confusion_chapters:
             raise ValueError(
-                f"confusion_chapters must not contain answer_chapter "
-                f"{self.answer_chapter!r}"
+                f"confusion_chapters must not contain answer_chapter {self.answer_chapter!r}"
             )
         return self
 
@@ -82,8 +81,7 @@ class CaseResult(BaseModel):
     def _exactly_three_predictions(self) -> "CaseResult":
         if len(self.predicted_ncms) != 3:
             raise ValueError(
-                f"predicted_ncms must hold exactly 3 candidates, got "
-                f"{len(self.predicted_ncms)}"
+                f"predicted_ncms must hold exactly 3 candidates, got {len(self.predicted_ncms)}"
             )
         return self
 

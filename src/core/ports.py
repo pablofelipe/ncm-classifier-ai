@@ -5,9 +5,7 @@ from src.core.domain.ncm import ClassificationCandidate, ProductQuery
 
 @runtime_checkable
 class RetrievalPort(Protocol):
-    def retrieve_candidates(
-        self, query: ProductQuery, k: int
-    ) -> list[ClassificationCandidate]: ...
+    def retrieve_candidates(self, query: ProductQuery, k: int) -> list[ClassificationCandidate]: ...
 
 
 @runtime_checkable

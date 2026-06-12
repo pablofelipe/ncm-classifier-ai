@@ -20,8 +20,10 @@ dev = [
     "pytest>=8.3",
     "pytest-asyncio>=0.24",
     "httpx>=0.28",
-    "ruff>=0.9",
-    "mypy>=1.13",
+    # Pinned exactly (not >=) so formatting/lint and type-check results are
+    # deterministic across machines and CI. Bump deliberately, not implicitly.
+    "ruff==0.15.16",
+    "mypy==2.1.0",
 ]
 scripts = [
     "openpyxl>=3.1",

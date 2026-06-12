@@ -21,9 +21,7 @@ async def classify(
     request: ClassifyRequest,
     use_case: Annotated[ClassifyProduct, Depends(get_classify_use_case)],
 ) -> ClassifyResponse:
-    query = ProductQuery(
-        product_name=request.product_name, description=request.description
-    )
+    query = ProductQuery(product_name=request.product_name, description=request.description)
 
     start = time.perf_counter()
     result = use_case.execute(query)
