@@ -1,12 +1,15 @@
-"""ANALYSIS SCRIPT (throwaway, ADR-0004 / CP6). Not imported by src/.
+"""ANALYSIS SCRIPT (diagnostic, not imported by src/).
 
 Runs every eval case through the real retrieval (k=10) and dumps per-case
 predictions with scores, plus a 10-bin ECE over the top-1 score. The k=10
 depth (vs the pipeline's top-3) is diagnostic only: it shows where the
 correct NCM ranks when it misses the top-3.
 
-The snapshot backing ADR-0004 lives at docs/adr/assets/0004-analysis.json
-(stdout redirected). Requires a built index: make index.
+Reused across ADRs that need a per-case retrieval snapshot: it backs both
+docs/adr/assets/0004-analysis.json and docs/adr/assets/0005-analysis.json
+(stdout redirected). The enrich strategy is read from settings, so it
+reports against whichever index is currently built. Requires a built
+index: make index (or ENRICH_DOCUMENTS=1 make index for the enriched run).
 """
 
 import json
