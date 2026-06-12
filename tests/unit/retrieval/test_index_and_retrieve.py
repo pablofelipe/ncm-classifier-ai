@@ -34,8 +34,8 @@ def indexed_adapter() -> ChromaRetrievalAdapter:
         name=f"roundtrip_{uuid4().hex}", metadata={"hnsw:space": "cosine"}
     )
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    index_entries(collection, entries, embedding_fn)
-    return ChromaRetrievalAdapter(collection, embedding_fn)
+    index_entries(collection, entries, embedding_fn, enrich=False)
+    return ChromaRetrievalAdapter(collection, embedding_fn, expected_enrich=False)
 
 
 def test_retrieve_candidates_returns_k_results(

@@ -16,14 +16,27 @@ class ChromaRetrievalAdapter:
     """
 
     def __init__(
-        self, collection: Collection, embedding_fn: E5EmbeddingFunction
+        self,
+        collection: Collection,
+        embedding_fn: E5EmbeddingFunction,
+        *,
+        expected_enrich: bool,
     ) -> None:
+        # Guard against an index built under a different document-text strategy
+        # than the configured one (ADR-0005). expected_enrich is injected by the
+        # composition root, not read from settings here (the adapter stays free
+        # of config imports). A legacy index missing the key fails loudly too.
+        stored = (collection.metadata or {}).get("enrich_documents")
+        if stored != expected_enrich:
+            raise RuntimeError(
+                f"Index at collection '{collection.name}' was built with "
+                f"enrich_documents={stored!r}, but config says {expected_enrich!r}. "
+                "Rebuild the index: make index"
+            )
         self._collection = collection
         self._embedding_fn = embedding_fn
 
-    def retrieve_candidates(
-        self, query: ProductQuery, k: int
-    ) -> list[ClassificationCandidate]:
+    def retrieve_candidates(self, query: ProductQuery, k: int) -> list[ClassificationCandidate]:
         parts = [query.product_name]
         if query.description:
             parts.append(query.description)
@@ -42,9 +55,7 @@ class ChromaRetrievalAdapter:
 
         candidates: list[ClassificationCandidate] = []
         for distance, meta in zip(distances[0], metadatas[0], strict=True):
-            metadata: dict[str, str | float] = {
-                key: str(value) for key, value in meta.items()
-            }
+            metadata: dict[str, str | float] = {key: str(value) for key, value in meta.items()}
             candidates.append(
                 ClassificationCandidate(
                     ncm_code=str(meta["ncm_dotted"]),

@@ -39,7 +39,9 @@ def indexed_collection() -> Collection:
     collection = chromadb.EphemeralClient().create_collection(
         name=f"deps_indexed_{uuid4().hex}", metadata={"hnsw:space": "cosine"}
     )
-    index_entries(collection, entries, E5EmbeddingFunction(encoder=SpyEncoder()))
+    index_entries(
+        collection, entries, E5EmbeddingFunction(encoder=SpyEncoder()), enrich=False
+    )
     return collection
 
 

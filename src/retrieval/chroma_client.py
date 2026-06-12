@@ -11,20 +11,26 @@ from src.core.domain.tipi_parsing import clean_level_text
 from src.retrieval.embedding import E5EmbeddingFunction
 
 
-def build_document_text(entry: dict[str, Any]) -> str:
+def build_document_text(entry: dict[str, Any], enrich: bool) -> str:
     """Build the text to embed for a TIPI entry.
 
-    Hierarchical context precedes the entry's own description, general →
-    specific; empty levels are skipped (ADR-0005). Level dashes ("-- ") are
-    TIPI markup, not content, so the description gets the same cleaning as
-    the parent levels. The "passage: " prefix stays in E5EmbeddingFunction.
+    ``enrich`` is explicit (no default) so every call site chooses consciously
+    (ADR-0005). When True, hierarchical context precedes the entry's own
+    description, general → specific, empty levels skipped, and the "-- " level
+    marker is cleaned off. When False, the raw description is used verbatim —
+    the ADR-0004 baseline, byte-for-byte. The "passage: " prefix stays in
+    E5EmbeddingFunction either way.
     """
-    levels = [
-        entry.get("heading_description", ""),
-        entry.get("subheading_description", ""),
-        clean_level_text(entry["description"]),
-    ]
-    parts = [". ".join(level for level in levels if level)]
+    if enrich:
+        levels = [
+            entry.get("heading_description", ""),
+            entry.get("subheading_description", ""),
+            clean_level_text(entry["description"]),
+        ]
+        body = ". ".join(level for level in levels if level)
+    else:
+        body = entry["description"]
+    parts = [body]
     for ex in entry.get("ex_tipi") or []:
         parts.append(f"EX {ex['ex']}: {ex['description']}")
     return " | ".join(parts)
@@ -52,15 +58,18 @@ def index_entries(
     collection: Collection,
     entries: list[dict[str, Any]],
     embedding_fn: E5EmbeddingFunction,
+    enrich: bool,
 ) -> int:
     """Embed and upsert TIPI entries into the collection, returning the count.
 
     Idempotent: ids are the dotless NCM codes, so re-running replaces rather
     than duplicates. Embeddings are computed via the injected embedding function
-    (passage-prefixed); the default Chroma embedder is never invoked.
+    (passage-prefixed); the default Chroma embedder is never invoked. ``enrich``
+    selects the document-text strategy (see build_document_text) and is recorded
+    on the collection so the adapter can detect an index<->flag mismatch.
     """
     ids = [e["ncm"].replace(".", "") for e in entries]
-    documents = [build_document_text(e) for e in entries]
+    documents = [build_document_text(e, enrich) for e in entries]
     metadatas = [
         {
             "ncm_dotted": e["ncm"],
@@ -80,6 +89,11 @@ def index_entries(
         metadatas=cast(Any, metadatas),
         documents=documents,
     )
+    # Record the document-text strategy so the adapter can detect an
+    # index<->config mismatch (ADR-0005). Chroma rejects re-stating the
+    # immutable "hnsw:space" key in modify(), so this overwrites the metadata
+    # dict with the flag alone; the cosine distance function is unaffected.
+    collection.modify(metadata={"enrich_documents": enrich})
     return len(ids)
 
 
@@ -92,7 +106,7 @@ def rebuild_index() -> None:
     entries: list[dict[str, Any]] = payload["entries"]
 
     col = get_collection()
-    count = index_entries(col, entries, E5EmbeddingFunction())
+    count = index_entries(col, entries, E5EmbeddingFunction(), settings.enrich_documents)
 
     source = payload.get("source", json_path.name)
     print(f"Indexed {count} entries from {source} into '{col.name}'")

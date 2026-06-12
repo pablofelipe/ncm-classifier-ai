@@ -56,44 +56,60 @@ def enriched_entry() -> dict:
 
 
 def test_document_includes_specific_description(full_entry: dict) -> None:
-    assert "Águas minerais e águas gaseificadas" in build_document_text(full_entry)
+    assert "Águas minerais e águas gaseificadas" in build_document_text(
+        full_entry, enrich=True
+    )
 
 
 def test_document_includes_all_ex_tipi_descriptions(full_entry: dict) -> None:
-    text = build_document_text(full_entry)
+    text = build_document_text(full_entry, enrich=True)
     assert "Recipientes < 10 litros" in text
     assert "Recipientes >= 10 litros" in text
 
 
 def test_document_labels_ex_tipi_with_ex_number(full_entry: dict) -> None:
-    text = build_document_text(full_entry)
+    text = build_document_text(full_entry, enrich=True)
     assert "EX 1:" in text
     assert "EX 2:" in text
 
 
 def test_document_without_ex_tipi_has_no_ex_label(entry_no_ex: dict) -> None:
-    assert "EX" not in build_document_text(entry_no_ex)
+    assert "EX" not in build_document_text(entry_no_ex, enrich=True)
 
 
-def test_composes_all_three_levels_when_present(enriched_entry: dict) -> None:
-    assert build_document_text(enriched_entry) == (
+def test_enrich_true_composes_hierarchy(enriched_entry: dict) -> None:
+    assert build_document_text(enriched_entry, enrich=True) == (
         "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool. "
         "Outros vinhos; mostos de uvas. "
         "Em recipientes de capacidade não superior a 2 l"
     )
 
 
+def test_enrich_false_uses_only_description(enriched_entry: dict) -> None:
+    # ADR-0004 baseline byte-for-byte: raw description, no parent context,
+    # no cleaning of the "-- " level marker.
+    assert build_document_text(enriched_entry, enrich=False) == (
+        "-- Em recipientes de capacidade não superior a 2 l"
+    )
+
+
 def test_skips_empty_heading_and_subheading(entry_no_ex: dict) -> None:
-    assert build_document_text(entry_no_ex) == "Cervejas de malte"
+    assert build_document_text(entry_no_ex, enrich=True) == "Cervejas de malte"
 
 
 def test_cleans_description_marker(enriched_entry: dict) -> None:
-    assert "--" not in build_document_text(enriched_entry)
+    assert "--" not in build_document_text(enriched_entry, enrich=True)
 
 
 def test_no_double_separator_when_field_empty(full_entry: dict) -> None:
     # full_entry has an empty subheading_description between two present fields
-    assert ". ." not in build_document_text(full_entry)
+    assert ". ." not in build_document_text(full_entry, enrich=True)
+
+
+def test_enrich_false_preserves_ex_tipi_suffix(full_entry: dict) -> None:
+    text = build_document_text(full_entry, enrich=False)
+    assert text.startswith("- Águas minerais")
+    assert "EX 1: Recipientes < 10 litros" in text
 
 
 def test_anchor_terms_present_in_document() -> None:
@@ -102,7 +118,7 @@ def test_anchor_terms_present_in_document() -> None:
     by_ncm = {e["ncm"]: e for e in entries}
     anchors = {"2204.21.00": "vinhos", "2205.10.00": "vermutes", "2208.30.20": "uísques"}
     for ncm, term in anchors.items():
-        assert term in build_document_text(by_ncm[ncm]).lower(), ncm
+        assert term in build_document_text(by_ncm[ncm], enrich=True).lower(), ncm
 
 
 # ---------------------------------------------------------------------------
@@ -158,7 +174,7 @@ def test_rebuild_index_creates_collection_with_all_entries(
     real_entries: list[dict], memory_collection: Collection
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    count = index_entries(memory_collection, real_entries, embedding_fn)
+    count = index_entries(memory_collection, real_entries, embedding_fn, enrich=False)
     assert count == len(real_entries) == memory_collection.count()
 
 
@@ -166,6 +182,20 @@ def test_rebuild_index_is_idempotent(
     real_entries: list[dict], memory_collection: Collection
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    index_entries(memory_collection, real_entries, embedding_fn)
-    index_entries(memory_collection, real_entries, embedding_fn)
+    index_entries(memory_collection, real_entries, embedding_fn, enrich=False)
+    index_entries(memory_collection, real_entries, embedding_fn, enrich=False)
     assert memory_collection.count() == len(real_entries)
+
+
+# ---------------------------------------------------------------------------
+# enrich flag <-> index agreement (ADR-0005)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("enrich", [True, False])
+def test_index_records_enrich_metadata(
+    real_entries: list[dict], memory_collection: Collection, enrich: bool
+) -> None:
+    embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
+    index_entries(memory_collection, real_entries, embedding_fn, enrich=enrich)
+    assert memory_collection.metadata["enrich_documents"] is enrich

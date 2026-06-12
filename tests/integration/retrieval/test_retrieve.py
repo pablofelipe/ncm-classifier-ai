@@ -33,8 +33,8 @@ def real_adapter() -> ChromaRetrievalAdapter:
         name=f"int_{uuid4().hex}", metadata={"hnsw:space": "cosine"}
     )
     embedding_fn = E5EmbeddingFunction()  # real e5-small at the pinned revision
-    index_entries(collection, entries, embedding_fn)
-    return ChromaRetrievalAdapter(collection, embedding_fn)
+    index_entries(collection, entries, embedding_fn, enrich=False)
+    return ChromaRetrievalAdapter(collection, embedding_fn, expected_enrich=False)
 
 
 def test_retrieves_near_verbatim_match(real_adapter: ChromaRetrievalAdapter) -> None:

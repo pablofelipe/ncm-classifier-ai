@@ -11,6 +11,10 @@ class Settings(BaseSettings):
     tipi_data_dir: str = "data/tipi"
     confidence_threshold: float = 0.7
     ncm_chapter: str = "22"
+    # ADR-0005: hierarchical document enrichment. Default off — naive
+    # enrichment is a net regression (top-3 63.3% -> 53.3%). The index must be
+    # rebuilt to match this flag; the adapter enforces index<->flag agreement.
+    enrich_documents: bool = False
 
 
 # NOTE: instantiates at import time. CI environments must provide

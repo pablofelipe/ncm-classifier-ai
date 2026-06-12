@@ -13,6 +13,7 @@ import json
 import sys
 
 from eval.run_eval import load_eval_suite
+from src.config import settings
 from src.core.domain.ncm import ProductQuery
 from src.retrieval.chroma_client import get_collection
 from src.retrieval.embedding import E5EmbeddingFunction
@@ -21,7 +22,11 @@ from src.retrieval.hierarchical import ChromaRetrievalAdapter
 
 def main() -> None:
     suite = load_eval_suite("eval/v1_cases.json")
-    adapter = ChromaRetrievalAdapter(get_collection(), E5EmbeddingFunction())
+    adapter = ChromaRetrievalAdapter(
+        get_collection(),
+        E5EmbeddingFunction(),
+        expected_enrich=settings.enrich_documents,
+    )
 
     rows = []
     for case in suite.cases:

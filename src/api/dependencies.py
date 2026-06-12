@@ -32,7 +32,11 @@ def build_classify_use_case(
             "the semantic index has not been built. Run: make index"
         )
     return ClassifyProduct(
-        ChromaRetrievalAdapter(col, embedding_fn or E5EmbeddingFunction()),
+        ChromaRetrievalAdapter(
+            col,
+            embedding_fn or E5EmbeddingFunction(),
+            expected_enrich=settings.enrich_documents,
+        ),
         PassthroughRerankAdapter(),
         confidence_threshold=settings.confidence_threshold,
     )
