@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 _NCM_FORMAT_RE = re.compile(r"^\d{4}\.\d{2}\.\d{2}$")
 
@@ -10,7 +10,7 @@ def validate_ncm_format(code: str) -> bool:
     return bool(_NCM_FORMAT_RE.fullmatch(code))
 
 
-class VerificationStatus(str, Enum):
+class VerificationStatus(StrEnum):
     PASSED = "passed"
     CODE_NOT_FOUND = "code_not_found"
     WRONG_CHAPTER = "wrong_chapter"
@@ -38,7 +38,7 @@ class TIPIIndex:
     heading uses dotted format (e.g. "22.03") as produced by tipi_parsing.parse_tipi_rows.
     """
 
-    def __init__(self, codes: dict[str, dict]) -> None:
+    def __init__(self, codes: dict[str, dict[str, str]]) -> None:
         self._codes = codes
 
     def verify(self, code: str, expected_chapter: str) -> VerificationResult:
@@ -63,7 +63,7 @@ class TIPIIndex:
         return VerificationResult(status=VerificationStatus.PASSED, code=code, message="OK")
 
 
-def _hierarchy_consistent(code: str, entry: dict) -> bool:
+def _hierarchy_consistent(code: str, entry: dict[str, str]) -> bool:
     if len(code) != 8:
         return False
     heading = entry.get("heading", "")

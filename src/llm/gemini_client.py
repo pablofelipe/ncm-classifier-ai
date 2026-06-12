@@ -1,3 +1,5 @@
+from typing import Any
+
 import google.genai as genai
 
 from src.config import settings
@@ -10,9 +12,9 @@ def _client() -> genai.Client:
 def rank_candidates(
     product_name: str,
     description: str,
-    candidates: list[dict],
+    candidates: list[dict[str, Any]],
     *,
     use_pro: bool = False,
-) -> list[dict]:
+) -> list[dict[str, Any]]:
     """Re-rank NCM candidates and generate rationale via Gemini."""
     raise NotImplementedError("LLM ranking not yet implemented")
