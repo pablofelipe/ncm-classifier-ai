@@ -2,6 +2,26 @@ import re
 from dataclasses import dataclass
 
 _NCM_FULL_RE = re.compile(r"^\d{4}\.\d{2}\.\d{2}$")
+_LEVEL_DASH_RE = re.compile(r"^-+\s*")
+_OUTROS_RE = re.compile(r"\boutr[oa]s\b", re.IGNORECASE)
+_WS_RE = re.compile(r"\s+")
+
+
+def _clean_level_text(text: str) -> str:
+    """Normalize a hierarchical-level description for context composition.
+
+    Internal newlines become spaces, level dashes ("- ", "-- ") and trailing
+    ":"/"." are stripped; separators are the composer's responsibility.
+    """
+    cleaned = _WS_RE.sub(" ", text).strip()
+    cleaned = _LEVEL_DASH_RE.sub("", cleaned)
+    return cleaned.rstrip(".:").strip()
+
+
+def _is_substantive(cleaned: str) -> bool:
+    """True when content remains after discarding "Outros"/"Outras" filler."""
+    residue = _OUTROS_RE.sub("", cleaned)
+    return bool(re.sub(r"[\W_]+", "", residue))
 
 
 @dataclass
@@ -31,6 +51,8 @@ class TIPIEntry:
     ipi_rate: str
     ex_tipi: list[ExTIPI] | None
     raw_row: int
+    heading_description: str = ""
+    subheading_description: str = ""
 
 
 def parse_tipi_rows(
@@ -38,26 +60,63 @@ def parse_tipi_rows(
     chapter: str = "22",
     section: str = "IV",
 ) -> list[TIPIEntry]:
+    """Parse raw TIPI rows into NCM entries with hierarchical context.
+
+    Rows are classified chapter-agnostically by digit count (dots stripped):
+    4 = heading, 5-6 = subheading, 7 = partial item, 8 = full NCM. Hierarchical
+    rows are consumed to build heading_description / subheading_description on
+    the NCM entries that follow them — they never become entries themselves.
+    """
     result: list[TIPIEntry] = []
     current: TIPIEntry | None = None
     current_ex: list[ExTIPI] = []
+    heading_digits = ""
+    heading_desc = ""
+    # (digits, cleaned_desc) of substantive intermediate levels under the
+    # current heading; pruned by digit-prefix match at each NCM, so stacked
+    # siblings never leak into cousins.
+    intermediates: list[tuple[str, str]] = []
+
+    def _flush() -> None:
+        nonlocal current
+        if current is not None:
+            current.ex_tipi = current_ex if current_ex else None
+            result.append(current)
+            current = None
 
     for row in rows:
         ncm = (row.ncm or "").strip()
 
         if not ncm.startswith(chapter):
             continue
-        if not _NCM_FULL_RE.match(ncm):
-            continue
 
         ex = (row.ex or "").strip()
         desc = (row.description or "").strip()
         rate = row.ipi_rate or ""
 
-        if not ex:
-            if current is not None:
-                current.ex_tipi = current_ex if current_ex else None
-                result.append(current)
+        if ex:
+            if current is not None and current.ncm == ncm:
+                current_ex.append(ExTIPI(ex=ex, description=desc, ipi_rate=rate))
+            continue
+
+        digits = ncm.replace(".", "")
+        if not digits.isdigit():
+            continue
+
+        if len(digits) == 4:
+            heading_digits = digits
+            heading_desc = _clean_level_text(desc)
+            intermediates = []
+        elif len(digits) in (5, 6, 7):
+            cleaned = _clean_level_text(desc)
+            if _is_substantive(cleaned):
+                intermediates.append((digits, cleaned))
+        elif len(digits) == 8 and _NCM_FULL_RE.match(ncm):
+            _flush()
+            ancestors = sorted(
+                (lvl for lvl in intermediates if digits.startswith(lvl[0])),
+                key=lambda lvl: len(lvl[0]),
+            )
             current = TIPIEntry(
                 ncm=ncm,
                 section=section,
@@ -68,13 +127,12 @@ def parse_tipi_rows(
                 ipi_rate=rate,
                 ex_tipi=None,
                 raw_row=row.row_number,
+                heading_description=heading_desc if digits[:4] == heading_digits else "",
+                subheading_description=". ".join(text for _, text in ancestors),
             )
             current_ex = []
-        elif current is not None and current.ncm == ncm:
-            current_ex.append(ExTIPI(ex=ex, description=desc, ipi_rate=rate))
+        # FUTURE: chapters 01-09 leading-zero handling (Excel strips the zero:
+        # "1.01", "101.2" → 3-digit patterns); skipped without crashing.
 
-    if current is not None:
-        current.ex_tipi = current_ex if current_ex else None
-        result.append(current)
-
+    _flush()
     return result
