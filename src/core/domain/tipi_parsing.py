@@ -7,7 +7,7 @@ _OUTROS_RE = re.compile(r"\boutr[oa]s\b", re.IGNORECASE)
 _WS_RE = re.compile(r"\s+")
 
 
-def _clean_level_text(text: str) -> str:
+def clean_level_text(text: str) -> str:
     """Normalize a hierarchical-level description for context composition.
 
     Internal newlines become spaces, level dashes ("- ", "-- ") and trailing
@@ -105,10 +105,10 @@ def parse_tipi_rows(
 
         if len(digits) == 4:
             heading_digits = digits
-            heading_desc = _clean_level_text(desc)
+            heading_desc = clean_level_text(desc)
             intermediates = []
         elif len(digits) in (5, 6, 7):
-            cleaned = _clean_level_text(desc)
+            cleaned = clean_level_text(desc)
             if _is_substantive(cleaned):
                 intermediates.append((digits, cleaned))
         elif len(digits) == 8 and _NCM_FULL_RE.match(ncm):

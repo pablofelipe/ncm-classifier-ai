@@ -22,6 +22,8 @@ from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction
 def full_entry() -> dict:
     return {
         "description": "- Águas minerais e águas gaseificadas",
+        "heading_description": "Águas, incluindo as águas minerais, naturais ou artificiais",
+        "subheading_description": "",
         "ipi_rate": "2.6",
         "ex_tipi": [
             {"ex": "1", "description": "Recipientes < 10 litros", "ipi_rate": "NT"},
@@ -33,14 +35,28 @@ def full_entry() -> dict:
 @pytest.fixture
 def entry_no_ex() -> dict:
     return {
-        "description": "Cervejas de malte",
+        "description": "Cervejas de malte.",
+        "heading_description": "",
+        "subheading_description": "",
         "ipi_rate": "3.9",
         "ex_tipi": None,
     }
 
 
+@pytest.fixture
+def enriched_entry() -> dict:
+    # mirrors 2204.21.00 in the enriched JSON schema
+    return {
+        "description": "-- Em recipientes de capacidade não superior a 2 l",
+        "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool",
+        "subheading_description": "Outros vinhos; mostos de uvas",
+        "ipi_rate": "6.5",
+        "ex_tipi": None,
+    }
+
+
 def test_document_includes_specific_description(full_entry: dict) -> None:
-    assert "- Águas minerais e águas gaseificadas" in build_document_text(full_entry)
+    assert "Águas minerais e águas gaseificadas" in build_document_text(full_entry)
 
 
 def test_document_includes_all_ex_tipi_descriptions(full_entry: dict) -> None:
@@ -59,9 +75,34 @@ def test_document_without_ex_tipi_has_no_ex_label(entry_no_ex: dict) -> None:
     assert "EX" not in build_document_text(entry_no_ex)
 
 
-def test_document_starts_with_description(full_entry: dict) -> None:
-    text = build_document_text(full_entry)
-    assert text.startswith("- Águas minerais")
+def test_composes_all_three_levels_when_present(enriched_entry: dict) -> None:
+    assert build_document_text(enriched_entry) == (
+        "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool. "
+        "Outros vinhos; mostos de uvas. "
+        "Em recipientes de capacidade não superior a 2 l"
+    )
+
+
+def test_skips_empty_heading_and_subheading(entry_no_ex: dict) -> None:
+    assert build_document_text(entry_no_ex) == "Cervejas de malte"
+
+
+def test_cleans_description_marker(enriched_entry: dict) -> None:
+    assert "--" not in build_document_text(enriched_entry)
+
+
+def test_no_double_separator_when_field_empty(full_entry: dict) -> None:
+    # full_entry has an empty subheading_description between two present fields
+    assert ". ." not in build_document_text(full_entry)
+
+
+def test_anchor_terms_present_in_document() -> None:
+    path = _find_latest_tipi_json(Path("data/tipi"), "22")
+    entries = json.loads(path.read_text(encoding="utf-8"))["entries"]
+    by_ncm = {e["ncm"]: e for e in entries}
+    anchors = {"2204.21.00": "vinhos", "2205.10.00": "vermutes", "2208.30.20": "uísques"}
+    for ncm, term in anchors.items():
+        assert term in build_document_text(by_ncm[ncm]).lower(), ncm
 
 
 # ---------------------------------------------------------------------------

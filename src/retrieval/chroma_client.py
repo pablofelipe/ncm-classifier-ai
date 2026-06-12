@@ -7,12 +7,24 @@ import chromadb
 from chromadb import Collection
 
 from src.config import settings
+from src.core.domain.tipi_parsing import clean_level_text
 from src.retrieval.embedding import E5EmbeddingFunction
 
 
 def build_document_text(entry: dict[str, Any]) -> str:
-    """Build the text to embed for a TIPI entry."""
-    parts = [entry["description"]]
+    """Build the text to embed for a TIPI entry.
+
+    Hierarchical context precedes the entry's own description, general →
+    specific; empty levels are skipped (ADR-0005). Level dashes ("-- ") are
+    TIPI markup, not content, so the description gets the same cleaning as
+    the parent levels. The "passage: " prefix stays in E5EmbeddingFunction.
+    """
+    levels = [
+        entry.get("heading_description", ""),
+        entry.get("subheading_description", ""),
+        clean_level_text(entry["description"]),
+    ]
+    parts = [". ".join(level for level in levels if level)]
     for ex in entry.get("ex_tipi") or []:
         parts.append(f"EX {ex['ex']}: {ex['description']}")
     return " | ".join(parts)
@@ -23,8 +35,7 @@ def _find_latest_tipi_json(data_dir: Path, chapter: str) -> Path:
     files = sorted(data_dir.glob(f"tipi_{chapter}_*.json"), reverse=True)
     if not files:
         raise FileNotFoundError(
-            f"No tipi_{chapter}_*.json found in {data_dir}. "
-            "Run: python scripts/ingest_tipi.py"
+            f"No tipi_{chapter}_*.json found in {data_dir}. Run: python scripts/ingest_tipi.py"
         )
     return files[0]
 
