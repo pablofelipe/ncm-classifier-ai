@@ -18,6 +18,7 @@ from uuid import uuid4
 import chromadb
 import pytest
 
+from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ProductQuery
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
 from src.retrieval.embedding import E5EmbeddingFunction
@@ -33,8 +34,8 @@ def real_adapter() -> ChromaRetrievalAdapter:
         name=f"int_{uuid4().hex}", metadata={"hnsw:space": "cosine"}
     )
     embedding_fn = E5EmbeddingFunction()  # real e5-small at the pinned revision
-    index_entries(collection, entries, embedding_fn, enrich=False)
-    return ChromaRetrievalAdapter(collection, embedding_fn, expected_enrich=False)
+    index_entries(collection, entries, embedding_fn, EnrichStrategy.OFF)
+    return ChromaRetrievalAdapter(collection, embedding_fn, expected_strategy=EnrichStrategy.OFF)
 
 
 def test_retrieves_near_verbatim_match(real_adapter: ChromaRetrievalAdapter) -> None:

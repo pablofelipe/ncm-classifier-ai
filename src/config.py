@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from src.core.domain.enrichment import EnrichStrategy
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
@@ -11,10 +13,12 @@ class Settings(BaseSettings):
     tipi_data_dir: str = "data/tipi"
     confidence_threshold: float = 0.7
     ncm_chapter: str = "22"
-    # ADR-0005: hierarchical document enrichment. Default off — naive
-    # enrichment is a net regression (top-3 63.3% -> 53.3%). The index must be
-    # rebuilt to match this flag; the adapter enforces index<->flag agreement.
-    enrich_documents: bool = False
+    # Document-enrichment strategy (env: ENRICH_STRATEGY). OFF keeps the
+    # ADR-0004 baseline (63.3% top-3); FULL is the ADR-0005 experiment (net
+    # regression, kept reproducible); SUBHEADING_ONLY is ADR-0006 Form B
+    # (inject the 6-digit product level, never the broad heading). The index
+    # must be rebuilt to match; the adapter enforces index<->strategy agreement.
+    enrich_strategy: EnrichStrategy = EnrichStrategy.OFF
 
 
 # NOTE: instantiates at import time. CI environments must provide

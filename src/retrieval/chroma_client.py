@@ -7,29 +7,41 @@ import chromadb
 from chromadb import Collection
 
 from src.config import settings
-from src.core.domain.tipi_parsing import clean_level_text
+from src.core.domain.enrichment import EnrichStrategy
+from src.core.domain.tipi_parsing import clean_level_text, is_substantive
 from src.retrieval.embedding import E5EmbeddingFunction
 
 
-def build_document_text(entry: dict[str, Any], enrich: bool) -> str:
+def build_document_text(entry: dict[str, Any], strategy: EnrichStrategy) -> str:
     """Build the text to embed for a TIPI entry.
 
-    ``enrich`` is explicit (no default) so every call site chooses consciously
-    (ADR-0005). When True, hierarchical context precedes the entry's own
-    description, general → specific, empty levels skipped, and the "-- " level
-    marker is cleaned off. When False, the raw description is used verbatim —
-    the ADR-0004 baseline, byte-for-byte. The "passage: " prefix stays in
-    E5EmbeddingFunction either way.
+    ``strategy`` is explicit (no default) so every call site chooses
+    consciously. OFF uses the raw description verbatim — the ADR-0004 baseline,
+    byte-for-byte. Any enrich mode cleans the leaf description (drops the "-- "
+    level marker) and prepends parent context, general → specific, empty levels
+    skipped:
+
+    - FULL (ADR-0005): heading + subheading + leaf.
+    - SUBHEADING_ONLY (ADR-0006, Form B): subheading + leaf, and only when the
+      subheading is substantive; the heading is never injected.
+
+    The "passage: " prefix stays in E5EmbeddingFunction either way.
     """
-    if enrich:
-        levels = [
-            entry.get("heading_description", ""),
-            entry.get("subheading_description", ""),
-            clean_level_text(entry["description"]),
-        ]
-        body = ". ".join(level for level in levels if level)
-    else:
+    if strategy is EnrichStrategy.OFF:
         body = entry["description"]
+    else:
+        leaf = clean_level_text(entry["description"])
+        if strategy is EnrichStrategy.FULL:
+            levels = [
+                entry.get("heading_description", ""),
+                entry.get("subheading_description", ""),
+                leaf,
+            ]
+        else:  # SUBHEADING_ONLY (Form B): inject the substantive subheading
+            # (the 6-digit product level); the 4-digit heading is never added.
+            subheading = entry.get("subheading_description", "")
+            levels = [subheading if is_substantive(subheading) else "", leaf]
+        body = ". ".join(level for level in levels if level)
     parts = [body]
     for ex in entry.get("ex_tipi") or []:
         parts.append(f"EX {ex['ex']}: {ex['description']}")
@@ -58,18 +70,19 @@ def index_entries(
     collection: Collection,
     entries: list[dict[str, Any]],
     embedding_fn: E5EmbeddingFunction,
-    enrich: bool,
+    strategy: EnrichStrategy,
 ) -> int:
     """Embed and upsert TIPI entries into the collection, returning the count.
 
     Idempotent: ids are the dotless NCM codes, so re-running replaces rather
     than duplicates. Embeddings are computed via the injected embedding function
-    (passage-prefixed); the default Chroma embedder is never invoked. ``enrich``
-    selects the document-text strategy (see build_document_text) and is recorded
-    on the collection so the adapter can detect an index<->flag mismatch.
+    (passage-prefixed); the default Chroma embedder is never invoked.
+    ``strategy`` selects the document-text strategy (see build_document_text)
+    and is recorded on the collection so the adapter can detect an
+    index<->strategy mismatch.
     """
     ids = [e["ncm"].replace(".", "") for e in entries]
-    documents = [build_document_text(e, enrich) for e in entries]
+    documents = [build_document_text(e, strategy) for e in entries]
     metadatas = [
         {
             "ncm_dotted": e["ncm"],
@@ -90,10 +103,10 @@ def index_entries(
         documents=documents,
     )
     # Record the document-text strategy so the adapter can detect an
-    # index<->config mismatch (ADR-0005). Chroma rejects re-stating the
+    # index<->config mismatch (ADR-0005/0006). Chroma rejects re-stating the
     # immutable "hnsw:space" key in modify(), so this overwrites the metadata
-    # dict with the flag alone; the cosine distance function is unaffected.
-    collection.modify(metadata={"enrich_documents": enrich})
+    # dict with the strategy alone; the cosine distance function is unaffected.
+    collection.modify(metadata={"enrich_strategy": strategy.value})
     return len(ids)
 
 
@@ -106,7 +119,7 @@ def rebuild_index() -> None:
     entries: list[dict[str, Any]] = payload["entries"]
 
     col = get_collection()
-    count = index_entries(col, entries, E5EmbeddingFunction(), settings.enrich_documents)
+    count = index_entries(col, entries, E5EmbeddingFunction(), settings.enrich_strategy)
 
     source = payload.get("source", json_path.name)
     print(f"Indexed {count} entries from {source} into '{col.name}'")

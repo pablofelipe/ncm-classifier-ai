@@ -18,7 +18,7 @@ def clean_level_text(text: str) -> str:
     return cleaned.rstrip(".:").strip()
 
 
-def _is_substantive(cleaned: str) -> bool:
+def is_substantive(cleaned: str) -> bool:
     """True when content remains after discarding "Outros"/"Outras" filler."""
     residue = _OUTROS_RE.sub("", cleaned)
     return bool(re.sub(r"[\W_]+", "", residue))
@@ -109,7 +109,7 @@ def parse_tipi_rows(
             intermediates = []
         elif len(digits) in (5, 6, 7):
             cleaned = clean_level_text(desc)
-            if _is_substantive(cleaned):
+            if is_substantive(cleaned):
                 intermediates.append((digits, cleaned))
         elif len(digits) == 8 and _NCM_FULL_RE.match(ncm):
             _flush()

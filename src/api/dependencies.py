@@ -35,7 +35,7 @@ def build_classify_use_case(
         ChromaRetrievalAdapter(
             col,
             embedding_fn or E5EmbeddingFunction(),
-            expected_enrich=settings.enrich_documents,
+            expected_strategy=settings.enrich_strategy,
         ),
         PassthroughRerankAdapter(),
         confidence_threshold=settings.confidence_threshold,

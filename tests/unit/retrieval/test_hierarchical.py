@@ -1,5 +1,6 @@
 import pytest
 
+from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ProductQuery
 from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
@@ -31,8 +32,8 @@ class FakeCollection:
     """Collection double: records the last query call, returns preset results.
 
     ``metadata`` mirrors a Chroma collection's metadata dict so the adapter's
-    enrich-agreement guard can be exercised. Defaults to a non-enriched index
-    ({"enrich_documents": False}); pass metadata=None to simulate a legacy
+    strategy-agreement guard can be exercised. Defaults to an OFF index
+    ({"enrich_strategy": "off"}); pass metadata=None to simulate a legacy
     pre-flag index (missing key).
     """
 
@@ -41,7 +42,7 @@ class FakeCollection:
     def __init__(self, results: dict, metadata: object = _SENTINEL) -> None:
         self._results = results
         self.metadata = (
-            {"enrich_documents": False} if metadata is _SENTINEL else metadata
+            {"enrich_strategy": "off"} if metadata is _SENTINEL else metadata
         )
         self.last_query_embeddings: object = None
         self.last_n_results: int = 0
@@ -92,7 +93,7 @@ BEER_RESULTS = _make_results(
 def _adapter(results: dict, encoder: SpyEncoder | None = None) -> ChromaRetrievalAdapter:
     embedding_fn = E5EmbeddingFunction(encoder=encoder or SpyEncoder())
     return ChromaRetrievalAdapter(
-        FakeCollection(results), embedding_fn, expected_enrich=False
+        FakeCollection(results), embedding_fn, expected_strategy=EnrichStrategy.OFF
     )
 
 
@@ -144,7 +145,7 @@ def test_metadata_dict_is_preserved() -> None:
 def test_passes_k_to_collection_query() -> None:
     fake = FakeCollection(BEER_RESULTS)
     adapter = ChromaRetrievalAdapter(
-        fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_enrich=False
+        fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_strategy=EnrichStrategy.OFF
     )
     query = ProductQuery(product_name="cerveja", description="")
     adapter.retrieve_candidates(query, k=3)
@@ -152,23 +153,24 @@ def test_passes_k_to_collection_query() -> None:
 
 
 # ---------------------------------------------------------------------------
-# enrich-agreement guard (ADR-0005): adapter refuses an index whose recorded
-# enrich flag disagrees with the configured one (injected as expected_enrich).
+# strategy-agreement guard (ADR-0005/0006): adapter refuses an index whose
+# recorded enrich_strategy disagrees with the configured one (injected as
+# expected_strategy).
 # ---------------------------------------------------------------------------
 
 
 def test_adapter_raises_on_enrich_mismatch() -> None:
-    fake = FakeCollection(BEER_RESULTS, metadata={"enrich_documents": True})
+    fake = FakeCollection(BEER_RESULTS, metadata={"enrich_strategy": "full"})
     with pytest.raises(RuntimeError, match="make index"):
         ChromaRetrievalAdapter(
-            fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_enrich=False
+            fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_strategy=EnrichStrategy.OFF
         )
 
 
 def test_adapter_accepts_matching_enrich() -> None:
-    fake = FakeCollection(BEER_RESULTS, metadata={"enrich_documents": True})
+    fake = FakeCollection(BEER_RESULTS, metadata={"enrich_strategy": "full"})
     adapter = ChromaRetrievalAdapter(
-        fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_enrich=True
+        fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_strategy=EnrichStrategy.FULL
     )
     candidates = adapter.retrieve_candidates(
         ProductQuery(product_name="cerveja", description=""), k=2
@@ -177,12 +179,23 @@ def test_adapter_accepts_matching_enrich() -> None:
 
 
 def test_adapter_raises_on_legacy_index_missing_key() -> None:
-    # Pre-flag index: metadata has no enrich_documents key. Contract: loud
-    # failure, not a silent None==False treatment.
+    # Pre-flag index: metadata has no enrich_strategy key. Contract: loud
+    # failure, not a silent None==off treatment.
     fake = FakeCollection(BEER_RESULTS, metadata={"hnsw:space": "cosine"})
     with pytest.raises(RuntimeError, match="make index"):
         ChromaRetrievalAdapter(
-            fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_enrich=False
+            fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_strategy=EnrichStrategy.OFF
+        )
+
+
+def test_adapter_raises_on_legacy_bool_metadata() -> None:
+    # ADR-0005 index recorded a bool key {"enrich_documents": False}. Under the
+    # ADR-0006 string guard, enrich_strategy is absent -> None -> mismatch ->
+    # raise. This is the real upgrade path for anyone who ran ADR-0005.
+    fake = FakeCollection(BEER_RESULTS, metadata={"enrich_documents": False})
+    with pytest.raises(RuntimeError, match="make index"):
+        ChromaRetrievalAdapter(
+            fake, E5EmbeddingFunction(encoder=SpyEncoder()), expected_strategy=EnrichStrategy.OFF
         )
 
 

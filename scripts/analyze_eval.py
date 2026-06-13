@@ -28,7 +28,7 @@ def main() -> None:
     adapter = ChromaRetrievalAdapter(
         get_collection(),
         E5EmbeddingFunction(),
-        expected_enrich=settings.enrich_documents,
+        expected_strategy=settings.enrich_strategy,
     )
 
     rows = []

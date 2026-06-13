@@ -6,6 +6,7 @@ import chromadb
 import pytest
 from chromadb import Collection
 
+from src.core.domain.enrichment import EnrichStrategy
 from src.retrieval.chroma_client import (
     _find_latest_tipi_json,
     build_document_text,
@@ -57,68 +58,118 @@ def enriched_entry() -> dict:
 
 def test_document_includes_specific_description(full_entry: dict) -> None:
     assert "Águas minerais e águas gaseificadas" in build_document_text(
-        full_entry, enrich=True
+        full_entry, EnrichStrategy.FULL
     )
 
 
 def test_document_includes_all_ex_tipi_descriptions(full_entry: dict) -> None:
-    text = build_document_text(full_entry, enrich=True)
+    text = build_document_text(full_entry, EnrichStrategy.FULL)
     assert "Recipientes < 10 litros" in text
     assert "Recipientes >= 10 litros" in text
 
 
 def test_document_labels_ex_tipi_with_ex_number(full_entry: dict) -> None:
-    text = build_document_text(full_entry, enrich=True)
+    text = build_document_text(full_entry, EnrichStrategy.FULL)
     assert "EX 1:" in text
     assert "EX 2:" in text
 
 
 def test_document_without_ex_tipi_has_no_ex_label(entry_no_ex: dict) -> None:
-    assert "EX" not in build_document_text(entry_no_ex, enrich=True)
+    assert "EX" not in build_document_text(entry_no_ex, EnrichStrategy.FULL)
 
 
-def test_enrich_true_composes_hierarchy(enriched_entry: dict) -> None:
-    assert build_document_text(enriched_entry, enrich=True) == (
+def test_full_composes_hierarchy(enriched_entry: dict) -> None:
+    assert build_document_text(enriched_entry, EnrichStrategy.FULL) == (
         "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool. "
         "Outros vinhos; mostos de uvas. "
         "Em recipientes de capacidade não superior a 2 l"
     )
 
 
-def test_enrich_false_uses_only_description(enriched_entry: dict) -> None:
+def test_off_uses_only_description(enriched_entry: dict) -> None:
     # ADR-0004 baseline byte-for-byte: raw description, no parent context,
     # no cleaning of the "-- " level marker.
-    assert build_document_text(enriched_entry, enrich=False) == (
+    assert build_document_text(enriched_entry, EnrichStrategy.OFF) == (
         "-- Em recipientes de capacidade não superior a 2 l"
     )
 
 
 def test_skips_empty_heading_and_subheading(entry_no_ex: dict) -> None:
-    assert build_document_text(entry_no_ex, enrich=True) == "Cervejas de malte"
+    assert build_document_text(entry_no_ex, EnrichStrategy.FULL) == "Cervejas de malte"
 
 
 def test_cleans_description_marker(enriched_entry: dict) -> None:
-    assert "--" not in build_document_text(enriched_entry, enrich=True)
+    assert "--" not in build_document_text(enriched_entry, EnrichStrategy.FULL)
 
 
 def test_no_double_separator_when_field_empty(full_entry: dict) -> None:
     # full_entry has an empty subheading_description between two present fields
-    assert ". ." not in build_document_text(full_entry, enrich=True)
+    assert ". ." not in build_document_text(full_entry, EnrichStrategy.FULL)
 
 
-def test_enrich_false_preserves_ex_tipi_suffix(full_entry: dict) -> None:
-    text = build_document_text(full_entry, enrich=False)
+def test_off_preserves_ex_tipi_suffix(full_entry: dict) -> None:
+    text = build_document_text(full_entry, EnrichStrategy.OFF)
     assert text.startswith("- Águas minerais")
     assert "EX 1: Recipientes < 10 litros" in text
 
 
 def test_anchor_terms_present_in_document() -> None:
-    path = _find_latest_tipi_json(Path("data/tipi"), "22")
-    entries = json.loads(path.read_text(encoding="utf-8"))["entries"]
-    by_ncm = {e["ncm"]: e for e in entries}
+    by_ncm = _entries_by_ncm()
     anchors = {"2204.21.00": "vinhos", "2205.10.00": "vermutes", "2208.30.20": "uísques"}
     for ncm, term in anchors.items():
-        assert term in build_document_text(by_ncm[ncm], enrich=True).lower(), ncm
+        assert term in build_document_text(by_ncm[ncm], EnrichStrategy.FULL).lower(), ncm
+
+
+# ---------------------------------------------------------------------------
+# SUBHEADING_ONLY (ADR-0006, Form B): inject the 6-digit subheading when
+# substantive; never the 4-digit heading; no fallback to heading.
+# ---------------------------------------------------------------------------
+
+
+def _entries_by_ncm() -> dict[str, dict]:
+    path = _find_latest_tipi_json(Path("data/tipi"), "22")
+    return {e["ncm"]: e for e in json.loads(path.read_text(encoding="utf-8"))["entries"]}
+
+
+def test_subheading_only_injects_substantive_subheading() -> None:
+    # 2208.30.20: the product name "Uísques" lives at the 6-digit subheading,
+    # absent from the leaf ("Em embalagens..."). B must inject it.
+    entry = _entries_by_ncm()["2208.30.20"]
+    assert "Uísques" in build_document_text(entry, EnrichStrategy.SUBHEADING_ONLY)
+
+
+def test_subheading_only_never_injects_heading() -> None:
+    # 2205.10.00: heading "Vermutes..." must NOT appear — B never injects the
+    # 4-digit family. The accepted ADR-0006 cost (cases 018/019/020/022).
+    entry = _entries_by_ncm()["2205.10.00"]
+    text = build_document_text(entry, EnrichStrategy.SUBHEADING_ONLY)
+    assert "vermute" not in text.lower()
+
+
+def test_subheading_only_drops_heading_even_when_present() -> None:
+    # 2208.30.20 has a non-empty heading_description; B drops it entirely.
+    entry = _entries_by_ncm()["2208.30.20"]
+    assert "Álcool etílico" not in build_document_text(entry, EnrichStrategy.SUBHEADING_ONLY)
+
+
+def test_subheading_only_leaf_only_when_subheading_empty() -> None:
+    # 2205.10.00: empty subheading_description -> cleaned leaf only, no fallback.
+    entry = _entries_by_ncm()["2205.10.00"]
+    assert build_document_text(entry, EnrichStrategy.SUBHEADING_ONLY) == (
+        "Em recipientes de capacidade não superior a 2 l"
+    )
+
+
+def test_subheading_only_skips_non_substantive_subheading() -> None:
+    # Non-empty but filler subheading ("Outras") is dropped; heading never enters.
+    entry = {
+        "description": "-- Outras",
+        "heading_description": "Família ampla compartilhada",
+        "subheading_description": "Outras",
+        "ipi_rate": "0",
+        "ex_tipi": None,
+    }
+    assert build_document_text(entry, EnrichStrategy.SUBHEADING_ONLY) == "Outras"
 
 
 # ---------------------------------------------------------------------------
@@ -174,7 +225,7 @@ def test_rebuild_index_creates_collection_with_all_entries(
     real_entries: list[dict], memory_collection: Collection
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    count = index_entries(memory_collection, real_entries, embedding_fn, enrich=False)
+    count = index_entries(memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF)
     assert count == len(real_entries) == memory_collection.count()
 
 
@@ -182,20 +233,22 @@ def test_rebuild_index_is_idempotent(
     real_entries: list[dict], memory_collection: Collection
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    index_entries(memory_collection, real_entries, embedding_fn, enrich=False)
-    index_entries(memory_collection, real_entries, embedding_fn, enrich=False)
+    index_entries(memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF)
+    index_entries(memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF)
     assert memory_collection.count() == len(real_entries)
 
 
 # ---------------------------------------------------------------------------
-# enrich flag <-> index agreement (ADR-0005)
+# enrich strategy <-> index agreement (ADR-0005/0006)
 # ---------------------------------------------------------------------------
 
 
-@pytest.mark.parametrize("enrich", [True, False])
+@pytest.mark.parametrize(
+    "strategy", [EnrichStrategy.OFF, EnrichStrategy.FULL, EnrichStrategy.SUBHEADING_ONLY]
+)
 def test_index_records_enrich_metadata(
-    real_entries: list[dict], memory_collection: Collection, enrich: bool
+    real_entries: list[dict], memory_collection: Collection, strategy: EnrichStrategy
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    index_entries(memory_collection, real_entries, embedding_fn, enrich=enrich)
-    assert memory_collection.metadata["enrich_documents"] is enrich
+    index_entries(memory_collection, real_entries, embedding_fn, strategy)
+    assert memory_collection.metadata["enrich_strategy"] == strategy.value

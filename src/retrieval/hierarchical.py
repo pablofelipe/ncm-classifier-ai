@@ -2,6 +2,7 @@ from typing import Any, cast
 
 from chromadb import Collection
 
+from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
 from src.retrieval.embedding import E5EmbeddingFunction
 
@@ -20,18 +21,19 @@ class ChromaRetrievalAdapter:
         collection: Collection,
         embedding_fn: E5EmbeddingFunction,
         *,
-        expected_enrich: bool,
+        expected_strategy: EnrichStrategy,
     ) -> None:
         # Guard against an index built under a different document-text strategy
-        # than the configured one (ADR-0005). expected_enrich is injected by the
-        # composition root, not read from settings here (the adapter stays free
-        # of config imports). A legacy index missing the key fails loudly too.
-        stored = (collection.metadata or {}).get("enrich_documents")
-        if stored != expected_enrich:
+        # than the configured one (ADR-0005/0006). expected_strategy is injected
+        # by the composition root, not read from settings here (the adapter
+        # stays free of config imports). A legacy index — missing the key, or
+        # carrying the old bool "enrich_documents" key — fails loudly too.
+        stored = (collection.metadata or {}).get("enrich_strategy")
+        if stored != expected_strategy.value:
             raise RuntimeError(
                 f"Index at collection '{collection.name}' was built with "
-                f"enrich_documents={stored!r}, but config says {expected_enrich!r}. "
-                "Rebuild the index: make index"
+                f"enrich_strategy={stored!r}, but config says "
+                f"{expected_strategy.value!r}. Rebuild the index: make index"
             )
         self._collection = collection
         self._embedding_fn = embedding_fn
