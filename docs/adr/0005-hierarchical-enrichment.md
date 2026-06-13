@@ -181,6 +181,13 @@ not promoted:
   expected flag), with the snapshot preserved at
   `docs/adr/assets/0005-analysis.json`.
 
+> **Superseded by ADR-0006.** The boolean `ENRICH_DOCUMENTS` flag was
+> generalized into the `EnrichStrategy` enum (`off` / `full` /
+> `subheading_only`). To reproduce this FULL experiment today, use
+> `make eval-full` (env `ENRICH_STRATEGY=full`); the index metadata key
+> is now `enrich_strategy` (string). The mechanism and findings below are
+> unchanged.
+
 **CI guards only the production path.** The `eval.yml` workflow runs
 `make index` (enrich off) and the default eval gate; it does *not* run
 `eval-enriched`. Reproducibility of the negative experiment lives in the
