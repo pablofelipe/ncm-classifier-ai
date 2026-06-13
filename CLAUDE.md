@@ -72,10 +72,17 @@ All architectural decisions go in `docs/adr/NNNN-title.md`.
 Resolved:
 - **ADR-0001** — Chapter 22 selected for v1 (see `docs/adr/0001-chapter-selection.md`)
 - **ADR-0002** — Verification via deterministic TIPI metadata check (see `docs/adr/0002-verification-deterministic-check.md`)
+- **ADR-0003** — Walking-skeleton baseline (see `docs/adr/0003-walking-skeleton.md`)
+- **ADR-0004** — Semantic retrieval with e5-small; baseline 33.3% top-1 / 63.3% top-3 (see `docs/adr/0004-semantic-retrieval-e5-small.md`)
+- Labeled eval data source — built as `eval/v1_cases.json` (30 cases: 28 ecommerce listings + 2 labeled); the ground truth for every ADR since 0004.
+
+Accepted with regression — flagged, not shipped (production stays on the `OFF` baseline, 63.3% top-3):
+- **ADR-0005** — Full hierarchical enrichment (heading + subheading + leaf): top-3 63.3% → 53.3% (see `docs/adr/0005-hierarchical-enrichment.md`)
+- **ADR-0006** — Subheading-only enrichment (Form B): best top-1 (43.3%) but top-3 ties FULL at 53.3%; homogenization is level-agnostic (see `docs/adr/0006-subheading-only-enrichment.md`)
 
 Open:
-- Confidence threshold T (set after first calibration run, not arbitrarily)
-- Labeled eval data source (public NF-e SEFAZ samples vs. manual labeling)
+- **ADR-0007** — Selective enrichment with a product-name vs generic-refinement discriminator (`is_substantive` is insufficient); LLM rerank deferred on cost as the fallback.
+- Confidence threshold T — still the `confidence_threshold=0.7` placeholder; calibration awaits a real rerank stage (rerank is Passthrough today).
 
 ## Out of Scope (v1)
 
