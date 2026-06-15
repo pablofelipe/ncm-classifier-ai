@@ -80,8 +80,11 @@ Accepted with regression — flagged, not shipped (production stays on the `OFF`
 - **ADR-0005** — Full hierarchical enrichment (heading + subheading + leaf): top-3 63.3% → 53.3% (see `docs/adr/0005-hierarchical-enrichment.md`)
 - **ADR-0006** — Subheading-only enrichment (Form B): best top-1 (43.3%) but top-3 ties FULL at 53.3%; homogenization is level-agnostic (see `docs/adr/0006-subheading-only-enrichment.md`)
 
+Rejected — closes the enrichment line:
+- **ADR-0007** — Selective enrichment (Form C) rejected without measuring: a binary structural discriminator exists but injects only 5/34 leaves with an OFF-tie ceiling; root finding consolidates 0005–0007 — the bottleneck is e5-small's discriminative power between siblings, not document context (see `docs/adr/0007-selective-enrichment-rejected.md`).
+
 Open:
-- **ADR-0007** — Selective enrichment with a product-name vs generic-refinement discriminator (`is_substantive` is insufficient); LLM rerank deferred on cost as the fallback.
+- **ADR-0008** — Embedder swap to bge-m3 (`BAAI/bge-m3`, dense-only) to attack the embedding-quality root finding; offline, zero recurring cost. LLM rerank stays deferred on cost as the last resort.
 - Confidence threshold T — still the `confidence_threshold=0.7` placeholder; calibration awaits a real rerank stage (rerank is Passthrough today).
 
 ## Out of Scope (v1)
