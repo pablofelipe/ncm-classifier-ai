@@ -4,35 +4,49 @@ from chromadb import Collection
 
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
-from src.retrieval.embedding import E5EmbeddingFunction
+from src.retrieval.embedding import EmbedderModel, EmbeddingFunction
 
 
 class ChromaRetrievalAdapter:
     """Retrieval adapter over a ChromaDB collection.
 
     The embedding function is injected (not imported and built here): the
-    composition root owns the real model. Queries are embedded with the
-    "query: " prefix and matched against the passage-prefixed index, so the
-    asymmetric e5 contract holds end to end.
+    composition root owns the real model. The adapter is embedder-agnostic — it
+    calls ``embed_query`` and lets the embedder apply whatever prefix contract
+    it owns (bge-m3 none, ADR-0008; e5 the asymmetric "query: "). The index must
+    be built with the same embedder, which the rebuild guarantees.
     """
 
     def __init__(
         self,
         collection: Collection,
-        embedding_fn: E5EmbeddingFunction,
+        embedding_fn: EmbeddingFunction,
         *,
         expected_strategy: EnrichStrategy,
+        expected_embedder: EmbedderModel,
     ) -> None:
-        # Guard against an index built under a different document-text strategy
-        # than the configured one (ADR-0005/0006). expected_strategy is injected
-        # by the composition root, not read from settings here (the adapter
-        # stays free of config imports). A legacy index — missing the key, or
-        # carrying the old bool "enrich_documents" key — fails loudly too.
-        stored = (collection.metadata or {}).get("enrich_strategy")
-        if stored != expected_strategy.value:
+        # Guard against an index whose provenance disagrees with config. Both the
+        # embedder (ADR-0008) and the document-text strategy (ADR-0005/0006) are
+        # injected by the composition root, not read from settings here (the
+        # adapter stays free of config imports). The two are checked separately,
+        # embedder first: a different embedder means an incompatible vector space
+        # (the index is unusable), a more fundamental incompatibility than a
+        # strategy difference (same space, different document content). Each
+        # message names the field that diverged. A legacy index — missing either
+        # key, or carrying the old bool "enrich_documents" key — fails loudly.
+        meta = collection.metadata or {}
+        stored_embedder = meta.get("embedder")
+        if stored_embedder != expected_embedder.value:
             raise RuntimeError(
                 f"Index at collection '{collection.name}' was built with "
-                f"enrich_strategy={stored!r}, but config says "
+                f"embedder={stored_embedder!r}, but config says "
+                f"{expected_embedder.value!r}. Rebuild the index: make index"
+            )
+        stored_strategy = meta.get("enrich_strategy")
+        if stored_strategy != expected_strategy.value:
+            raise RuntimeError(
+                f"Index at collection '{collection.name}' was built with "
+                f"enrich_strategy={stored_strategy!r}, but config says "
                 f"{expected_strategy.value!r}. Rebuild the index: make index"
             )
         self._collection = collection

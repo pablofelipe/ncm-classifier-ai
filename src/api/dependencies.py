@@ -4,22 +4,24 @@ from src.config import settings
 from src.core.use_cases.classify_product import ClassifyProduct
 from src.llm.passthrough_adapter import PassthroughRerankAdapter
 from src.retrieval.chroma_client import get_collection
-from src.retrieval.embedding import E5EmbeddingFunction
+from src.retrieval.embedding import EmbeddingFunction, make_embedding_function
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
 
 
 def build_classify_use_case(
     collection: Collection | None = None,
-    embedding_fn: E5EmbeddingFunction | None = None,
+    embedding_fn: EmbeddingFunction | None = None,
 ) -> ClassifyProduct:
-    """Composition root: wire semantic retrieval (ADR-0004) into the use case.
+    """Composition root: wire semantic retrieval into the use case.
 
     No FastAPI. Consumed both by the HTTP dependency below and by
     eval/run_eval.py (measurement layer), which calls the use case directly.
 
     `collection` and `embedding_fn` are injectable for tests; the defaults
-    construct the real persistent Chroma collection and the pinned e5-small
-    embedder. Rerank stays Passthrough until the Gemini rerank ADR lands.
+    construct the real persistent Chroma collection and the configured embedder
+    (settings.embedder, default e5-small — the ADR-0007 production baseline; bge-m3
+    opt-in via EMBEDDER for the ADR-0008 probe). Rerank stays Passthrough until
+    the Gemini rerank ADR lands.
 
     Raises RuntimeError when the index has not been built — an explicit
     failure at startup beats a silent fallback that would mask a
@@ -34,8 +36,9 @@ def build_classify_use_case(
     return ClassifyProduct(
         ChromaRetrievalAdapter(
             col,
-            embedding_fn or E5EmbeddingFunction(),
+            embedding_fn or make_embedding_function(settings.embedder),
             expected_strategy=settings.enrich_strategy,
+            expected_embedder=settings.embedder,
         ),
         PassthroughRerankAdapter(),
         confidence_threshold=settings.confidence_threshold,

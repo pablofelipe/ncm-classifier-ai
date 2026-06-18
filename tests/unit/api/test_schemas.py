@@ -6,8 +6,7 @@ from src.api.schemas import ClassifyResponse, NCMCandidate
 
 def _candidates(n: int) -> list[NCMCandidate]:
     return [
-        NCMCandidate(ncm=f"2201.10.{i:02d}", description=f"bebida {i}", score=0.0)
-        for i in range(n)
+        NCMCandidate(ncm=f"2201.10.{i:02d}", description=f"bebida {i}", score=0.0) for i in range(n)
     ]
 
 

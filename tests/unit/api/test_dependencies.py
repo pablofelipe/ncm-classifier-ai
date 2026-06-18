@@ -18,7 +18,7 @@ from src.api.dependencies import build_classify_use_case
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ProductQuery
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
-from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction
+from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction, EmbedderModel
 
 
 class SpyEncoder:
@@ -41,7 +41,11 @@ def indexed_collection() -> Collection:
         name=f"deps_indexed_{uuid4().hex}", metadata={"hnsw:space": "cosine"}
     )
     index_entries(
-        collection, entries, E5EmbeddingFunction(encoder=SpyEncoder()), EnrichStrategy.OFF
+        collection,
+        entries,
+        E5EmbeddingFunction(encoder=SpyEncoder()),
+        EnrichStrategy.OFF,
+        EmbedderModel.E5_SMALL,
     )
     return collection
 

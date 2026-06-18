@@ -25,9 +25,7 @@ class FakeClassifyUseCase:
             )
             for i in range(3)
         ]
-        return ClassificationResult(
-            top_candidates=candidates, confidence_label=self._label
-        )
+        return ClassificationResult(top_candidates=candidates, confidence_label=self._label)
 
 
 def _override(label: ConfidenceLabel = "needs_review") -> Iterator[TestClient]:

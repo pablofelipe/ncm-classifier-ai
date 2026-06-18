@@ -9,7 +9,7 @@ from chromadb import Collection
 from src.config import settings
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.tipi_parsing import clean_level_text, is_substantive
-from src.retrieval.embedding import E5EmbeddingFunction
+from src.retrieval.embedding import EmbedderModel, EmbeddingFunction, make_embedding_function
 
 
 def build_document_text(entry: dict[str, Any], strategy: EnrichStrategy) -> str:
@@ -25,7 +25,8 @@ def build_document_text(entry: dict[str, Any], strategy: EnrichStrategy) -> str:
     - SUBHEADING_ONLY (ADR-0006, Form B): subheading + leaf, and only when the
       subheading is substantive; the heading is never injected.
 
-    The "passage: " prefix stays in E5EmbeddingFunction either way.
+    Prefixing (if any) is the embedder's concern, not this function's: the
+    active bge-m3 embedder adds none (ADR-0008), the legacy e5 added "passage: ".
     """
     if strategy is EnrichStrategy.OFF:
         body = entry["description"]
@@ -58,25 +59,45 @@ def _find_latest_tipi_json(data_dir: Path, chapter: str) -> Path:
     return files[0]
 
 
+def _collection_name() -> str:
+    return f"tipi_cap{settings.ncm_chapter}"
+
+
 def get_collection() -> Collection:
     client = chromadb.PersistentClient(path=settings.chroma_path)
     return client.get_or_create_collection(
-        name=f"tipi_cap{settings.ncm_chapter}",
+        name=_collection_name(),
         metadata={"hnsw:space": "cosine"},
     )
+
+
+def reset_collection(client: chromadb.api.ClientAPI, name: str) -> Collection:
+    """Delete the named collection if present, then create it fresh.
+
+    A dimension change (e5 384 -> bge-m3 1024, ADR-0008) makes the persisted
+    collection incompatible: ``get_or_create_collection`` would return the stale
+    384-dim collection and an upsert of 1024-dim vectors would raise
+    ``InvalidDimensionException``. Dropping and recreating is the only safe
+    rebuild. The fresh collection carries only ``hnsw:space``; ``index_entries``
+    re-writes ``enrich_strategy`` so the adapter guard stays satisfied.
+    """
+    if name in {c.name for c in client.list_collections()}:
+        client.delete_collection(name=name)
+    return client.create_collection(name=name, metadata={"hnsw:space": "cosine"})
 
 
 def index_entries(
     collection: Collection,
     entries: list[dict[str, Any]],
-    embedding_fn: E5EmbeddingFunction,
+    embedding_fn: EmbeddingFunction,
     strategy: EnrichStrategy,
+    embedder: EmbedderModel,
 ) -> int:
     """Embed and upsert TIPI entries into the collection, returning the count.
 
     Idempotent: ids are the dotless NCM codes, so re-running replaces rather
-    than duplicates. Embeddings are computed via the injected embedding function
-    (passage-prefixed); the default Chroma embedder is never invoked.
+    than duplicates. Embeddings are computed via the injected embedding function;
+    the default Chroma embedder is never invoked.
     ``strategy`` selects the document-text strategy (see build_document_text)
     and is recorded on the collection so the adapter can detect an
     index<->strategy mismatch.
@@ -102,24 +123,34 @@ def index_entries(
         metadatas=cast(Any, metadatas),
         documents=documents,
     )
-    # Record the document-text strategy so the adapter can detect an
-    # index<->config mismatch (ADR-0005/0006). Chroma rejects re-stating the
-    # immutable "hnsw:space" key in modify(), so this overwrites the metadata
-    # dict with the strategy alone; the cosine distance function is unaffected.
-    collection.modify(metadata={"enrich_strategy": strategy.value})
+    # Record provenance so the adapter can detect an index<->config mismatch:
+    # the embedder (ADR-0008) and the document-text strategy (ADR-0005/0006),
+    # both in a single write. Chroma rejects re-stating the immutable
+    # "hnsw:space" key in modify(), so this overwrites the metadata dict with
+    # these two keys alone; the cosine distance function is unaffected.
+    collection.modify(metadata={"enrich_strategy": strategy.value, "embedder": embedder.value})
     return len(ids)
 
 
 def rebuild_index() -> None:
-    """Rebuild ChromaDB collection from the latest tipi_<chapter>_*.json."""
+    """Rebuild ChromaDB collection from the latest tipi_<chapter>_*.json.
+
+    Drops and recreates the collection (ADR-0008): switching embedder can change
+    the vector dimension (e5 384 -> bge-m3 1024), so reusing the persisted
+    collection would fail. The drop is unconditional — a rebuild always starts
+    from a clean, correctly-dimensioned collection. The embedder is selected from
+    settings (default e5, the production baseline; bge-m3 opt-in via EMBEDDER).
+    """
     data_dir = Path(settings.tipi_data_dir)
     json_path = _find_latest_tipi_json(data_dir, settings.ncm_chapter)
 
     payload = json.loads(json_path.read_text(encoding="utf-8"))
     entries: list[dict[str, Any]] = payload["entries"]
 
-    col = get_collection()
-    count = index_entries(col, entries, E5EmbeddingFunction(), settings.enrich_strategy)
+    client = chromadb.PersistentClient(path=settings.chroma_path)
+    col = reset_collection(client, _collection_name())
+    embedding_fn = make_embedding_function(settings.embedder)
+    count = index_entries(col, entries, embedding_fn, settings.enrich_strategy, settings.embedder)
 
     source = payload.get("source", json_path.name)
     print(f"Indexed {count} entries from {source} into '{col.name}'")

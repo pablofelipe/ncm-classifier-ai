@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.core.domain.enrichment import EnrichStrategy
+from src.retrieval.embedding import EmbedderModel
 
 
 class Settings(BaseSettings):
@@ -19,6 +20,10 @@ class Settings(BaseSettings):
     # (inject the 6-digit product level, never the broad heading). The index
     # must be rebuilt to match; the adapter enforces index<->strategy agreement.
     enrich_strategy: EnrichStrategy = EnrichStrategy.OFF
+    # Embedding model (env: EMBEDDER). E5_SMALL is the ADR-0004/0007 production
+    # baseline; BGE_M3 is the ADR-0008 experiment, opt-in only. The index must be
+    # rebuilt to match; the adapter enforces index<->embedder agreement.
+    embedder: EmbedderModel = EmbedderModel.E5_SMALL
 
 
 # NOTE: instantiates at import time. CI environments must provide

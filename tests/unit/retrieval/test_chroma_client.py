@@ -11,8 +11,15 @@ from src.retrieval.chroma_client import (
     _find_latest_tipi_json,
     build_document_text,
     index_entries,
+    reset_collection,
 )
-from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction
+from src.retrieval.embedding import (
+    BGE_EMBEDDING_DIM,
+    EMBEDDING_DIM,
+    BGEEmbeddingFunction,
+    E5EmbeddingFunction,
+    EmbedderModel,
+)
 
 # ---------------------------------------------------------------------------
 # build_document_text — fixtures no novo schema (entries)
@@ -225,7 +232,9 @@ def test_rebuild_index_creates_collection_with_all_entries(
     real_entries: list[dict], memory_collection: Collection
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    count = index_entries(memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF)
+    count = index_entries(
+        memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF, EmbedderModel.E5_SMALL
+    )
     assert count == len(real_entries) == memory_collection.count()
 
 
@@ -233,8 +242,12 @@ def test_rebuild_index_is_idempotent(
     real_entries: list[dict], memory_collection: Collection
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    index_entries(memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF)
-    index_entries(memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF)
+    index_entries(
+        memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF, EmbedderModel.E5_SMALL
+    )
+    index_entries(
+        memory_collection, real_entries, embedding_fn, EnrichStrategy.OFF, EmbedderModel.E5_SMALL
+    )
     assert memory_collection.count() == len(real_entries)
 
 
@@ -250,5 +263,80 @@ def test_index_records_enrich_metadata(
     real_entries: list[dict], memory_collection: Collection, strategy: EnrichStrategy
 ) -> None:
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    index_entries(memory_collection, real_entries, embedding_fn, strategy)
+    index_entries(memory_collection, real_entries, embedding_fn, strategy, EmbedderModel.E5_SMALL)
     assert memory_collection.metadata["enrich_strategy"] == strategy.value
+
+
+def test_index_records_embedder_metadata(
+    real_entries: list[dict], memory_collection: Collection
+) -> None:
+    # ADR-0008 guard: the embedder is stored alongside enrich_strategy in the
+    # same metadata write, so the adapter can detect an index<->embedder mismatch.
+    index_entries(
+        memory_collection,
+        real_entries,
+        BGEEmbeddingFunction(encoder=BgeSpyEncoder()),
+        EnrichStrategy.OFF,
+        EmbedderModel.BGE_M3,
+    )
+    assert memory_collection.metadata["embedder"] == EmbedderModel.BGE_M3.value
+
+
+# ---------------------------------------------------------------------------
+# reset_collection — drop+recreate for the e5 384 -> bge-m3 1024 dim change
+# (ADR-0008). get_or_create would return the stale 384-dim collection and an
+# upsert of 1024-dim vectors would raise InvalidDimensionException, so rebuild
+# must drop and recreate.
+# ---------------------------------------------------------------------------
+
+
+class BgeSpyEncoder:
+    """Returns dummy vectors of the bge-m3 dimension; loads no model."""
+
+    def encode(self, sentences: list[str], normalize_embeddings: bool = True) -> list[list[float]]:
+        return [[0.1] * BGE_EMBEDDING_DIM for _ in sentences]
+
+
+def test_reset_collection_allows_new_dimension_after_drop() -> None:
+    client = chromadb.EphemeralClient()
+    name = f"test_tipi_{uuid4().hex}"
+    old = client.create_collection(name=name, metadata={"hnsw:space": "cosine"})
+    old.add(ids=["e5"], embeddings=[[0.1] * EMBEDDING_DIM], documents=["old 384-dim doc"])
+
+    fresh = reset_collection(client, name)
+    # The 1024-dim upsert must neither raise (silent dimension clash) nor mix
+    # with the dropped 384-dim entry.
+    fresh.add(ids=["bge"], embeddings=[[0.2] * BGE_EMBEDDING_DIM], documents=["new 1024-dim doc"])
+
+    assert fresh.count() == 1
+    assert fresh.get(ids=["e5"])["ids"] == []
+
+
+def test_reset_collection_drops_stale_enrich_strategy() -> None:
+    client = chromadb.EphemeralClient()
+    name = f"test_tipi_{uuid4().hex}"
+    client.create_collection(name=name, metadata={"hnsw:space": "cosine", "enrich_strategy": "off"})
+
+    fresh = reset_collection(client, name)
+
+    assert "enrich_strategy" not in (fresh.metadata or {})
+
+
+def test_rebuild_rewrites_enrich_metadata_after_drop(real_entries: list[dict]) -> None:
+    # CRITICAL: after drop+recreate the collection has no enrich_strategy, so
+    # index_entries must re-write it — otherwise the adapter guard raises a
+    # mismatch RuntimeError on the next startup.
+    client = chromadb.EphemeralClient()
+    name = f"test_tipi_{uuid4().hex}"
+    client.create_collection(name=name, metadata={"hnsw:space": "cosine"})
+
+    fresh = reset_collection(client, name)
+    index_entries(
+        fresh,
+        real_entries,
+        BGEEmbeddingFunction(encoder=BgeSpyEncoder()),
+        EnrichStrategy.OFF,
+        EmbedderModel.BGE_M3,
+    )
+
+    assert fresh.metadata["enrich_strategy"] == EnrichStrategy.OFF.value

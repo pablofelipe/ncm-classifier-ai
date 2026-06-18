@@ -17,7 +17,7 @@ from chromadb import Collection
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ProductQuery
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
-from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction
+from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction, EmbedderModel
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
 
 
@@ -35,8 +35,13 @@ def indexed_adapter() -> ChromaRetrievalAdapter:
         name=f"roundtrip_{uuid4().hex}", metadata={"hnsw:space": "cosine"}
     )
     embedding_fn = E5EmbeddingFunction(encoder=SpyEncoder())
-    index_entries(collection, entries, embedding_fn, EnrichStrategy.OFF)
-    return ChromaRetrievalAdapter(collection, embedding_fn, expected_strategy=EnrichStrategy.OFF)
+    index_entries(collection, entries, embedding_fn, EnrichStrategy.OFF, EmbedderModel.E5_SMALL)
+    return ChromaRetrievalAdapter(
+        collection,
+        embedding_fn,
+        expected_strategy=EnrichStrategy.OFF,
+        expected_embedder=EmbedderModel.E5_SMALL,
+    )
 
 
 def test_retrieve_candidates_returns_k_results(
