@@ -7,6 +7,7 @@ from pathlib import Path
 
 from eval.schema import CaseResult, EvalReport, EvalSuite
 from src.api.dependencies import build_classify_use_case
+from src.config import settings
 from src.core.domain.ncm import ClassificationResult, ProductQuery
 from src.core.use_cases.classify_product import ClassifyProduct
 
@@ -157,7 +158,10 @@ def _print_report(suite: EvalSuite, report: CrossValidationReport, tipi_version:
 
 
 def _print_evaluation(suite: EvalSuite, report: EvalReport) -> None:
-    print("\nEvaluation: semantic retrieval (Chroma e5-small + Passthrough rerank)")
+    print(
+        f"\nEvaluation: semantic retrieval (Chroma embedder={settings.embedder.value} "
+        f"enrich={settings.enrich_strategy.value} + Passthrough rerank)"
+    )
     print(f"Top-1 accuracy:  {report.top_1_hits}/{report.total} = {report.top_1_accuracy:.1%}")
     print(f"Top-3 accuracy:  {report.top_3_hits}/{report.total} = {report.top_3_accuracy:.1%}")
     print("ECE:             informative only (1 - cosine distance is not calibrated)")

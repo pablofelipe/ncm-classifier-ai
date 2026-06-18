@@ -83,8 +83,11 @@ Accepted with regression — flagged, not shipped (production stays on the `OFF`
 Rejected — closes the enrichment line:
 - **ADR-0007** — Selective enrichment (Form C) rejected without measuring: a binary structural discriminator exists but injects only 5/34 leaves with an OFF-tie ceiling; root finding consolidates 0005–0007 — the bottleneck is e5-small's discriminative power between siblings, not document context (see `docs/adr/0007-selective-enrichment-rejected.md`).
 
+Rejected — closes the offline retrieval-quality line:
+- **ADR-0008** — Embedder swap to bge-m3 rejected: bge OFF regressed −20 pp top-3 (43.3%), bge FULL recovered only to 53.3% (the enrichment ceiling), neither beats e5 OFF (63.3%). Offline manipulation (document text *or* embedder) is exhausted; remaining failures are query-understanding + ranking, not document representation. Infra kept (configurable embedder + dual guard, bge opt-in via `EMBEDDER`); e5-small OFF still ships (see `docs/adr/0008-embedder-swap-bge-m3-rejected.md`).
+
 Open:
-- **ADR-0008** — Embedder swap to bge-m3 (`BAAI/bge-m3`, dense-only) to attack the embedding-quality root finding; offline, zero recurring cost. LLM rerank stays deferred on cost as the last resort.
+- **ADR-0009** — LLM rerank (cost ladder, last step): reorder e5 OFF's top-k with an LLM that understands colloquial input and negation. Must measure recurring cost + latency against the R$ 0.10 / 4 s budget, not only accuracy. Recalibrating the v1 target is the fallback.
 - Confidence threshold T — still the `confidence_threshold=0.7` placeholder; calibration awaits a real rerank stage (rerank is Passthrough today).
 
 ## Out of Scope (v1)

@@ -19,7 +19,7 @@ from eval.run_eval import load_eval_suite
 from src.config import settings
 from src.core.domain.ncm import ProductQuery
 from src.retrieval.chroma_client import get_collection
-from src.retrieval.embedding import E5EmbeddingFunction
+from src.retrieval.embedding import make_embedding_function
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
 
 
@@ -27,15 +27,14 @@ def main() -> None:
     suite = load_eval_suite("eval/v1_cases.json")
     adapter = ChromaRetrievalAdapter(
         get_collection(),
-        E5EmbeddingFunction(),
+        make_embedding_function(settings.embedder),
         expected_strategy=settings.enrich_strategy,
+        expected_embedder=settings.embedder,
     )
 
     rows = []
     for case in suite.cases:
-        query = ProductQuery(
-            product_name=case.product_name, description=case.product_description
-        )
+        query = ProductQuery(product_name=case.product_name, description=case.product_description)
         candidates = adapter.retrieve_candidates(query, k=10)
         preds = [{"ncm": c.ncm_code, "score": round(c.score, 4)} for c in candidates]
         ranked = [p["ncm"] for p in preds]
@@ -70,8 +69,12 @@ def main() -> None:
         acc = sum(h for _, h in b) / len(b)
         ece += (len(b) / n) * abs(acc - conf)
         bin_table.append(
-            {"bin": f"[{i / 10:.1f},{(i + 1) / 10:.1f})", "n": len(b),
-             "mean_conf": round(conf, 4), "acc": round(acc, 4)}
+            {
+                "bin": f"[{i / 10:.1f},{(i + 1) / 10:.1f})",
+                "n": len(b),
+                "mean_conf": round(conf, 4),
+                "acc": round(acc, 4),
+            }
         )
 
     json.dump(
