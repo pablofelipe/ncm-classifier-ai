@@ -2,7 +2,7 @@
 
 ## Status
 Rejected (bge-m3 swap) — **closes the offline retrieval-quality line** and opens
-LLM reranking (ADR-0009). No production change: e5-small `OFF`
+a cost-ordered improvement roadmap (ADR-0009 onward). No production change: e5-small `OFF`
 (33.3% top-1 / 63.3% top-3) remains the baseline and what ships. The bge-m3
 infrastructure (configurable embedder, dual guard) is kept; only the swap is
 rejected.
@@ -90,18 +90,36 @@ Both are **query/ranking** problems, not document-representation problems. e5 OF
   strategy from settings (it was hardcoded to "e5-small").
 
 ## Path Forward
-**ADR-0009 = LLM rerank** (cost ladder, step 3). Justification: the remaining
-failures are query-understanding (a) and ranking (b) — exactly what reranking
-attacks and exactly what offline retrieval provably does not touch. Take the top-k
-of e5 OFF (the 63.3% ceiling) and reorder it with an LLM that understands
-colloquial input (Johnnie Walker = whisky = "Uísques") and negation. This carries
-a **recurring per-query cost** against the CLAUDE.md budget (R$ 0.10 / 4 s), so the
-rerank ADR must measure cost and latency, not only accuracy. Recalibrating the v1
-target stays as the fallback if the rerank cost is unacceptable.
+The remaining failures are query-understanding (a) and ranking (b), not document
+representation — but the response is a **cost-ordered roadmap**, not an immediate
+jump to an LLM. LLM reranking carries a recurring per-query cost against the
+CLAUDE.md budget (R$ 0.10 / 4 s), so it is the **last** resort, tried only after
+the cheaper levers are exhausted and measured:
 
-Gemini `text-embedding-004` (cost ladder step 2, one-time cost) is **not** pursued:
-the offline-embedding prior is now weak — bge-m3, a top multilingual retrieval
-model, regressed — and the remaining failures are not in the embedding space.
+- **ADR-0009 — Dataset + corpus expansion (this line's successor).** Before
+  chasing accuracy, widen the measurement surface: 350 multi-chapter cases (v2)
+  over a 64-NCM corpus (Ch.20/21/22), with a `mode` dimension (colloquial /
+  poverty / negation / frontier / …) that isolates the query-understanding
+  failures named above. A bigger, harder, mode-tagged eval is the prerequisite
+  for trusting any later delta — and prevents overfitting the 30-case v1 set.
+- **ADR-0010 — Corpus enrichment.** Commercial descriptions, synonyms, and brand
+  names attached to leaves — attacking the colloquial/brand gap (Coca-Cola,
+  Johnnie Walker) on the document side, cheaply and offline.
+- **ADR-0011 — Hybrid retrieval (BM25 + e5).** Lexical recall for exact tokens
+  (model names, EX codes) fused with dense recall; zero recurring cost.
+- **ADR-0012 — Local cross-encoder rerank (BGE / Jina / MS-MARCO).** Reorder the
+  top-k with a local reranker — the ranking-precision lever, still zero recurring
+  API cost.
+- **ADR-0013 — LLM rerank (last resort).** Only if the above fall short: an LLM
+  that understands colloquial input (Johnnie Walker = whisky = "Uísques") and
+  negation reorders e5 OFF's top-k. Must measure recurring cost and latency
+  against the budget, not only accuracy; recalibrating the v1 target stays the
+  fallback.
+
+Gemini `text-embedding-004` (a one-time-cost embedding swap) is **not** on this
+path: the offline-embedding prior is now weak — bge-m3, a top multilingual
+retrieval model, regressed — so the cheap offline win is the corpus/lexical side
+(ADR-0010/0011), not another dense model.
 
 ## References
 - Predecessors: `docs/adr/0004-semantic-retrieval-e5-small.md` (e5 chosen, bge-m3
