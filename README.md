@@ -144,6 +144,16 @@ The base install (`pip install -e ".[dev]"`) stays light; the `ml` extra
 is only needed to build the ChromaDB index and run the classifier
 end-to-end.
 
+### Running tests
+
+```bash
+make test              # unit tests only (tests/unit)
+make test-integration  # integration tests (downloads models, requires network)
+```
+
+`make test` runs unit tests only. Use `make test-integration` for the
+integration tests, which download the embedding models and require network.
+
 ### Running evals
 
 ```bash

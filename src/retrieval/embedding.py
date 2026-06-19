@@ -38,16 +38,33 @@ class _Encoder(Protocol):
     def encode(self, sentences: list[str], normalize_embeddings: bool = ...) -> Any: ...
 
 
-class E5EmbeddingFunction:
-    """Asymmetric e5 embedder for the ChromaDB retrieval adapter.
+class EmbeddingFunction(Protocol):
+    """Structural contract shared by the retrieval embedders.
 
-    Deliberately NOT a Chroma single-callable ``EmbeddingFunction``: e5 needs a
-    different prefix for documents (``passage: ``) and queries (``query: ``),
-    and a symmetric ``__call__`` would prefix queries as passages — a silent
-    quality bug. Callers must pick ``embed_documents`` or ``embed_query``
-    explicitly.
+    Two concrete implementations exist with materially different contracts:
+    :class:`E5EmbeddingFunction` is *asymmetric* (it prefixes documents and
+    queries differently), while :class:`BGEEmbeddingFunction` is *symmetric*
+    (no prefix at all). That difference is semantic, not configuration, so they
+    are separate subclasses rather than one parametrized one — but the model
+    loading and encode plumbing they share lives in
+    :class:`_SentenceTransformerEmbedder`. The ChromaDB adapter and the indexer
+    depend on this Protocol, so either embedder can be injected at the
+    composition root without the consumers knowing which model is live.
+    """
 
-    The underlying encoder is injectable so prefix logic can be unit-tested
+    def embed_documents(self, texts: list[str]) -> list[list[float]]: ...
+    def embed_query(self, text: str) -> list[float]: ...
+
+
+class _SentenceTransformerEmbedder:
+    """Shared base for SentenceTransformer-backed embedders.
+
+    Owns only what is identical across embedders: the revision-pinned, lazily
+    built encoder and the normalize → to-list encode step. Subclasses define the
+    prefix contract by overriding ``embed_documents`` / ``embed_query`` — that is
+    the *only* difference between e5 (asymmetric) and bge (symmetric).
+
+    The underlying encoder is injectable so the prefix logic can be unit-tested
     without loading the model. When omitted, the pinned SentenceTransformer is
     built lazily on first use (revision-locked for reproducibility).
     """
@@ -56,16 +73,14 @@ class E5EmbeddingFunction:
         self,
         encoder: _Encoder | None = None,
         *,
-        model_name: str = EMBEDDING_MODEL_NAME,
-        revision: str | None = EMBEDDING_MODEL_REVISION,
-        dim: int = EMBEDDING_DIM,
+        model_name: str,
+        revision: str | None,
     ) -> None:
         if not revision:
             raise ValueError("embedding model revision must be pinned; got an empty value")
         self._encoder = encoder
         self._model_name = model_name
         self._revision = revision
-        self._dim = dim
 
     def _get_encoder(self) -> _Encoder:
         encoder = self._encoder
@@ -83,6 +98,25 @@ class E5EmbeddingFunction:
         tolist = getattr(raw, "tolist", None)
         matrix = tolist() if callable(tolist) else raw
         return [list(row) for row in matrix]
+
+
+class E5EmbeddingFunction(_SentenceTransformerEmbedder):
+    """Asymmetric e5 embedder for the ChromaDB retrieval adapter (ADR-0004).
+
+    e5 needs a different prefix for documents (``passage: ``) and queries
+    (``query: ``); a symmetric ``__call__`` would prefix queries as passages — a
+    silent quality bug. Callers must pick ``embed_documents`` or ``embed_query``
+    explicitly. This is the shipping embedder.
+    """
+
+    def __init__(
+        self,
+        encoder: _Encoder | None = None,
+        *,
+        model_name: str = EMBEDDING_MODEL_NAME,
+        revision: str | None = EMBEDDING_MODEL_REVISION,
+    ) -> None:
+        super().__init__(encoder, model_name=model_name, revision=revision)
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         """Embed TIPI document texts (raw, without prefix — the prefix is added
@@ -104,23 +138,7 @@ BGE_EMBEDDING_MODEL_REVISION = "5617a9f61b028005a4858fdac845db406aefb181"
 BGE_EMBEDDING_DIM = 1024
 
 
-class EmbeddingFunction(Protocol):
-    """Structural contract shared by the retrieval embedders.
-
-    Two concrete implementations exist with materially different contracts:
-    :class:`E5EmbeddingFunction` is *asymmetric* (it prefixes documents and
-    queries differently), while :class:`BGEEmbeddingFunction` is *symmetric*
-    (no prefix at all). That difference is semantic, not configuration, so they
-    are separate classes rather than one parametrized one. The ChromaDB adapter
-    and the indexer depend on this Protocol, so either embedder can be injected
-    at the composition root without the consumers knowing which model is live.
-    """
-
-    def embed_documents(self, texts: list[str]) -> list[list[float]]: ...
-    def embed_query(self, text: str) -> list[float]: ...
-
-
-class BGEEmbeddingFunction:
+class BGEEmbeddingFunction(_SentenceTransformerEmbedder):
     """Symmetric bge-m3 embedder for the ChromaDB retrieval adapter (ADR-0008).
 
     Unlike e5, bge-m3 takes NO prefix on either side. The model card states the
@@ -129,17 +147,13 @@ class BGEEmbeddingFunction:
     instruction either. Documents and queries are therefore encoded from the raw
     text, identically — there is no document-vs-query distinction beyond the
     list-vs-single shape. Carrying over e5's "query: "/"passage: " prefixes here
-    would be a silent quality bug, which is why this is a separate class.
+    would be a silent quality bug, which is why this is a separate subclass.
 
     Dense-only: SentenceTransformer loads the model's Transformer -> CLS pooling
     -> Normalize pipeline (a single 1024-dim normalized vector). The sparse and
     ColBERT heads shipped in the repo are not part of that pipeline and are never
-    activated. ``normalize_embeddings=True`` is redundant with the model's own
-    Normalize layer but kept explicit, matching the e5 adapter.
-
-    The underlying encoder is injectable so the no-prefix contract can be
-    unit-tested without loading the 2.3 GB model; when omitted, the pinned
-    SentenceTransformer is built lazily on first use (revision-locked).
+    activated. Opt-in (ADR-0008 rejected it for production); not in the shipping
+    path.
     """
 
     def __init__(
@@ -148,29 +162,8 @@ class BGEEmbeddingFunction:
         *,
         model_name: str = BGE_EMBEDDING_MODEL_NAME,
         revision: str | None = BGE_EMBEDDING_MODEL_REVISION,
-        dim: int = BGE_EMBEDDING_DIM,
     ) -> None:
-        if not revision:
-            raise ValueError("embedding model revision must be pinned; got an empty value")
-        self._encoder = encoder
-        self._model_name = model_name
-        self._revision = revision
-        self._dim = dim
-
-    def _get_encoder(self) -> _Encoder:
-        encoder = self._encoder
-        if encoder is None:
-            from sentence_transformers import SentenceTransformer
-
-            encoder = cast(_Encoder, SentenceTransformer(self._model_name, revision=self._revision))
-            self._encoder = encoder
-        return encoder
-
-    def _encode(self, sentences: list[str]) -> list[list[float]]:
-        raw = self._get_encoder().encode(sentences, normalize_embeddings=True)
-        tolist = getattr(raw, "tolist", None)
-        matrix = tolist() if callable(tolist) else raw
-        return [list(row) for row in matrix]
+        super().__init__(encoder, model_name=model_name, revision=revision)
 
     def embed_documents(self, texts: list[str]) -> list[list[float]]:
         """Embed TIPI document texts from the raw text — no prefix (bge is symmetric)."""
