@@ -84,7 +84,7 @@ re-implementing the pipeline:
 Both are wired through `Settings` (env: `ENRICH_STRATEGY`, `EMBEDDER`), so an
 experiment is a config flag plus a rebuild, not a code change.
 
-## Decision log (how we got to 63.3% top-3, and why it's stuck there)
+## Decision log — eight ADRs, what worked, what didn't, and why
 
 | ADR | Title | Status | Central finding |
 |---|---|---|---|
@@ -174,15 +174,20 @@ set `NCM_CHAPTER=beverage`, which points retrieval at the isolated
 
 ```
 src/
-  retrieval/      # RetrievalPort + adapters (naive, Chroma/e5-small)
-  llm/             # LLMRerankPort + adapters (passthrough, ...)
-  verification.py # deterministic TIPI structural check
-  api/             # composition root + HTTP endpoint
-  config.py        # Settings (EnrichStrategy, EmbedderModel)
-docs/adr/          # decision log (start here)
-eval/              # v1_cases.json (30) + v2_cases.json (350) + eval runner
-data/tipi/         # TIPI reference data (Ch.22; beverage = Ch.20/21/22)
-scripts/           # ingest_tipi.py — XLSX → corpus JSON (incl. `beverage`)
+  core/                      # domain + application (no framework imports)
+    domain/                  # ncm, enrichment, tipi_parsing
+    ports.py                 # RetrievalPort, LLMRerankPort
+    use_cases/               # classify_product
+    verification/            # deterministic.py — deterministic TIPI check (planned, not yet wired)
+  retrieval/                 # RetrievalPort adapters (naive, Chroma/e5-small) + embedding
+  llm/                       # LLMRerankPort adapters (passthrough; gemini_client stub)
+  api/                       # composition root + HTTP endpoint
+  config.py                  # Settings (EnrichStrategy, EmbedderModel)
+  main.py                    # FastAPI app entrypoint
+docs/adr/                    # decision log (start here)
+eval/                        # v1_cases.json (30) + v2_cases.json (350) + eval runner
+data/tipi/                   # TIPI reference data (Ch.22; beverage = Ch.20/21/22)
+scripts/                     # ingest_tipi.py — XLSX → corpus JSON (incl. `beverage`)
 ```
 
 ## See also
