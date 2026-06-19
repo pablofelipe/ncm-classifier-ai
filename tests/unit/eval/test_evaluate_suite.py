@@ -35,20 +35,20 @@ class FakeUseCase:
 def _case(case_id: str, product_name: str, ncm: str) -> EvalCase:
     return EvalCase(
         id=case_id,
-        product_name=product_name,
+        query=product_name,
         product_description="descricao do produto",
         expected_ncm=ncm,
-        answer_chapter=ncm[:2],
+        answer_chapter=int(ncm[:2]),
+        chapter=int(ncm[:2]),
         difficulty="easy",
+        mode="direct",
         rationale="rationale com mais de vinte caracteres",
         source="synthetic",
     )
 
 
 def _suite(*cases: EvalCase) -> EvalSuite:
-    return EvalSuite(
-        version="test", tipi_version="test", chapter_scope="22", cases=list(cases)
-    )
+    return EvalSuite(version="test", corpus_chapters=[22], cases=list(cases))
 
 
 def test_evaluate_suite_counts_top_1_hits_correctly() -> None:

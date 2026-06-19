@@ -1,30 +1,48 @@
-from typing import Annotated, Literal
+from typing import Literal
 
 from pydantic import BaseModel, Field, computed_field, model_validator
 
-ChapterCode = Annotated[str, Field(pattern=r"^\d{2}$")]
+# Failure-mode taxonomy (ADR-0009). Required on every case in both suites.
+Mode = Literal["direct", "colloquial", "poverty", "negation", "frontier", "multi_attr"]
 
 
 class EvalCase(BaseModel):
-    id: str = Field(pattern=r"^case-\d{3}$")
-    product_name: str = Field(max_length=100)
-    product_description: str = Field(max_length=300)
+    """A single labelled eval case — unified schema for both v1 and v2.
+
+    v1 and v2 share an identical field set (only the corpus they run against
+    differs, detected on the suite via ``corpus_chapters``). v1 carries the
+    rich text fields (``product_description``, ``rationale``, ``source``); v2
+    leaves them empty. None is ever fabricated — empty is empty.
+    """
+
+    # ``case-001`` (v1) or ``c001`` (v2).
+    id: str = Field(pattern=r"^(?:case-\d{3}|c\d{3})$")
+    # The text sent to the classifier (v1's ``product_name`` was renamed here).
+    query: str = Field(min_length=1, max_length=300)
+    # Rich in v1; empty in v2 (never fabricated).
+    product_description: str = Field(default="", max_length=300)
     expected_ncm: str = Field(pattern=r"^\d{4}\.\d{2}\.\d{2}$")
-    # TIPI chapter where the correct answer actually lives (first 2 digits
-    # of expected_ncm). Required.
-    answer_chapter: ChapterCode
-    # Chapters where the product could be wrongly classified.
-    # Informational, for error analysis. Never contains answer_chapter.
-    confusion_chapters: list[ChapterCode] = Field(default_factory=list)
     difficulty: Literal["easy", "medium", "hard"]
-    rationale: str = Field(min_length=20)
-    source: Literal["ecommerce", "label", "invoice", "synthetic"]
+    mode: Mode
+    # TIPI chapter where the correct answer actually lives (first 2 digits of
+    # expected_ncm); a hard invariant (validated below).
+    answer_chapter: int
+    # Chapter the query superficially evokes (informational). In v1 this equals
+    # answer_chapter; in v2 a frontier query may evoke a different chapter.
+    chapter: int
+    # Chapters where the product could be wrongly classified. Informational,
+    # for error analysis. Never contains answer_chapter.
+    confusion_chapters: list[int] = Field(default_factory=list)
+    # Rich in v1; empty in v2 (never fabricated).
+    rationale: str = ""
+    # Rich in v1 (ecommerce/label/invoice/synthetic); empty in v2.
+    source: str = ""
 
     @model_validator(mode="after")
     def _answer_chapter_matches_ncm(self) -> "EvalCase":
-        if self.answer_chapter != self.expected_ncm[:2]:
+        if self.answer_chapter != int(self.expected_ncm[:2]):
             raise ValueError(
-                f"answer_chapter {self.answer_chapter!r} must match the first "
+                f"answer_chapter {self.answer_chapter} must match the first "
                 f"two digits of expected_ncm {self.expected_ncm!r}"
             )
         return self
@@ -33,7 +51,7 @@ class EvalCase(BaseModel):
     def _confusion_excludes_answer(self) -> "EvalCase":
         if self.answer_chapter in self.confusion_chapters:
             raise ValueError(
-                f"confusion_chapters must not contain answer_chapter {self.answer_chapter!r}"
+                f"confusion_chapters must not contain answer_chapter {self.answer_chapter}"
             )
         return self
 
@@ -45,60 +63,20 @@ class EvalCase(BaseModel):
 
 
 class EvalSuite(BaseModel):
+    """A labelled eval suite — unified schema for both v1 and v2.
+
+    ``corpus_chapters`` both documents the suite's scope and drives which TIPI
+    corpus run_eval loads ([22] → per-chapter Ch.22 file; [20, 21, 22] → the
+    multi-chapter beverage corpus). The schema itself is single.
+    """
+
     version: str
-    tipi_version: str
-    chapter_scope: ChapterCode
+    description: str = ""
+    corpus_chapters: list[int] = Field(default_factory=list)
     cases: list[EvalCase]
 
     @model_validator(mode="after")
     def _unique_ids(self) -> "EvalSuite":
-        ids = [c.id for c in self.cases]
-        if len(ids) != len(set(ids)):
-            raise ValueError("case IDs must be unique")
-        return self
-
-
-# ---------------------------------------------------------------------------
-# v2 suite — multi-chapter, mode-tagged (ADR-0009). Deliberately distinct from
-# v1 above, which is frozen for retroactive comparison (ADRs 0003-0008). v2
-# drops product_name/product_description in favour of a single ``query``, uses
-# integer chapters, adds the ``mode`` dimension, and carries no single
-# ``chapter_scope`` (the corpus spans Chapters 20/21/22).
-# ---------------------------------------------------------------------------
-
-Mode = Literal["direct", "colloquial", "poverty", "negation", "frontier", "multi_attr"]
-
-
-class EvalCaseV2(BaseModel):
-    id: str = Field(pattern=r"^c\d{3}$")
-    query: str = Field(min_length=1, max_length=300)
-    expected_ncm: str = Field(pattern=r"^\d{4}\.\d{2}\.\d{2}$")
-    difficulty: Literal["easy", "medium", "hard"]
-    mode: Mode
-    # Chapter the query superficially evokes (informational, e.g. where a
-    # frontier query "came from"); ``answer_chapter`` is where the correct
-    # NCM actually lives.
-    chapter: int
-    answer_chapter: int
-
-    @model_validator(mode="after")
-    def _answer_chapter_matches_ncm(self) -> "EvalCaseV2":
-        if self.answer_chapter != int(self.expected_ncm[:2]):
-            raise ValueError(
-                f"answer_chapter {self.answer_chapter} must match the first "
-                f"two digits of expected_ncm {self.expected_ncm!r}"
-            )
-        return self
-
-
-class EvalSuiteV2(BaseModel):
-    version: str
-    description: str = ""
-    corpus_chapters: list[int] = Field(default_factory=list)
-    cases: list[EvalCaseV2]
-
-    @model_validator(mode="after")
-    def _unique_ids(self) -> "EvalSuiteV2":
         ids = [c.id for c in self.cases]
         if len(ids) != len(set(ids)):
             raise ValueError("case IDs must be unique")

@@ -34,7 +34,7 @@ def main() -> None:
 
     rows = []
     for case in suite.cases:
-        query = ProductQuery(product_name=case.product_name, description=case.product_description)
+        query = ProductQuery(product_name=case.query, description=case.product_description)
         candidates = adapter.retrieve_candidates(query, k=10)
         preds = [{"ncm": c.ncm_code, "score": round(c.score, 4)} for c in candidates]
         ranked = [p["ncm"] for p in preds]
@@ -42,7 +42,7 @@ def main() -> None:
         rows.append(
             {
                 "id": case.id,
-                "product_name": case.product_name,
+                "query": case.query,
                 "expected": case.expected_ncm,
                 "difficulty": case.difficulty,
                 "confusion_chapters": case.confusion_chapters,

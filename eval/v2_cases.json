@@ -1,6 +1,6 @@
 {
   "version": "v2",
-  "description": "350 eval cases covering Chapter 22 (beverages), Chapter 20/2009 (fruit juices) and Chapter 21 partial (coffee, tea, beverage preparations). Generated from TIPI vigente 18/06/2026.",
+  "description": "350 cases covering Chapters 20/21/22. Six failure modes. Baseline for ADR-0009 onward. product_description intentionally empty — not fabricated.",
   "corpus_chapters": [
     20,
     21,
@@ -10,3152 +10,4552 @@
     {
       "id": "c001",
       "query": "Água mineral com gás, 500 ml",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c002",
       "query": "Água mineral sem gás",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c003",
       "query": "Água gaseificada importada",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c004",
       "query": "Água com borbulhas naturais de fonte",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c005",
       "query": "San Pellegrino",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c006",
       "query": "Perrier",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c007",
       "query": "Outras águas não mineralizadas",
+      "product_description": "",
       "expected_ncm": "2201.90.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c008",
       "query": "Água destilada para uso alimentar",
+      "product_description": "",
       "expected_ncm": "2201.90.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c009",
       "query": "Gelo alimentar para bebidas",
+      "product_description": "",
       "expected_ncm": "2201.90.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c010",
       "query": "Refrigerante de cola 350ml lata",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c011",
       "query": "Coca-Cola lata",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c012",
       "query": "Pepsi garrafa 2l",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c013",
       "query": "Guaraná Antarctica",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c014",
       "query": "Fanta laranja",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c015",
       "query": "Água tônica",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c016",
       "query": "Bebida energética Red Bull",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c017",
       "query": "Monster Energy",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c018",
       "query": "Refrigerante sem açúcar diet",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c019",
       "query": "Coca-Cola zero açúcar",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c020",
       "query": "Cerveja zero álcool",
+      "product_description": "",
       "expected_ncm": "2202.91.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c021",
       "query": "Cerveja sem álcool lata",
+      "product_description": "",
       "expected_ncm": "2202.91.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c022",
       "query": "Heineken zero",
+      "product_description": "",
       "expected_ncm": "2202.91.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c023",
       "query": "Bebida maltada não alcoólica",
+      "product_description": "",
       "expected_ncm": "2202.91.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c024",
       "query": "Isotônico Gatorade",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c025",
       "query": "Bebida esportiva repositora de sais",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c026",
       "query": "Kombucha",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c027",
       "query": "Bebida à base de soja sem álcool",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c028",
       "query": "Chá gelado engarrafado",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c029",
       "query": "Ice tea limão",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c030",
       "query": "Cerveja puro malte",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c031",
       "query": "Cerveja lager",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c032",
       "query": "Brahma lata",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c033",
       "query": "Skol 600ml",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c034",
       "query": "Heineken long neck",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c035",
       "query": "IPA artesanal",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c036",
       "query": "Stout importada",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c037",
       "query": "Cerveja de trigo weiss",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c038",
       "query": "Chopp de barril",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c039",
       "query": "Cerveja com malte e lúpulo",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c040",
       "query": "Champagne francês",
+      "product_description": "",
       "expected_ncm": "2204.10.10",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c041",
       "query": "Espumante brut",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c042",
       "query": "Prosecco italiano",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c043",
       "query": "Cava espanhola",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c044",
       "query": "Vinho tinto Cabernet Sauvignon 750ml",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c045",
       "query": "Vinho branco Chardonnay garrafa",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c046",
       "query": "Vinho rosé seco 750ml",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c047",
       "query": "Merlot chileno garrafa",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c048",
       "query": "Vinho tinto em bag-in-box 3l",
+      "product_description": "",
       "expected_ncm": "2204.22.11",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c049",
       "query": "Vinho de mesa a granel",
+      "product_description": "",
       "expected_ncm": "2204.29.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c050",
       "query": "Mosto de uva para vinificação",
+      "product_description": "",
       "expected_ncm": "2204.30.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c051",
       "query": "Mosto de uva concentrado",
+      "product_description": "",
       "expected_ncm": "2204.30.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c052",
       "query": "Vinho do Porto",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c053",
       "query": "Vinho Malbec argentino 750ml",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c054",
       "query": "Vinho espumante moscatel",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c055",
       "query": "Vermute seco garrafa",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c056",
       "query": "Martini bianco",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c057",
       "query": "Cinzano rosso",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c058",
       "query": "Aperol",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c059",
       "query": "Campari",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c060",
       "query": "Vermute em embalagem maior 5l",
+      "product_description": "",
       "expected_ncm": "2205.90.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c061",
       "query": "Sidra de maçã",
+      "product_description": "",
       "expected_ncm": "2206.00.10",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c062",
       "query": "Sidra espumante",
+      "product_description": "",
       "expected_ncm": "2206.00.10",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c063",
       "query": "Sidra importada",
+      "product_description": "",
       "expected_ncm": "2206.00.10",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c064",
       "query": "Hidromel",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c065",
       "query": "Bebida fermentada de frutas",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c066",
       "query": "Kefir bebida fermentada",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c067",
       "query": "Álcool etílico 96% INPM",
+      "product_description": "",
       "expected_ncm": "2207.10.90",
       "difficulty": "hard",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c068",
       "query": "Álcool de cereais não desnaturado",
+      "product_description": "",
       "expected_ncm": "2207.10.90",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c069",
       "query": "Álcool anidro combustível",
+      "product_description": "",
       "expected_ncm": "2207.20.19",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c070",
       "query": "Álcool desnaturado para limpeza",
+      "product_description": "",
       "expected_ncm": "2207.20.19",
       "difficulty": "hard",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c071",
       "query": "Conhaque",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c072",
       "query": "Brandy",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c073",
       "query": "Cognac francês",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c074",
       "query": "Uísque escocês",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c075",
       "query": "Whisky single malt",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c076",
       "query": "Johnnie Walker Black",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c077",
       "query": "Jack Daniel's",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c078",
       "query": "Jim Beam",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c079",
       "query": "Chivas Regal",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c080",
       "query": "Bourbon americano",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c081",
       "query": "Uísque a granel recipiente 200l",
+      "product_description": "",
       "expected_ncm": "2208.30.10",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c082",
       "query": "Rum",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c083",
       "query": "Cachaça artesanal",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c084",
       "query": "Pinga",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c085",
       "query": "Bacardi branco",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c086",
       "query": "Havana Club",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c087",
       "query": "Gim",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c088",
       "query": "Gin tônica",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c089",
       "query": "Tanqueray",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c090",
       "query": "Hendrick's gin",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c091",
       "query": "Vodca",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c092",
       "query": "Smirnoff",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c093",
       "query": "Absolut garrafa",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c094",
       "query": "Grey Goose",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c095",
       "query": "Vodca de batata",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c096",
       "query": "Licor de cacau",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c097",
       "query": "Baileys",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c098",
       "query": "Amaretto",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c099",
       "query": "Limoncello",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c100",
       "query": "Cointreau",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c101",
       "query": "Fernet",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c102",
       "query": "Tequila",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c103",
       "query": "Mezcal",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c104",
       "query": "Sake",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c105",
       "query": "Pisco",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c106",
       "query": "Bebida espirituosa de mel",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c107",
       "query": "Absinto",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c108",
       "query": "Vinagre de vinho tinto",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c109",
       "query": "Vinagre balsâmico",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c110",
       "query": "Vinagre de maçã",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c111",
       "query": "Vinagre de álcool",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c112",
       "query": "Aceto balsâmico di Modena",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c113",
       "query": "Cerveja com baixo teor alcoólico mas com álcool",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c114",
       "query": "Vinho sem álcool",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c115",
       "query": "Cerveja de malte com álcool",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c116",
       "query": "Suco de uva fermentado sem álcool",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c117",
       "query": "Bebida malte sem graduação alcoólica",
+      "product_description": "",
       "expected_ncm": "2202.91.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c118",
       "query": "Refrigerante com extrato de malte",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c119",
       "query": "Vinho espumante rosé brut 750ml",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c120",
       "query": "Mosto de uva parcialmente fermentado Brix 18",
+      "product_description": "",
       "expected_ncm": "2204.30.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c121",
       "query": "Álcool etílico anidro 99,5% desnaturado com MEK",
+      "product_description": "",
       "expected_ncm": "2207.20.19",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c122",
       "query": "Uísque escocês 43% vol embalagem 1l",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c123",
       "query": "Vermute rosso em garrafa de 750ml",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c124",
       "query": "Suco de laranja congelado",
+      "product_description": "",
       "expected_ncm": "2009.11.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c125",
       "query": "Suco de laranja integral não pasteurizado Brix 11",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c126",
       "query": "Suco de laranja concentrado",
+      "product_description": "",
       "expected_ncm": "2009.19.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c127",
       "query": "Suco de laranja industrializado caixinha",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c128",
       "query": "Del Valle laranja",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c129",
       "query": "Minute Maid laranja",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c130",
       "query": "Tang pó para refresco laranja",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c131",
       "query": "Suco de toranja pomelo",
+      "product_description": "",
       "expected_ncm": "2009.21.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c132",
       "query": "Suco de pomelo Brix 18",
+      "product_description": "",
       "expected_ncm": "2009.21.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c133",
       "query": "Suco de limão taiti",
+      "product_description": "",
       "expected_ncm": "2009.31.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c134",
       "query": "Suco de limão concentrado",
+      "product_description": "",
       "expected_ncm": "2009.39.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c135",
       "query": "Suco de abacaxi Del Monte",
+      "product_description": "",
       "expected_ncm": "2009.41.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c136",
       "query": "Suco de abacaxi concentrado Brix 60",
+      "product_description": "",
       "expected_ncm": "2009.49.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c137",
       "query": "Suco de tomate",
+      "product_description": "",
       "expected_ncm": "2009.50.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c138",
       "query": "Molho de tomate",
+      "product_description": "",
       "expected_ncm": "2009.50.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c139",
       "query": "Suco de uva tinto integral",
+      "product_description": "",
       "expected_ncm": "2009.61.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c140",
       "query": "Suco de uva Brix 28",
+      "product_description": "",
       "expected_ncm": "2009.61.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c141",
       "query": "Suco de uva concentrado Brix 65",
+      "product_description": "",
       "expected_ncm": "2009.69.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c142",
       "query": "Suco de maçã natural",
+      "product_description": "",
       "expected_ncm": "2009.71.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c143",
       "query": "Suco de maçã Brix 14",
+      "product_description": "",
       "expected_ncm": "2009.71.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c144",
       "query": "Suco de maçã concentrado",
+      "product_description": "",
       "expected_ncm": "2009.79.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c145",
       "query": "Suco de cranberry",
+      "product_description": "",
       "expected_ncm": "2009.81.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c146",
       "query": "Ocean Spray cranberry",
+      "product_description": "",
       "expected_ncm": "2009.81.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c147",
       "query": "Suco de acerola",
+      "product_description": "",
       "expected_ncm": "2009.89.12",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c148",
       "query": "Suco de maracujá",
+      "product_description": "",
       "expected_ncm": "2009.89.13",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c149",
       "query": "Suco de pêssego concentrado",
+      "product_description": "",
       "expected_ncm": "2009.89.11",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c150",
       "query": "Suco de caju caixinha",
+      "product_description": "",
       "expected_ncm": "2009.89.21",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c151",
       "query": "Suco de caju concentrado",
+      "product_description": "",
       "expected_ncm": "2009.89.22",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c152",
       "query": "Suco de goiaba",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c153",
       "query": "Suco de manga",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c154",
       "query": "Suco de graviola",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c155",
       "query": "Néctar de pêssego",
+      "product_description": "",
       "expected_ncm": "2009.89.11",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c156",
       "query": "Mix de sucos tropicais",
+      "product_description": "",
       "expected_ncm": "2009.90.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c157",
       "query": "Blend de sucos cítricos",
+      "product_description": "",
       "expected_ncm": "2009.90.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c158",
       "query": "Suco misto laranja e manga",
+      "product_description": "",
       "expected_ncm": "2009.90.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c159",
       "query": "Suco de laranja fermentado com álcool",
+      "product_description": "",
       "expected_ncm": "2204.29.10",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c160",
       "query": "Suco de uva levemente fermentado",
+      "product_description": "",
       "expected_ncm": "2204.30.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c161",
       "query": "Vinagre de maçã produzido por fermentação",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c162",
       "query": "Bebida mista de suco de uva e vinho",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c163",
       "query": "Suco de laranja adicionado de açúcar",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c164",
       "query": "Café solúvel Nescafé",
+      "product_description": "",
       "expected_ncm": "2101.11.10",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c165",
       "query": "Café solúvel descafeinado",
+      "product_description": "",
       "expected_ncm": "2101.11.10",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c166",
       "query": "Café instantâneo",
+      "product_description": "",
       "expected_ncm": "2101.11.10",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c167",
       "query": "Extrato de café concentrado",
+      "product_description": "",
       "expected_ncm": "2101.11.90",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c168",
       "query": "Cápsula Nespresso",
+      "product_description": "",
       "expected_ncm": "2101.12.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c169",
       "query": "Cápsula de café Dolce Gusto",
+      "product_description": "",
       "expected_ncm": "2101.12.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c170",
       "query": "Chá preto em sachê",
+      "product_description": "",
       "expected_ncm": "2101.20.10",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c171",
       "query": "Chá verde",
+      "product_description": "",
       "expected_ncm": "2101.20.10",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c172",
       "query": "Lipton chá",
+      "product_description": "",
       "expected_ncm": "2101.20.10",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c173",
       "query": "Extrato de chá para bebida",
+      "product_description": "",
       "expected_ncm": "2101.20.10",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c174",
       "query": "Erva-mate chimarrão",
+      "product_description": "",
       "expected_ncm": "2101.20.20",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c175",
       "query": "Mate tostado",
+      "product_description": "",
       "expected_ncm": "2101.20.20",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c176",
       "query": "Leão Fumo erva-mate",
+      "product_description": "",
       "expected_ncm": "2101.20.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c177",
       "query": "Chicória para café",
+      "product_description": "",
       "expected_ncm": "2101.30.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c178",
       "query": "Sucedâneo de café de cereais",
+      "product_description": "",
       "expected_ncm": "2101.30.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c179",
       "query": "Pó para preparo de refresco em pó",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c180",
       "query": "Tang pó sabor uva",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c181",
       "query": "Clight refresco em pó",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c182",
       "query": "Preparado para bebida energética em pó",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c183",
       "query": "Chá gelado engarrafado com álcool",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c184",
       "query": "Bebida à base de café com álcool",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c185",
       "query": "Café com leite engarrafado sem álcool",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c186",
       "query": "Mate couro bebida fermentada",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c187",
       "query": "Refresco pronto sem álcool adoçado",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c188",
       "query": "Água com gás importada",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c189",
       "query": "Água de coco",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c190",
       "query": "Água de coco natural",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c191",
       "query": "Cerveja artesanal IPA",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c192",
       "query": "Cerveja pilsen",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c193",
       "query": "Chopp pilsen",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c194",
       "query": "Vinho tinto reserva",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c195",
       "query": "Espumante brasileiro",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c196",
       "query": "Vinho verde português",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c197",
       "query": "Lambrusco",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c198",
       "query": "Vinho da Madeira",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c199",
       "query": "Grappa",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c200",
       "query": "Marc de Bourgogne",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c201",
       "query": "Armagnac",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c202",
       "query": "Calvados",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c203",
       "query": "Kirsch",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c204",
       "query": "Slivovitz",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c205",
       "query": "Ouzo",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c206",
       "query": "Grogue cabo-verdiano",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c207",
       "query": "Aguardente de mel",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c208",
       "query": "Destilado de arroz",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c209",
       "query": "Cerveja sem glúten",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c210",
       "query": "Vinho orgânico sem conservantes",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c211",
       "query": "Gin sem álcool",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c212",
       "query": "Whisky free de álcool",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c213",
       "query": "Refrigerante sem corante sem açúcar",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c214",
       "query": "Água mineral com vitaminas",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c215",
       "query": "Água mineral saborizada sem gás",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c216",
       "query": "Vinho tinto suave 1 litro",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c217",
       "query": "Uísque 12 anos single malt 700ml",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c218",
       "query": "Cachaça envelhecida em barril de carvalho",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c219",
       "query": "Espumante brut nature zero dosage",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c220",
       "query": "Cerveja duplo malte",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c221",
       "query": "Suco de laranja Del Valle",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c222",
       "query": "Suco de abacaxi concentrado Brix 15",
+      "product_description": "",
       "expected_ncm": "2009.41.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c223",
       "query": "Suco de uva verde",
+      "product_description": "",
       "expected_ncm": "2009.61.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c224",
       "query": "Suco misto de frutas tropicais",
+      "product_description": "",
       "expected_ncm": "2009.90.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c225",
       "query": "Polpa de maracujá congelada",
+      "product_description": "",
       "expected_ncm": "2009.89.13",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c226",
       "query": "Suco de manga Ades",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c227",
       "query": "Suco de goiaba Maguary",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c228",
       "query": "Néctar de maracujá adoçado",
+      "product_description": "",
       "expected_ncm": "2009.89.13",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c229",
       "query": "Suco de tomate Elefante",
+      "product_description": "",
       "expected_ncm": "2009.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c230",
       "query": "Suco de cranberry Ocean Spray zero açúcar",
+      "product_description": "",
       "expected_ncm": "2009.81.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c231",
       "query": "Nescafé clássico",
+      "product_description": "",
       "expected_ncm": "2101.11.10",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c232",
       "query": "Café solúvel orgânico",
+      "product_description": "",
       "expected_ncm": "2101.11.10",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c233",
       "query": "Extrato de chá preto concentrado",
+      "product_description": "",
       "expected_ncm": "2101.20.10",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c234",
       "query": "Chá mate gelado",
+      "product_description": "",
       "expected_ncm": "2101.20.20",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c235",
       "query": "Preparado para suco em pó Sukita",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c236",
       "query": "Base para drinque sem álcool em pó",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c237",
       "query": "Kombucha com 1,2% de álcool",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c238",
       "query": "Kefir de água levemente alcoólico",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c239",
       "query": "Vinagre de álcool para uso alimentar",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "medium",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c240",
       "query": "Licor de café",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c241",
       "query": "Café com leite alcoólico",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c242",
       "query": "Caipirinha pronta engarrafada",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c243",
       "query": "Suco de uva integral sem adição de álcool",
+      "product_description": "",
       "expected_ncm": "2009.61.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c244",
       "query": "Vinho sem álcool à base de uva",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c245",
       "query": "Refresco de laranja pronto sem álcool",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c246",
       "query": "Bebida à base de chá verde e vodca",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c247",
       "query": "Gin tônica pronto enlatado",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c248",
       "query": "Suco de laranja com vitamina C",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c249",
       "query": "Água de coco com whey protein",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c250",
       "query": "Chá preto com álcool hard tea",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c251",
       "query": "Água mineral com magnésio",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c252",
       "query": "Água de nascente",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c253",
       "query": "Evian",
+      "product_description": "",
       "expected_ncm": "2201.10.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c254",
       "query": "Bebida gaseificada zero calorias",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c255",
       "query": "Energético Monster zero açúcar",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c256",
       "query": "Bebida não alcoólica à base de ervas",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c257",
       "query": "Kefir de leite",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c258",
       "query": "Cerveja de arroz",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c259",
       "query": "Cerveja tipo lager light",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c260",
       "query": "Corona Extra",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c261",
       "query": "Stella Artois",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c262",
       "query": "Budweiser",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c263",
       "query": "Spaten",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c264",
       "query": "Vinho Bordeaux",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c265",
       "query": "Rioja espanhol",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c266",
       "query": "Brunello di Montalcino",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c267",
       "query": "Champagne Dom Pérignon",
+      "product_description": "",
       "expected_ncm": "2204.10.10",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c268",
       "query": "Espumante Chandon",
+      "product_description": "",
       "expected_ncm": "2204.10.90",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c269",
       "query": "Vinho do Porto Ruby",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c270",
       "query": "Vinho Madeira seco",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c271",
       "query": "Mosto de uva tinto para industria",
+      "product_description": "",
       "expected_ncm": "2204.30.00",
       "difficulty": "hard",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c272",
       "query": "Noilly Prat",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c273",
       "query": "Lillet Blanc",
+      "product_description": "",
       "expected_ncm": "2205.10.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c274",
       "query": "Sidra de pera",
+      "product_description": "",
       "expected_ncm": "2206.00.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c275",
       "query": "Perry bebida fermentada de pera",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c276",
       "query": "Vinho de arroz sake",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c277",
       "query": "Álcool de cana não desnaturado",
+      "product_description": "",
       "expected_ncm": "2207.10.90",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c278",
       "query": "Aguardente de cana desnaturada industrial",
+      "product_description": "",
       "expected_ncm": "2207.20.20",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c279",
       "query": "Cognac XO",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c280",
       "query": "Metaxa",
+      "product_description": "",
       "expected_ncm": "2208.20.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c281",
       "query": "Whisky irlandês",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c282",
       "query": "Scotch whisky",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c283",
       "query": "Tennessee whiskey",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c284",
       "query": "Rye whiskey",
+      "product_description": "",
       "expected_ncm": "2208.30.20",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c285",
       "query": "Rum envelhecido 12 anos",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c286",
       "query": "Rum jamaicano",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c287",
       "query": "Aguardente de cana",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c288",
       "query": "Gordon's gin",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c289",
       "query": "Beefeater",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c290",
       "query": "Bombay Sapphire",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c291",
       "query": "Stolichnaya vodca",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c292",
       "query": "Belvedere vodca",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c293",
       "query": "Tito's handmade vodka",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c294",
       "query": "Kahlúa",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c295",
       "query": "Frangelico",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c296",
       "query": "Sambuca",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c297",
       "query": "Grand Marnier",
+      "product_description": "",
       "expected_ncm": "2208.70.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c298",
       "query": "Chartreuse",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c299",
       "query": "Jägermeister",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c300",
       "query": "Aperitivo Spritz",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c301",
       "query": "Vinagre de vinho branco",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "easy",
       "mode": "direct",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c302",
       "query": "Vinagre de arroz",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c303",
       "query": "Vinagre de framboesa",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c304",
       "query": "Suco de laranja Tropicana",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "easy",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c305",
       "query": "Suco de abacaxi Maguary",
+      "product_description": "",
       "expected_ncm": "2009.41.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c306",
       "query": "Suco de maçã Kapo",
+      "product_description": "",
       "expected_ncm": "2009.71.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c307",
       "query": "Suco de uva Welch's",
+      "product_description": "",
       "expected_ncm": "2009.61.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c308",
       "query": "Suco de cranberry integral",
+      "product_description": "",
       "expected_ncm": "2009.81.00",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c309",
       "query": "Suco de laranja com polpa",
+      "product_description": "",
       "expected_ncm": "2009.12.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c310",
       "query": "Suco de limão concentrado 4:1",
+      "product_description": "",
       "expected_ncm": "2009.39.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c311",
       "query": "Blend suco laranja e abacaxi",
+      "product_description": "",
       "expected_ncm": "2009.90.00",
       "difficulty": "medium",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c312",
       "query": "Suco de acerola congelado",
+      "product_description": "",
       "expected_ncm": "2009.89.12",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c313",
       "query": "Suco de maracujá concentrado",
+      "product_description": "",
       "expected_ncm": "2009.89.13",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c314",
       "query": "Suco de caju integral",
+      "product_description": "",
       "expected_ncm": "2009.89.21",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c315",
       "query": "Suco de goiaba rosa",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c316",
       "query": "Polpa de acerola congelada",
+      "product_description": "",
       "expected_ncm": "2009.89.12",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c317",
       "query": "Suco de uva tinto concentrado Brix 68",
+      "product_description": "",
       "expected_ncm": "2009.69.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c318",
       "query": "Suco de tomate Pomarola",
+      "product_description": "",
       "expected_ncm": "2009.50.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c319",
       "query": "Suco de graviola polpa congelada",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c320",
       "query": "Suco de pitanga",
+      "product_description": "",
       "expected_ncm": "2009.89.19",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c321",
       "query": "Nespresso cápsula original",
+      "product_description": "",
       "expected_ncm": "2101.12.00",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c322",
       "query": "Café em cápsula compatível",
+      "product_description": "",
       "expected_ncm": "2101.12.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c323",
       "query": "Extrato de chá verde concentrado",
+      "product_description": "",
       "expected_ncm": "2101.20.10",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c324",
       "query": "Chá de ervas para infusão",
+      "product_description": "",
       "expected_ncm": "2101.20.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c325",
       "query": "Erva-mate tostada",
+      "product_description": "",
       "expected_ncm": "2101.20.20",
       "difficulty": "medium",
       "mode": "direct",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c326",
       "query": "Preparado para refresco Clight",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "medium",
       "mode": "colloquial",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c327",
       "query": "Pó para vitamina de frutas",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c328",
       "query": "Mistura em pó para smoothie",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c329",
       "query": "Base concentrada para limonada",
+      "product_description": "",
       "expected_ncm": "2106.90.10",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c330",
       "query": "Pó para preparo de chá mate gelado",
+      "product_description": "",
       "expected_ncm": "2101.20.20",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 21,
       "chapter": 21,
-      "answer_chapter": 21
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c331",
       "query": "Bebida mista de frutas e cachaça",
+      "product_description": "",
       "expected_ncm": "2208.40.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c332",
       "query": "Cerveja artesanal com mel",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c333",
       "query": "Cerveja com frutas sour",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c334",
       "query": "Vinho de frutas não uva",
+      "product_description": "",
       "expected_ncm": "2206.00.90",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c335",
       "query": "Bebida alcoólica de arroz tipo sake",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c336",
       "query": "Bebida alcoólica à base de soja",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c337",
       "query": "Refrigerante de extrato de guaraná",
+      "product_description": "",
       "expected_ncm": "2202.10.00",
       "difficulty": "medium",
       "mode": "poverty",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c338",
       "query": "Bebida isotônica zero sódio",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c339",
       "query": "Cerveja de quinoa sem glúten",
+      "product_description": "",
       "expected_ncm": "2203.00.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c340",
       "query": "Suco de uva 100% sem conservantes",
+      "product_description": "",
       "expected_ncm": "2009.61.00",
       "difficulty": "medium",
       "mode": "negation",
+      "answer_chapter": 20,
       "chapter": 20,
-      "answer_chapter": 20
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c341",
       "query": "Vinagre de cidra de maçã raw",
+      "product_description": "",
       "expected_ncm": "2209.00.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c342",
       "query": "Kefir bebida probiótica não alcoólica",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c343",
       "query": "Kombucha zero álcool",
+      "product_description": "",
       "expected_ncm": "2202.99.00",
       "difficulty": "hard",
       "mode": "negation",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c344",
       "query": "Hard seltzer limão",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c345",
       "query": "White claw",
+      "product_description": "",
       "expected_ncm": "2208.90.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c346",
       "query": "Bebida mista vodca e energético",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c347",
       "query": "RTD gin tônica lata",
+      "product_description": "",
       "expected_ncm": "2208.50.00",
       "difficulty": "hard",
       "mode": "multi_attr",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c348",
       "query": "Caipiroska pronta",
+      "product_description": "",
       "expected_ncm": "2208.60.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c349",
       "query": "Clericot vinho com frutas",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "frontier",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     },
     {
       "id": "c350",
       "query": "Sangria",
+      "product_description": "",
       "expected_ncm": "2204.21.00",
       "difficulty": "hard",
       "mode": "colloquial",
+      "answer_chapter": 22,
       "chapter": 22,
-      "answer_chapter": 22
+      "confusion_chapters": [],
+      "rationale": "",
+      "source": ""
     }
   ]
 }
