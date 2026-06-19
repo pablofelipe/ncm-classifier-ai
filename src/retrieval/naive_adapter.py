@@ -6,19 +6,19 @@ from src.core.domain.ncm import (
 
 
 class NaiveRetrievalAdapter:
-    """WALKING SKELETON — não rankeia, retorna primeiros k entries.
+    """Walking-skeleton retrieval: no ranking, returns the first k entries.
 
-    Substituir por ChromaRetrievalAdapter quando ADR-0003 (embedding
-    model selection) for aceito. Existe para estabelecer baseline
-    reprodutível e validar RetrievalPort com >= 2 implementações.
+    Superseded in production by ChromaRetrievalAdapter (ADR-0004, shipping);
+    kept as the baseline second implementation of RetrievalPort and used by
+    tests. Establishes a reproducible baseline and validates the port with >= 2
+    implementations.
 
-    Determinismo: para a mesma lista de entries (carregada de uma TIPI
-    JSON específica), retrieve_candidates retorna sempre os mesmos k
-    candidatos na mesma ordem — a ordem em que aparecem em "entries".
-    Não há embedding, tokenização nem modelo: apenas leitura ordenada.
-    Todos os candidatos recebem score=0.0 para sinalizar explicitamente
-    que este adapter não produz ranking. Quando k excede o número de
-    entries disponíveis, retorna todos os disponíveis sem erro.
+    Determinism: for the same entries list (loaded from a specific TIPI JSON),
+    retrieve_candidates always returns the same k candidates in the same order
+    — the order they appear in ``entries``. No embedding, tokenization or model:
+    just an ordered read. Every candidate gets score=0.0 to signal explicitly
+    that this adapter produces no ranking. When k exceeds the number of
+    available entries, it returns all of them without error.
     """
 
     def __init__(self, entries: list[dict[str, object]]) -> None:

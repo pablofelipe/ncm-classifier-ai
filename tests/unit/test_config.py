@@ -4,9 +4,19 @@ These assert the declared field defaults (env-independent) so production stays o
 the ADR-0007 baseline regardless of any EMBEDDER value in the ambient env.
 """
 
+import pytest
+
 from src.config import Settings
 from src.core.domain.enrichment import EnrichStrategy
 from src.retrieval.embedding import EmbedderModel
+
+
+def test_settings_instantiates_without_gemini_api_key(monkeypatch: pytest.MonkeyPatch) -> None:
+    # The Gemini rerank path is not yet implemented, so a key is not required to
+    # run the shipping pipeline. _env_file=None ignores any local .env.
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    settings = Settings(_env_file=None)  # type: ignore[call-arg]
+    assert settings.gemini_api_key is None
 
 
 def test_embedder_defaults_to_e5_small() -> None:

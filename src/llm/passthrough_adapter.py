@@ -2,12 +2,12 @@ from src.core.domain.ncm import ClassificationCandidate, ProductQuery
 
 
 class PassthroughRerankAdapter:
-    """WALKING SKELETON — não rankeia, retorna os candidatos inalterados.
+    """No-op rerank: returns the candidates unchanged.
 
-    Substituir por GeminiRerankAdapter quando ADR-0003 (embedding model
-    selection) for aceito. Existe para estabelecer baseline reprodutível
-    e validar LLMRerankPort sem dependências externas (nenhuma chamada à
-    API do Gemini). Preserva ordem e conteúdo dos candidatos recebidos.
+    This is the shipping rerank today — the Gemini rerank path is not yet
+    implemented (see src/llm/gemini_client.py). Validates LLMRerankPort with no
+    external dependency (no Gemini API call). Preserves the order and content of
+    the candidates it receives.
     """
 
     def rerank(

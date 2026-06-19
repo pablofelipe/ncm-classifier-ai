@@ -12,10 +12,15 @@ dependencies = [
     "pydantic>=2.10,<3",
     "pydantic-settings>=2.7",
     "chromadb>=0.5",
-    "google-genai>=1.0",
 ]
 
 [project.optional-dependencies]
+# Gemini SDK — only needed once the LLM-rerank path is implemented
+# (src/llm/gemini_client.py is a stub today). Kept out of the core deps so a
+# default install / CI run pulls nothing for an unused code path.
+llm = [
+    "google-genai>=1.0",
+]
 dev = [
     "pytest>=8.3",
     "pytest-asyncio>=0.24",

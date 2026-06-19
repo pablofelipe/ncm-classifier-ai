@@ -26,7 +26,8 @@ def build_document_text(entry: dict[str, Any], strategy: EnrichStrategy) -> str:
       subheading is substantive; the heading is never injected.
 
     Prefixing (if any) is the embedder's concern, not this function's: the
-    active bge-m3 embedder adds none (ADR-0008), the legacy e5 added "passage: ".
+    shipping e5-small embedder adds "passage: " to documents (ADR-0004); the
+    opt-in bge-m3 adds none (ADR-0008, rejected and not in the production path).
     """
     if strategy is EnrichStrategy.OFF:
         body = entry["description"]

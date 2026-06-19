@@ -55,17 +55,20 @@ locally (`make eval-v2`).
 
 Hexagonal / ports-and-adapters. Retrieval and rerank are swappable
 adapters behind `RetrievalPort` and `LLMRerankPort`, validated by two
-implementations each (naive baseline + production adapter). A
-**deterministic verification gate** checks every candidate against the
-in-memory TIPI table (existence, chapter coherence, hierarchy
-consistency) before it can be returned as a confident answer — chosen
-over a second LLM call because it's testable, has zero marginal cost,
-and produces an auditable rejection reason. Candidates that fail
-verification are routed to an escalation path rather than returned as a
-guess.
+implementations each (naive baseline + production adapter).
+
+> ⚠️ **Planned — not yet integrated.** A **deterministic verification gate**
+> (ADR-0002) is implemented and unit-tested in
+> `src/core/verification/deterministic.py` (existence, chapter coherence,
+> hierarchy consistency), but it is **not yet wired into the pipeline**: the
+> shipping flow is retrieval → rerank → confidence gate, with no verification
+> step. It was chosen over a second LLM call because it's testable, has zero
+> marginal cost, and produces an auditable rejection reason; wiring it in (with
+> failures routed to an escalation path) is planned for a future ADR.
 
 ```
-HTTP → ClassifyProduct use case → RetrievalPort → LLMRerankPort → Verification gate → result | escalate
+HTTP → ClassifyProduct use case → RetrievalPort → LLMRerankPort → confidence gate → result
+                                                              (Verification gate → escalate: planned, not yet wired)
 ```
 
 Two infrastructure seams make experimentation cheap and reproducible without
