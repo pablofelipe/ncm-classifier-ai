@@ -9,12 +9,9 @@ on:
 jobs:
   eval:
     runs-on: ubuntu-latest
-    env:
-      # The pipeline never calls Gemini yet (rerank is Passthrough), but
-      # src.config.Settings() validates gemini_api_key at import time
-      # (module-level instantiation). A non-secret placeholder satisfies that
-      # validation; no real key is needed until the Gemini rerank adapter lands.
-      GEMINI_API_KEY: dummy-not-used-in-skeleton
+    # No GEMINI_API_KEY needed: the pipeline never calls Gemini yet (rerank is
+    # Passthrough) and gemini_api_key is optional (str | None). CI runs the
+    # shipping pipeline with no key, which exercises that contract.
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-python@v6
