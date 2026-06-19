@@ -5,7 +5,7 @@ from collections.abc import Callable
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from eval.schema import CaseResult, EvalReport, EvalSuite
+from eval.schema import CaseResult, EvalReport, EvalSuite, EvalSuiteV2
 from src.api.dependencies import build_classify_use_case
 from src.config import settings
 from src.core.domain.ncm import ClassificationResult, ProductQuery
@@ -15,6 +15,23 @@ from src.core.use_cases.classify_product import ClassifyProduct
 def load_eval_suite(path: str | Path) -> EvalSuite:
     data = json.loads(Path(path).read_text(encoding="utf-8"))
     return EvalSuite.model_validate(data)
+
+
+def load_eval_suite_v2(path: str | Path) -> EvalSuiteV2:
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    return EvalSuiteV2.model_validate(data)
+
+
+def detect_suite_version(path: str | Path) -> str:
+    """Return "v2" for the multi-chapter suite, "v1" otherwise.
+
+    Detection is structural, not by filename: the v2 suite carries a
+    top-level ``corpus_chapters`` key (it spans Chapters 20/21/22 and has no
+    single ``chapter_scope``). This keeps ``main`` routing decoupled from how
+    the path is spelled, so ``make eval-v2`` just points at the v2 file.
+    """
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    return "v2" if "corpus_chapters" in data else "v1"
 
 
 @dataclass(frozen=True)
@@ -80,6 +97,44 @@ def cross_validate_against_tipi(suite: EvalSuite, tipi_ncms: set[str]) -> CrossV
     )
 
 
+@dataclass(frozen=True)
+class CrossValidationReportV2:
+    """v2 cross-check: every ``expected_ncm`` must exist in the multi-chapter
+    corpus. There is no ``chapter_scope`` and thus no out-of-scope concept —
+    the corpus spans every chapter the suite answers in, so a missing NCM is
+    always a hard failure.
+    """
+
+    total: int
+    present: int
+    missing: list[str] = field(default_factory=list)
+
+    @property
+    def ok(self) -> bool:
+        return not self.missing
+
+
+def cross_validate_v2(suite: EvalSuiteV2, corpus_ncms: set[str]) -> CrossValidationReportV2:
+    present = 0
+    missing: list[str] = []
+
+    for case in suite.cases:
+        # Hard invariant (defensive — the schema already enforces it): the NCM
+        # must belong to the chapter the case declares as the answer.
+        if int(case.expected_ncm[:2]) != case.answer_chapter:
+            raise ValueError(
+                f"case {case.id}: expected_ncm {case.expected_ncm!r} does not "
+                f"start with answer_chapter {case.answer_chapter}"
+            )
+
+        if case.expected_ncm in corpus_ncms:
+            present += 1
+        else:
+            missing.append(case.id)
+
+    return CrossValidationReportV2(total=len(suite.cases), present=present, missing=missing)
+
+
 def classify_via_use_case(query: ProductQuery, use_case: ClassifyProduct) -> ClassificationResult:
     """Thin wrapper over use_case.execute.
 
@@ -125,12 +180,61 @@ def evaluate_suite(suite: EvalSuite, use_case: ClassifyProduct) -> EvalReport:
     )
 
 
+def evaluate_suite_v2(suite: EvalSuiteV2, use_case: ClassifyProduct) -> EvalReport:
+    """v2 measurement: the single ``query`` field maps to the product name; the
+    description is empty (v2 cases are short queries, not name+description).
+    """
+    per_case: list[CaseResult] = []
+    top_1_hits = 0
+    top_3_hits = 0
+
+    for case in suite.cases:
+        query = ProductQuery(product_name=case.query, description="")
+        result = classify_via_use_case(query, use_case)
+        predicted = [c.ncm_code for c in result.top_candidates]
+
+        top_1 = predicted[0] == case.expected_ncm
+        top_3 = case.expected_ncm in predicted
+        top_1_hits += int(top_1)
+        top_3_hits += int(top_3)
+
+        per_case.append(
+            CaseResult(
+                case_id=case.id,
+                expected_ncm=case.expected_ncm,
+                predicted_ncms=predicted,
+                top_1_hit=top_1,
+                top_3_hit=top_3,
+            )
+        )
+
+    return EvalReport(
+        total=len(suite.cases),
+        top_1_hits=top_1_hits,
+        top_3_hits=top_3_hits,
+        per_case=per_case,
+    )
+
+
 def _find_latest_tipi_json(tipi_dir: str | Path, chapter: str) -> Path:
     files = sorted(Path(tipi_dir).glob(f"tipi_{chapter}_*.json"), reverse=True)
     if not files:
         raise FileNotFoundError(
             f"No tipi_{chapter}_*.json found in {tipi_dir}. Run: python scripts/ingest_tipi.py"
         )
+    return files[0]
+
+
+def _find_beverage_corpus(tipi_dir: str | Path) -> Path:
+    """Locate the multi-chapter v2 corpus.
+
+    The v2 corpus spans Chapters 20/21/22 in one file, so it cannot follow the
+    per-chapter ``tipi_{chapter}_*.json`` convention; it uses the fixed
+    ``tipi_beverage_*.json`` prefix and is referenced directly.
+    """
+    files = sorted(Path(tipi_dir).glob("tipi_beverage_*.json"), reverse=True)
+    if not files:
+        raise FileNotFoundError(f"No tipi_beverage_*.json found in {tipi_dir}. Run: make index-v2")
     return files[0]
 
 
@@ -181,6 +285,9 @@ def main(
     tipi_dir: str | Path = "data/tipi",
     use_case_factory: Callable[[], ClassifyProduct] = build_classify_use_case,
 ) -> int:
+    if detect_suite_version(eval_path) == "v2":
+        return main_v2(eval_path, tipi_dir, use_case_factory)
+
     suite = load_eval_suite(eval_path)
     _print_stats(suite)
 
@@ -222,6 +329,88 @@ def _print_stats(suite: EvalSuite) -> None:
     print("\nBy source:")
     for label in sorted(src):
         print(f"  {label:<12} {src[label]}")
+
+
+_MODES = ("direct", "colloquial", "poverty", "negation", "frontier", "multi_attr")
+
+
+def main_v2(
+    eval_path: str | Path,
+    tipi_dir: str | Path,
+    use_case_factory: Callable[[], ClassifyProduct],
+) -> int:
+    suite = load_eval_suite_v2(eval_path)
+    _print_stats_v2(suite)
+
+    corpus = _find_beverage_corpus(tipi_dir)
+    entries, tipi_version = _load_tipi(corpus)
+    corpus_ncms = {str(entry["ncm"]) for entry in entries}
+
+    report = cross_validate_v2(suite, corpus_ncms)
+    _print_report_v2(report, tipi_version)
+
+    use_case = use_case_factory()
+    eval_report = evaluate_suite_v2(suite, use_case)
+    _print_evaluation_v2(suite, eval_report)
+
+    return 0 if report.ok else 1
+
+
+def _print_stats_v2(suite: EvalSuiteV2) -> None:
+    print(f"Suite:         {suite.version}")
+    chapters = ", ".join(str(c) for c in suite.corpus_chapters)
+    print(f"Corpus chaps:  {chapters}")
+    print(f"Total cases:   {len(suite.cases)}")
+
+    diff = Counter(c.difficulty for c in suite.cases)
+    print("\nBy difficulty:")
+    for level in ("easy", "medium", "hard"):
+        print(f"  {level:<8} {diff.get(level, 0)}")
+
+    mode = Counter(c.mode for c in suite.cases)
+    print("\nBy mode:")
+    for label in _MODES:
+        print(f"  {label:<12} {mode.get(label, 0)}")
+
+
+def _print_report_v2(report: CrossValidationReportV2, tipi_version: str) -> None:
+    print(f"\nCross-validation: corpus {tipi_version}")
+    print(f"Present:      {report.present}/{report.total} expected_ncm in corpus")
+
+    if report.ok:
+        print("Status: OK ✓")
+    else:
+        print("Status: FAIL ✗")
+        print(f"Missing: {', '.join(report.missing)}")
+
+
+def _print_evaluation_v2(suite: EvalSuiteV2, report: EvalReport) -> None:
+    print(
+        f"\nEvaluation: semantic retrieval (Chroma embedder={settings.embedder.value} "
+        f"enrich={settings.enrich_strategy.value} + Passthrough rerank)"
+    )
+    print(f"Top-1 accuracy:  {report.top_1_hits}/{report.total} = {report.top_1_accuracy:.1%}")
+    print(f"Top-3 accuracy:  {report.top_3_hits}/{report.total} = {report.top_3_accuracy:.1%}")
+    print("ECE:             informative only (1 - cosine distance is not calibrated)")
+
+    difficulty_by_id = {c.id: c.difficulty for c in suite.cases}
+    print("\nPer-difficulty breakdown:")
+    for level in ("easy", "medium", "hard"):
+        cases = [r for r in report.per_case if difficulty_by_id.get(r.case_id) == level]
+        _print_breakdown_row(level, cases)
+
+    mode_by_id = {c.id: c.mode for c in suite.cases}
+    print("\nPer-mode breakdown:")
+    for label in _MODES:
+        cases = [r for r in report.per_case if mode_by_id.get(r.case_id) == label]
+        _print_breakdown_row(label, cases)
+
+
+def _print_breakdown_row(label: str, cases: list[CaseResult]) -> None:
+    n = len(cases)
+    t1 = sum(r.top_1_hit for r in cases)
+    t3 = sum(r.top_3_hit for r in cases)
+    print(f"  {label + ':':<12} {t1}/{n} top-1, {t3}/{n} top-3")
 
 
 if __name__ == "__main__":

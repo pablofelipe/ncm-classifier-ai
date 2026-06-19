@@ -59,6 +59,53 @@ class EvalSuite(BaseModel):
 
 
 # ---------------------------------------------------------------------------
+# v2 suite — multi-chapter, mode-tagged (ADR-0009). Deliberately distinct from
+# v1 above, which is frozen for retroactive comparison (ADRs 0003-0008). v2
+# drops product_name/product_description in favour of a single ``query``, uses
+# integer chapters, adds the ``mode`` dimension, and carries no single
+# ``chapter_scope`` (the corpus spans Chapters 20/21/22).
+# ---------------------------------------------------------------------------
+
+Mode = Literal["direct", "colloquial", "poverty", "negation", "frontier", "multi_attr"]
+
+
+class EvalCaseV2(BaseModel):
+    id: str = Field(pattern=r"^c\d{3}$")
+    query: str = Field(min_length=1, max_length=300)
+    expected_ncm: str = Field(pattern=r"^\d{4}\.\d{2}\.\d{2}$")
+    difficulty: Literal["easy", "medium", "hard"]
+    mode: Mode
+    # Chapter the query superficially evokes (informational, e.g. where a
+    # frontier query "came from"); ``answer_chapter`` is where the correct
+    # NCM actually lives.
+    chapter: int
+    answer_chapter: int
+
+    @model_validator(mode="after")
+    def _answer_chapter_matches_ncm(self) -> "EvalCaseV2":
+        if self.answer_chapter != int(self.expected_ncm[:2]):
+            raise ValueError(
+                f"answer_chapter {self.answer_chapter} must match the first "
+                f"two digits of expected_ncm {self.expected_ncm!r}"
+            )
+        return self
+
+
+class EvalSuiteV2(BaseModel):
+    version: str
+    description: str = ""
+    corpus_chapters: list[int] = Field(default_factory=list)
+    cases: list[EvalCaseV2]
+
+    @model_validator(mode="after")
+    def _unique_ids(self) -> "EvalSuiteV2":
+        ids = [c.id for c in self.cases]
+        if len(ids) != len(set(ids)):
+            raise ValueError("case IDs must be unique")
+        return self
+
+
+# ---------------------------------------------------------------------------
 # Eval results — produced by evaluate_suite, not loaded from disk
 # ---------------------------------------------------------------------------
 
