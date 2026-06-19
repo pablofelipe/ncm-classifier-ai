@@ -10,7 +10,14 @@ to the retrieval pipeline is reported as an ADR with a before/after eval
 delta — including the changes that didn't work. The decision log below
 is the most useful part of this repo.
 
-## Status (Chapter 22 — Beverages, spirits and vinegar)
+## Status
+
+**Research / Experimental — active development.** The system does not yet
+meet the v1 accuracy target; the deliverable so far is the **method** and
+the decision log, not the headline numbers.
+
+Active baseline — `multilingual-e5-small`, `OFF` strategy, on the 30-case
+v1 set (Chapter 22):
 
 | Metric | Current | v1 target |
 |---|---|---|
@@ -20,14 +27,25 @@ is the most useful part of this repo.
 | Median latency | within budget | ≤ 4s |
 | Cost / classification | within budget | ≤ R$ 0.10 |
 
-The system does not yet meet the v1 accuracy target. What it does
-demonstrate is the **method**: a disciplined, eval-gated investigation
-that isolated the actual bottleneck — three independent enrichment
-strategies were tried, measured, and rejected on evidence, narrowing the
-problem from "which text do we feed the model" to "the embedding model's
-discriminative power between similar products." That finding (ADR-0007)
-is the real deliverable so far, and it directly motivates the next step
-(ADR-0008).
+Eight ADRs narrowed the problem from "which text do we feed the model" to
+"query understanding and ranking between similar products" — and proved, on
+evidence, that **offline manipulation (document text *and* embedder) caps out
+around 63% top-3.** The decision log below is the most useful part of this repo.
+
+### Dataset & corpus
+
+| | v1 (frozen) | v2 (in integration) |
+|---|---|---|
+| Eval cases | 30 (Chapter 22) | 350 (Ch.20/21/22), tagged by `mode` |
+| Corpus | 34 NCMs (Ch.22) | 64 NCMs (Ch.20/21/22) |
+| Role | historical baseline, comparable across ADRs 0003-0008 | larger, harder surface for ADR-0009 onward |
+
+v1 stays **frozen** so every ADR delta remains comparable. v2 widens the
+measurement surface — 350 cases over juices (Ch.20/2009), coffee/tea
+preparations (Ch.21) and beverages (Ch.22), each tagged with a `mode`
+(colloquial / poverty / negation / frontier / multi-attr / direct) that
+isolates the *query-understanding* failures. CI still gates on v1; v2 runs
+locally (`make eval-v2`).
 
 ## Architecture
 
@@ -46,28 +64,44 @@ guess.
 HTTP → ClassifyProduct use case → RetrievalPort → LLMRerankPort → Verification gate → result | escalate
 ```
 
-## How we got to 63.3% top-3 (and why it's stuck there)
+Two infrastructure seams make experimentation cheap and reproducible without
+re-implementing the pipeline:
 
-| ADR | Decision | Result |
-|---|---|---|
-| [0001](docs/adr/0001-chapter-selection.md) | Scope v1 to TIPI Chapter 22 (beverages) | 34 NCMs, author domain expertise for eval labeling |
-| [0002](docs/adr/0002-verification-deterministic-check.md) | Deterministic TIPI metadata check instead of a second LLM call | Zero-cost, testable structural guardrail |
-| [0003](docs/adr/0003-walking-skeleton.md) | Walking skeleton (naive retrieval, passthrough rerank) | Baseline: 3.3% top-1 / 16.7% top-3 |
-| [0004](docs/adr/0004-semantic-retrieval-e5-small.md) | Dense retrieval via `multilingual-e5-small` + ChromaDB | **33.3% top-1 / 63.3% top-3** — current production baseline |
-| [0005](docs/adr/0005-hierarchical-enrichment.md) | Try injecting heading + subheading context into documents | **Rejected** — net regression to 53.3% top-3 (sibling homogenization) |
-| [0006](docs/adr/0006-subheading-only-enrichment.md) | Try injecting only the narrow subheading | **Rejected** — same 53.3% ceiling; refutes the "level" hypothesis |
-| [0007](docs/adr/0007-selective-enrichment-rejected.md) | Selective enrichment via a product-vs-refinement discriminator | **Rejected without implementation** — structural analysis showed a ceiling at ~63.3% (a tie), not worth measuring. Closes the enrichment line. |
+- **`EnrichStrategy`** (enum) — selects the document text strategy (`OFF` /
+  `FULL` / `SUBHEADING_ONLY`) at index time; the adapter refuses an
+  index↔strategy mismatch.
+- **`EmbedderModel`** (enum) + `make_embedding_function` factory — the embedder
+  is swappable (`e5_small` default, `bge_m3` opt-in) and recorded in the
+  collection metadata; the same guard refuses an index↔embedder mismatch.
 
-**Root finding (ADR-0007):** the bottleneck isn't missing document
-context — it's the discriminative power of the embedding model between
-similar sibling products. Three rounds of text manipulation confirmed
-this without touching the embedder itself.
+Both are wired through `Settings` (env: `ENRICH_STRATEGY`, `EMBEDDER`), so an
+experiment is a config flag plus a rebuild, not a code change.
 
-**Next step (ADR-0008, planned):** swap `multilingual-e5-small` for
-`bge-m3` — offline, zero recurring cost, stronger multilingual retrieval
-— measured against the same 63.3% baseline. If that's insufficient, the
-cost-ordered path forward is a cheap embedding API call, then LLM rerank
-as the last (and most expensive) resort.
+## Decision log (how we got to 63.3% top-3, and why it's stuck there)
+
+| ADR | Title | Status | Central finding |
+|---|---|---|---|
+| [0001](docs/adr/0001-chapter-selection.md) | Chapter 22 scope | Accepted | 34 NCMs; author domain expertise for eval labeling |
+| [0002](docs/adr/0002-verification-deterministic-check.md) | Deterministic verification | Accepted | TIPI metadata check beats a 2nd LLM call: zero-cost, testable, auditable |
+| [0003](docs/adr/0003-walking-skeleton.md) | Walking skeleton | Accepted | Naive retrieval + passthrough: 3.3% top-1 / 16.7% top-3 baseline |
+| [0004](docs/adr/0004-semantic-retrieval-e5-small.md) | Dense retrieval (e5-small) | **Accepted (ships)** | `multilingual-e5-small` + ChromaDB: **33.3% / 63.3%** — the production baseline |
+| [0005](docs/adr/0005-hierarchical-enrichment.md) | Hierarchical enrichment | Rejected | Heading+subheading context → net regression to 53.3% (sibling homogenization) |
+| [0006](docs/adr/0006-subheading-only-enrichment.md) | Subheading-only enrichment | Rejected | Same 53.3% ceiling; refutes the "which level" hypothesis |
+| [0007](docs/adr/0007-selective-enrichment-rejected.md) | Selective enrichment | Rejected (unmeasured) | Structural ceiling at ~63.3%; bottleneck is embedder discrimination, not context. Closes the enrichment line |
+| [0008](docs/adr/0008-embedder-swap-bge-m3-rejected.md) | Embedder swap (bge-m3) | Rejected | bge-m3 regressed (OFF 43.3%, FULL 53.3%); e5 OFF unbeaten. Closes the offline retrieval-quality line. Infra kept (configurable embedder + guard) |
+
+**Root finding (ADRs 0005-0008):** offline manipulation — of the document text
+*or* of the embedder — is exhausted at ~63% top-3. Even bge-m3, a top
+multilingual retrieval model, regressed. The remaining failures are
+**query-understanding** (colloquial/brand input) and **ranking precision**, not
+document representation.
+
+**Path forward (cost-ordered, rerank last):**
+**ADR-0009** dataset + corpus expansion (this work — a larger, mode-tagged eval
+to trust later deltas) → **ADR-0010** corpus enrichment (synonyms, brands) →
+**ADR-0011** BM25 + e5 hybrid retrieval → **ADR-0012** local cross-encoder rerank
+(zero recurring cost) → **ADR-0013** LLM rerank (last resort, recurring cost,
+must clear the R$ 0.10 / 4 s budget).
 
 ## Engineering discipline
 
@@ -103,10 +137,21 @@ The base install (`pip install -e ".[dev]"`) stays light; the `ml` extra
 is only needed to build the ChromaDB index and run the classifier
 end-to-end.
 
+### Running evals
+
 ```bash
-make index   # build the ChromaDB index (required before eval/serve)
-make eval    # run the 30-case eval suite against the production baseline
+# v1 — 30 cases, Chapter 22, the production baseline (also what CI runs)
+make index      # build the ChromaDB index (required before eval/serve)
+make eval-v1    # == make eval; reports 33.3% top-1 / 63.3% top-3
+
+# v2 — 350 cases over the expanded Ch.20/21/22 corpus (local only)
+make index-v2   # build the isolated tipi_capbeverage collection (64 NCMs)
+make eval-v2    # run the 350-case suite (per-difficulty + per-mode breakdown)
 ```
+
+`make eval` (no suffix) stays pinned to v1 so CI is unaffected. The v2 targets
+set `NCM_CHAPTER=beverage`, which points retrieval at the isolated
+`tipi_capbeverage` collection and the v2 loader at `tipi_beverage_*.json`.
 
 ## Project structure
 
@@ -116,9 +161,11 @@ src/
   llm/             # LLMRerankPort + adapters (passthrough, ...)
   verification.py # deterministic TIPI structural check
   api/             # composition root + HTTP endpoint
+  config.py        # Settings (EnrichStrategy, EmbedderModel)
 docs/adr/          # decision log (start here)
-eval/              # labeled cases + eval runner
-data/tipi/         # TIPI Chapter 22 reference data
+eval/              # v1_cases.json (30) + v2_cases.json (350) + eval runner
+data/tipi/         # TIPI reference data (Ch.22; beverage = Ch.20/21/22)
+scripts/           # ingest_tipi.py — XLSX → corpus JSON (incl. `beverage`)
 ```
 
 ## See also
