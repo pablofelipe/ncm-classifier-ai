@@ -7,7 +7,11 @@ from src.retrieval.embedding import EmbedderModel
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    gemini_api_key: str
+    # Optional: the Gemini rerank path is not yet implemented (see
+    # src/llm/gemini_client.py). Until the LLM-rerank ADR lands, the system
+    # ships with Passthrough rerank and needs no key, so Settings() must
+    # instantiate without GEMINI_API_KEY in the environment.
+    gemini_api_key: str | None = None
     gemini_flash_model: str = "gemini-2.0-flash"
     gemini_pro_model: str = "gemini-2.0-pro"
     chroma_path: str = "data/chroma"

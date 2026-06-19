@@ -1,3 +1,12 @@
+"""Deterministic TIPI verification (ADR-0002).
+
+NOTE: This module is NOT yet integrated into the classification pipeline.
+``TIPIIndex.verify`` is implemented and unit-tested, but it is not called by
+``ClassifyProduct`` — the shipping pipeline is retrieval -> rerank -> confidence
+gate, with no verification step. Wiring it in (and routing failures to an
+escalation path) is planned for a future ADR.
+"""
+
 import re
 from dataclasses import dataclass
 from enum import StrEnum
@@ -31,8 +40,8 @@ class VerificationResult:
 class TIPIIndex:
     """In-memory index of valid NCM codes and their hierarchy.
 
-    Populated by the retrieval adapter (src/retrieval/tipi_loader.py), never
-    by this module. No I/O here — receives an already-loaded dict.
+    No I/O here — receives an already-loaded ``codes`` dict (whoever wires this
+    in is responsible for building it from the parsed TIPI entries).
 
     Expected schema: {"22030000": {"chapter": "22", "heading": "22.03", "description": "..."}}
     heading uses dotted format (e.g. "22.03") as produced by tipi_parsing.parse_tipi_rows.

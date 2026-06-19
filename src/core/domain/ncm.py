@@ -19,15 +19,14 @@ class ClassificationCandidate:
 
 
 def candidate_metadata_from_entry(entry: dict[str, object]) -> dict[str, str | float]:
-    """Maps a TIPI JSON entry to the curated metadata exposed in
+    """Maps a raw TIPI JSON entry to the curated metadata exposed in
     ClassificationCandidate.
 
-    Input is dict[str, object] (the natural form for both the JSON
-    loaded by NaiveRetrievalAdapter and the metadata returned by
-    ChromaRetrievalAdapter). Output is dict[str, str | float], the
+    Used by NaiveRetrievalAdapter, which reads TIPI JSON entries directly.
+    ChromaRetrievalAdapter does NOT use it: it builds candidate metadata from
+    the metadata stored on the Chroma collection at index time (see
+    src/retrieval/hierarchical.py). Output is dict[str, str | float], the
     curated shape consumed by API and eval.
-
-    This is the canonical mapping — both adapters must use it.
     """
     # FUTURE: when the system grows, consider introducing a TypedDict
     # for the input shape (TIPIEntryDict) to get static guarantees

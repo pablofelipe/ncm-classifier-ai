@@ -43,7 +43,7 @@ make snapshot   # version embeddings for eval reproducibility
 **RAG pipeline (hierarchical retrieval):**
 1. Section → Chapter → Heading → NCM (structured, not flat vector search)
 2. Confidence gate: above threshold T → return single classification; below T → escalate with ranked candidates
-3. Verification step after retrieval: deterministic check against TIPI metadata — NCM exists in table, chapter coherent, digit-by-digit hierarchy consistent (see ADR-0002)
+3. Verification step after retrieval (⚠️ **planned — not yet wired** into `ClassifyProduct`): deterministic check against TIPI metadata — NCM exists in table, chapter coherent, digit-by-digit hierarchy consistent. Implemented and unit-tested in `src/core/verification/deterministic.py`, but not called by the shipping pipeline (see ADR-0002)
 
 **Evaluation-first discipline:**
 - `eval/v1_cases.json` must exist before the classifier is built
