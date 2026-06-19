@@ -1,0 +1,986 @@
+{
+  "tipi_version": "Decreto 11.158/2022 (última atualização: Ato Declaratório Executivo RFB nº 1, de 30 de janeiro de 2026 (Retificado: DOU de 12/02/2026))",
+  "extracted_at": "2026-06-19T00:13:49.318693+00:00",
+  "chapter": "beverage",
+  "chapters": [
+    "22",
+    "20",
+    "21"
+  ],
+  "source": "tipi_20260608.xlsx",
+  "entries": [
+    {
+      "ncm": "2201.10.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.01",
+      "subheading": "2201.10",
+      "description": "- Águas minerais e águas gaseificadas",
+      "ipi_rate": "2.6",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Águas minerais naturais comercializadas em recipientes com capacidade nominal inferior a 10 (dez) litros",
+          "ipi_rate": "NT"
+        },
+        {
+          "ex": "2",
+          "description": "Águas minerais naturais comercializadas em recipientes com capacidade nominal igual ou superior a 10 (dez) litros",
+          "ipi_rate": "NT"
+        }
+      ],
+      "raw_row": 1926,
+      "heading_description": "Águas, incluindo as águas minerais, naturais ou artificiais, e as águas gaseificadas, não adicionadas de açúcar ou de outros edulcorantes nem aromatizadas; gelo e neve",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2201.90.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.01",
+      "subheading": "2201.90",
+      "description": "- Outros",
+      "ipi_rate": "NT",
+      "ex_tipi": null,
+      "raw_row": 1929,
+      "heading_description": "Águas, incluindo as águas minerais, naturais ou artificiais, e as águas gaseificadas, não adicionadas de açúcar ou de outros edulcorantes nem aromatizadas; gelo e neve",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2202.10.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.02",
+      "subheading": "2202.10",
+      "description": "- Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar ou de outros edulcorantes ou aromatizadas",
+      "ipi_rate": "2.6",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Refrescos",
+          "ipi_rate": "2.6"
+        }
+      ],
+      "raw_row": 1931,
+      "heading_description": "Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar ou de outros edulcorantes ou aromatizadas e outras bebidas não alcoólicas, exceto sucos (sumos) de fruta ou de produtos hortícolas da posição 20.09",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2202.91.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.02",
+      "subheading": "2202.91",
+      "description": "-- Cerveja sem álcool",
+      "ipi_rate": "3.9",
+      "ex_tipi": null,
+      "raw_row": 1934,
+      "heading_description": "Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar ou de outros edulcorantes ou aromatizadas e outras bebidas não alcoólicas, exceto sucos (sumos) de fruta ou de produtos hortícolas da posição 20.09",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2202.99.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.02",
+      "subheading": "2202.99",
+      "description": "-- Outras",
+      "ipi_rate": "2.6",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Bebidas alimentares à base de soja ou de leite e cacau",
+          "ipi_rate": "0"
+        },
+        {
+          "ex": "2",
+          "description": "Néctares de frutas",
+          "ipi_rate": "0"
+        },
+        {
+          "ex": "3",
+          "description": "Alimentos para praticantes de atividade física nos termos da Resolução RDC nº 18, de 27 de abril de 2010, da Agência Nacional de Vigilância Sanitária, do Ministério da Saúde: repositores hidroeletrolíticos e outros",
+          "ipi_rate": "2.6"
+        },
+        {
+          "ex": "4",
+          "description": "Compostos líquidos pronto para consumo nos termos da Resolução RDC nº 273, de 22 de\nsetembro de 2005, da Agência Nacional de Vigilância Sanitária, do Ministério da Saúde",
+          "ipi_rate": "2.6"
+        },
+        {
+          "ex": "5",
+          "description": "Bebidas alimentares à base ou elaboradas a partir de matérias-primas vegetais classificadas nas posições 08.01 ou 08.02, no Capítulo 10 ou no Capítulo 12, exceto a posição 12.01, que não contenham leite animal, produtos lácteos ou gorduras deles derivados em sua composição",
+          "ipi_rate": "0"
+        }
+      ],
+      "raw_row": 1935,
+      "heading_description": "Águas, incluindo as águas minerais e as águas gaseificadas, adicionadas de açúcar ou de outros edulcorantes ou aromatizadas e outras bebidas não alcoólicas, exceto sucos (sumos) de fruta ou de produtos hortícolas da posição 20.09",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2203.00.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.03",
+      "subheading": "2203.00",
+      "description": "Cervejas de malte.",
+      "ipi_rate": "3.9",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Chope",
+          "ipi_rate": "3.9"
+        }
+      ],
+      "raw_row": 1941,
+      "heading_description": "",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2204.10.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.10",
+      "description": "Tipo champanha (champagne)",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1945,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Vinhos espumantes e vinhos espumosos"
+    },
+    {
+      "ncm": "2204.10.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.10",
+      "description": "Outros",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1946,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Vinhos espumantes e vinhos espumosos"
+    },
+    {
+      "ncm": "2204.21.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.21",
+      "description": "-- Em recipientes de capacidade não superior a 2 l",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1948,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Outros vinhos; mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool"
+    },
+    {
+      "ncm": "2204.22.11",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.22",
+      "description": "Em recipientes de capacidade não superior a 5 l",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1952,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Outros vinhos; mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool. Em recipientes de capacidade superior a 2 l, mas não superior a 10 l. Vinhos"
+    },
+    {
+      "ncm": "2204.22.19",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.22",
+      "description": "Outros",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1954,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Outros vinhos; mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool. Em recipientes de capacidade superior a 2 l, mas não superior a 10 l. Vinhos"
+    },
+    {
+      "ncm": "2204.22.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.22",
+      "description": "Mostos",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1956,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Outros vinhos; mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool. Em recipientes de capacidade superior a 2 l, mas não superior a 10 l"
+    },
+    {
+      "ncm": "2204.29.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.29",
+      "description": "Vinhos",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Vinhos da madeira, do porto e de xerez",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1958,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Outros vinhos; mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool"
+    },
+    {
+      "ncm": "2204.29.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.29",
+      "description": "Mostos",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1960,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": "Outros vinhos; mostos de uvas cuja fermentação tenha sido impedida ou interrompida por adição de álcool"
+    },
+    {
+      "ncm": "2204.30.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.04",
+      "subheading": "2204.30",
+      "description": "- Outros mostos de uvas",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1961,
+      "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool; mostos de uvas, excluindo os da posição 20.09",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2205.10.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.05",
+      "subheading": "2205.10",
+      "description": "- Em recipientes de capacidade não superior a 2 l",
+      "ipi_rate": "9.75",
+      "ex_tipi": null,
+      "raw_row": 1963,
+      "heading_description": "Vermutes e outros vinhos de uvas frescas aromatizados por plantas ou substâncias aromáticas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2205.90.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.05",
+      "subheading": "2205.90",
+      "description": "- Outros",
+      "ipi_rate": "9.75",
+      "ex_tipi": null,
+      "raw_row": 1964,
+      "heading_description": "Vermutes e outros vinhos de uvas frescas aromatizados por plantas ou substâncias aromáticas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2206.00.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.06",
+      "subheading": "2206.00",
+      "description": "Sidra",
+      "ipi_rate": "6.5",
+      "ex_tipi": null,
+      "raw_row": 1966,
+      "heading_description": "Outras bebidas fermentadas (por exemplo, sidra, perada, hidromel, saquê); misturas de bebidas fermentadas e misturas de bebidas fermentadas com bebidas não alcoólicas, não especificadas nem compreendidas noutras posições",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2206.00.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.06",
+      "subheading": "2206.00",
+      "description": "Outras",
+      "ipi_rate": "6.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Com teor alcoólico superior a 14%",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1967,
+      "heading_description": "Outras bebidas fermentadas (por exemplo, sidra, perada, hidromel, saquê); misturas de bebidas fermentadas e misturas de bebidas fermentadas com bebidas não alcoólicas, não especificadas nem compreendidas noutras posições",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2207.10.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.10",
+      "description": "Com um teor de água inferior ou igual a 1 % vol.",
+      "ipi_rate": "0",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        },
+        {
+          "ex": "2",
+          "description": "Retificado (álcool neutro)",
+          "ipi_rate": "5.2"
+        }
+      ],
+      "raw_row": 1971,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, igual ou superior a 80 % vol.; álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico",
+      "subheading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, igual ou superior a 80 % vol"
+    },
+    {
+      "ncm": "2207.10.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.10",
+      "description": "Outros",
+      "ipi_rate": "0",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        },
+        {
+          "ex": "2",
+          "description": "Retificado (álcool neutro)",
+          "ipi_rate": "5.2"
+        }
+      ],
+      "raw_row": 1974,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, igual ou superior a 80 % vol.; álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico",
+      "subheading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, igual ou superior a 80 % vol"
+    },
+    {
+      "ncm": "2207.20.11",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.20",
+      "description": "Com um teor de água inferior ou igual a 1 % vol.",
+      "ipi_rate": "5.2",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        }
+      ],
+      "raw_row": 1979,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, igual ou superior a 80 % vol.; álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico",
+      "subheading_description": "Álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico. Álcool etílico"
+    },
+    {
+      "ncm": "2207.20.19",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.20",
+      "description": "Outros",
+      "ipi_rate": "5.2",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Para fins carburantes, com as especificações determinadas pela ANP",
+          "ipi_rate": "NT"
+        }
+      ],
+      "raw_row": 1981,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, igual ou superior a 80 % vol.; álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico",
+      "subheading_description": "Álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico. Álcool etílico"
+    },
+    {
+      "ncm": "2207.20.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.07",
+      "subheading": "2207.20",
+      "description": "Aguardente",
+      "ipi_rate": "5.2",
+      "ex_tipi": null,
+      "raw_row": 1983,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, igual ou superior a 80 % vol.; álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico",
+      "subheading_description": "Álcool etílico e aguardentes, desnaturados, com qualquer teor alcoólico"
+    },
+    {
+      "ncm": "2208.20.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.20",
+      "description": "- Aguardentes de vinho ou de bagaço, de uvas",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1985,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2208.30.10",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.30",
+      "description": "Com um teor alcoólico, em volume, superior a 50 % vol., em recipientes de capacidade igual ou superior a 50 l",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1987,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": "Uísques"
+    },
+    {
+      "ncm": "2208.30.20",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.30",
+      "description": "Em embalagens de capacidade inferior ou igual a 2 l",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1988,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": "Uísques"
+    },
+    {
+      "ncm": "2208.30.90",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.30",
+      "description": "Outros",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1989,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": "Uísques"
+    },
+    {
+      "ncm": "2208.40.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.40",
+      "description": "- Rum e outras aguardentes provenientes da destilação, após fermentação, de produtos da cana-de açúcar",
+      "ipi_rate": "16.25",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Rum e outras aguardentes obtidas do melaço da cana",
+          "ipi_rate": "19.5"
+        }
+      ],
+      "raw_row": 1990,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2208.50.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.50",
+      "description": "- Gim e genebra",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1992,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2208.60.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.60",
+      "description": "- Vodca",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1993,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2208.70.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.70",
+      "description": "- Licores",
+      "ipi_rate": "19.5",
+      "ex_tipi": null,
+      "raw_row": 1994,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2208.90.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.08",
+      "subheading": "2208.90",
+      "description": "- Outros",
+      "ipi_rate": "19.5",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Álcool etílico",
+          "ipi_rate": "5.2"
+        },
+        {
+          "ex": "2",
+          "description": "Bebida refrescante com teor alcoólico inferior a 8%",
+          "ipi_rate": "13"
+        }
+      ],
+      "raw_row": 1995,
+      "heading_description": "Álcool etílico não desnaturado, com um teor alcoólico, em volume, inferior a 80 % vol.; aguardentes, licores e outras bebidas espirituosas",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2209.00.00",
+      "section": "IV",
+      "chapter": "22",
+      "heading": "22.09",
+      "subheading": "2209.00",
+      "description": "Vinagres e seus sucedâneos obtidos a partir do ácido acético, para uso alimentar.",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1998,
+      "heading_description": "",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2009.11.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.11",
+      "description": "-- Congelado",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1828,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de laranja"
+    },
+    {
+      "ncm": "2009.12.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.12",
+      "description": "-- Não congelado, com valor Brix não superior a 20",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1829,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de laranja"
+    },
+    {
+      "ncm": "2009.19.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.19",
+      "description": "-- Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1830,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de laranja"
+    },
+    {
+      "ncm": "2009.21.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.21",
+      "description": "-- Com valor Brix não superior a 20",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1832,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de toranja; suco (sumo) de pomelo"
+    },
+    {
+      "ncm": "2009.29.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.29",
+      "description": "-- Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1833,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de toranja; suco (sumo) de pomelo"
+    },
+    {
+      "ncm": "2009.31.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.31",
+      "description": "-- Com valor Brix não superior a 20",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1835,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outro citro (citrino)"
+    },
+    {
+      "ncm": "2009.39.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.39",
+      "description": "-- Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1836,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outro citro (citrino)"
+    },
+    {
+      "ncm": "2009.41.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.41",
+      "description": "-- Com valor Brix não superior a 20",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1838,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de abacaxi (ananás)"
+    },
+    {
+      "ncm": "2009.49.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.49",
+      "description": "-- Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1839,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de abacaxi (ananás)"
+    },
+    {
+      "ncm": "2009.50.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.50",
+      "description": "- Suco (sumo) de tomate",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1840,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2009.61.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.61",
+      "description": "-- Com valor Brix não superior a 30",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1842,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de uva (incluindo os mostos de uvas)"
+    },
+    {
+      "ncm": "2009.69.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.69",
+      "description": "-- Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1843,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de uva (incluindo os mostos de uvas)"
+    },
+    {
+      "ncm": "2009.71.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.71",
+      "description": "-- Com valor Brix não superior a 20",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1845,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de maçã"
+    },
+    {
+      "ncm": "2009.79.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.79",
+      "description": "-- Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1846,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de maçã"
+    },
+    {
+      "ncm": "2009.81.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.81",
+      "description": "-- Suco (sumo) de arando vermelho (cranberry) (Vaccinium macrocarpon, Vaccinium oxycoccos); suco (sumo) de airela vermelha (Vaccinium vitis-idaea)",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1848,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola"
+    },
+    {
+      "ncm": "2009.89.11",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.89",
+      "description": "De pêssego, com valor Brix igual ou superior a 60",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1851,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola. Suco (sumo) de pêssego, de acerola (Malpighia spp.) e de maracujá (Passiflora edulis)"
+    },
+    {
+      "ncm": "2009.89.12",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.89",
+      "description": "De acerola (Malpighia spp.)",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1852,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola. Suco (sumo) de pêssego, de acerola (Malpighia spp.) e de maracujá (Passiflora edulis)"
+    },
+    {
+      "ncm": "2009.89.13",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.89",
+      "description": "De maracujá (Passiflora edulis)",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1853,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola. Suco (sumo) de pêssego, de acerola (Malpighia spp.) e de maracujá (Passiflora edulis)"
+    },
+    {
+      "ncm": "2009.89.19",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.89",
+      "description": "Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1854,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola. Suco (sumo) de pêssego, de acerola (Malpighia spp.) e de maracujá (Passiflora edulis)"
+    },
+    {
+      "ncm": "2009.89.21",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.89",
+      "description": "Com valor Brix não superior a 7,4",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1856,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola. Água de coco (Cocos nucifera)"
+    },
+    {
+      "ncm": "2009.89.22",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.89",
+      "description": "Com valor Brix superior a 7,4",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1857,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola. Água de coco (Cocos nucifera)"
+    },
+    {
+      "ncm": "2009.89.90",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.89",
+      "description": "Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1858,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": "Suco (sumo) de qualquer outra fruta ou produto hortícola"
+    },
+    {
+      "ncm": "2009.90.00",
+      "section": "IV",
+      "chapter": "20",
+      "heading": "20.09",
+      "subheading": "2009.90",
+      "description": "- Misturas de sucos (sumos)",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1859,
+      "heading_description": "Sucos (sumos) de fruta (incluindo os mostos de uvas e a água de coco) ou de produtos hortícolas, não fermentados, sem adição de álcool, mesmo com adição de açúcar ou de outros edulcorantes",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2101.11.10",
+      "section": "IV",
+      "chapter": "21",
+      "heading": "21.01",
+      "subheading": "2101.11",
+      "description": "Café solúvel, mesmo descafeinado",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1863,
+      "heading_description": "Extratos, essências e concentrados de café, chá ou mate e preparações à base destes produtos ou à base de café, chá ou mate; chicória torrada e outros sucedâneos torrados do café e respectivos extratos, essências e concentrados",
+      "subheading_description": "Extratos, essências e concentrados de café e preparações à base destes extratos, essências ou concentrados ou à base de café. Extratos, essências e concentrados"
+    },
+    {
+      "ncm": "2101.11.90",
+      "section": "IV",
+      "chapter": "21",
+      "heading": "21.01",
+      "subheading": "2101.11",
+      "description": "Outros",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1864,
+      "heading_description": "Extratos, essências e concentrados de café, chá ou mate e preparações à base destes produtos ou à base de café, chá ou mate; chicória torrada e outros sucedâneos torrados do café e respectivos extratos, essências e concentrados",
+      "subheading_description": "Extratos, essências e concentrados de café e preparações à base destes extratos, essências ou concentrados ou à base de café. Extratos, essências e concentrados"
+    },
+    {
+      "ncm": "2101.12.00",
+      "section": "IV",
+      "chapter": "21",
+      "heading": "21.01",
+      "subheading": "2101.12",
+      "description": "-- Preparações à base de extratos, essências ou concentrados ou à base de café",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1865,
+      "heading_description": "Extratos, essências e concentrados de café, chá ou mate e preparações à base destes produtos ou à base de café, chá ou mate; chicória torrada e outros sucedâneos torrados do café e respectivos extratos, essências e concentrados",
+      "subheading_description": "Extratos, essências e concentrados de café e preparações à base destes extratos, essências ou concentrados ou à base de café"
+    },
+    {
+      "ncm": "2101.20.10",
+      "section": "IV",
+      "chapter": "21",
+      "heading": "21.01",
+      "subheading": "2101.20",
+      "description": "De chá",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1867,
+      "heading_description": "Extratos, essências e concentrados de café, chá ou mate e preparações à base destes produtos ou à base de café, chá ou mate; chicória torrada e outros sucedâneos torrados do café e respectivos extratos, essências e concentrados",
+      "subheading_description": "Extratos, essências e concentrados de chá ou de mate e preparações à base destes extratos, essências ou concentrados ou à base de chá ou de mate"
+    },
+    {
+      "ncm": "2101.20.20",
+      "section": "IV",
+      "chapter": "21",
+      "heading": "21.01",
+      "subheading": "2101.20",
+      "description": "De mate",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1868,
+      "heading_description": "Extratos, essências e concentrados de café, chá ou mate e preparações à base destes produtos ou à base de café, chá ou mate; chicória torrada e outros sucedâneos torrados do café e respectivos extratos, essências e concentrados",
+      "subheading_description": "Extratos, essências e concentrados de chá ou de mate e preparações à base destes extratos, essências ou concentrados ou à base de chá ou de mate"
+    },
+    {
+      "ncm": "2101.30.00",
+      "section": "IV",
+      "chapter": "21",
+      "heading": "21.01",
+      "subheading": "2101.30",
+      "description": "- Chicória torrada e outros sucedâneos torrados do café e respectivos extratos, essências e concentrados",
+      "ipi_rate": "0",
+      "ex_tipi": null,
+      "raw_row": 1869,
+      "heading_description": "Extratos, essências e concentrados de café, chá ou mate e preparações à base destes produtos ou à base de café, chá ou mate; chicória torrada e outros sucedâneos torrados do café e respectivos extratos, essências e concentrados",
+      "subheading_description": ""
+    },
+    {
+      "ncm": "2106.90.10",
+      "section": "IV",
+      "chapter": "21",
+      "heading": "21.06",
+      "subheading": "2106.90",
+      "description": "Preparações do tipo utilizado para elaboração de bebidas",
+      "ipi_rate": "0",
+      "ex_tipi": [
+        {
+          "ex": "1",
+          "description": "Preparações compostas, não alcoólicas (extratos concentrados ou sabores concentrados), para elaboração de bebida da posição 22.02, com capacidade de diluição superior a 10 partes da bebida para cada parte do concentrado",
+          "ipi_rate": "8"
+        },
+        {
+          "ex": "2",
+          "description": "Preparações compostas, não alcoólicas (extratos concentrados ou sabores concentrados), para elaboração de bebida refrigerante do Capítulo 22, com capacidade de diluição de até 10 partes da bebida para cada parte do concentrado",
+          "ipi_rate": "0"
+        }
+      ],
+      "raw_row": 1914,
+      "heading_description": "Preparações alimentícias não especificadas nem compreendidas noutras posições",
+      "subheading_description": ""
+    }
+  ]
+}
