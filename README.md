@@ -16,29 +16,33 @@ is the most useful part of this repo.
 meet the v1 accuracy target; the deliverable so far is the **method** and
 the decision log, not the headline numbers.
 
-Active baseline — `multilingual-e5-small`, `OFF` strategy, on the 30-case
-v1 set (Chapter 22):
+Active baseline — `multilingual-e5-small`, `OFF` strategy. The honest metric is
+now the 350-case **v2** set (Ch.20/21/22, mode-tagged); the 30-case **v1** set
+stays frozen for retroactive ADR comparison.
 
-| Metric | Current | v1 target |
-|---|---|---|
-| Top-1 accuracy | 33.3% (10/30) | ≥ 70% |
-| Top-3 accuracy | **63.3% (19/30)** | ≥ 90% |
-| ECE | 0.54 (uncalibrated) | ≤ 0.15 |
-| Median latency | within budget | ≤ 4s |
-| Cost / classification | within budget | ≤ R$ 0.10 |
+| Metric | v2 baseline (350) | v2 target | v1 (frozen, 30) | v1 target (v1 only) |
+|---|---|---|---|---|
+| Top-1 accuracy | 20.3% (71/350) | ≥ 40% | 33.3% (10/30) | ≥ 70% |
+| Top-3 accuracy | **32.6% (114/350)** | ≥ 65% | **63.3% (19/30)** | ≥ 90% |
+| ECE | uncalibrated (Passthrough rerank) | ≤ 0.15 | 0.54 | — |
+| Median latency | within budget | ≤ 4s | within budget | — |
+| Cost / classification | within budget | ≤ R$ 0.10 | within budget | — |
 
 Eight ADRs narrowed the problem from "which text do we feed the model" to
 "query understanding and ranking between similar products" — and proved, on
 evidence, that **offline manipulation (document text *and* embedder) caps out
-around 63% top-3.** The decision log below is the most useful part of this repo.
+around 63% top-3 on v1.** ADR-0009 then widened the measurement surface: on 350
+multi-chapter, mode-tagged cases the honest baseline is **32.6% top-3**, with
+**colloquial/brand input the dominant hole** (20.5% top-3). The decision log
+below is the most useful part of this repo.
 
 ### Dataset & corpus
 
-| | v1 (frozen) | v2 (in integration) |
+| | v1 (frozen) | v2 (baseline: ADR-0009) |
 |---|---|---|
 | Eval cases | 30 (Chapter 22) | 350 (Ch.20/21/22), tagged by `mode` |
 | Corpus | 34 NCMs (Ch.22) | 64 NCMs (Ch.20/21/22) |
-| Role | historical baseline, comparable across ADRs 0003-0008 | larger, harder surface for ADR-0009 onward |
+| Role | historical baseline, comparable across ADRs 0003-0008 | honest baseline (32.6% top-3); surface for ADR-0010 onward |
 
 v1 stays **frozen** so every ADR delta remains comparable. v2 widens the
 measurement surface — 350 cases over juices (Ch.20/2009), coffee/tea
@@ -89,6 +93,7 @@ experiment is a config flag plus a rebuild, not a code change.
 | [0006](docs/adr/0006-subheading-only-enrichment.md) | Subheading-only enrichment | Rejected | Same 53.3% ceiling; refutes the "which level" hypothesis |
 | [0007](docs/adr/0007-selective-enrichment-rejected.md) | Selective enrichment | Rejected (unmeasured) | Structural ceiling at ~63.3%; bottleneck is embedder discrimination, not context. Closes the enrichment line |
 | [0008](docs/adr/0008-embedder-swap-bge-m3-rejected.md) | Embedder swap (bge-m3) | Rejected | bge-m3 regressed (OFF 43.3%, FULL 53.3%); e5 OFF unbeaten. Closes the offline retrieval-quality line. Infra kept (configurable embedder + guard) |
+| [0009](docs/adr/0009-dataset-corpus-expansion-v2-baseline.md) | Dataset + corpus expansion (v2 baseline) | **Accepted** | 350 cases / 64 NCMs (Ch.20/21/22), mode-tagged. e5 OFF v2 baseline **20.3% / 32.6%**; colloquial the dominant hole (20.5%). Recalibrated targets (≥40% / ≥65%); opens ADR-0010 |
 
 **Root finding (ADRs 0005-0008):** offline manipulation — of the document text
 *or* of the embedder — is exhausted at ~63% top-3. Even bge-m3, a top
@@ -96,12 +101,11 @@ multilingual retrieval model, regressed. The remaining failures are
 **query-understanding** (colloquial/brand input) and **ranking precision**, not
 document representation.
 
-**Path forward (cost-ordered, rerank last):**
-**ADR-0009** dataset + corpus expansion (this work — a larger, mode-tagged eval
-to trust later deltas) → **ADR-0010** corpus enrichment (synonyms, brands) →
-**ADR-0011** BM25 + e5 hybrid retrieval → **ADR-0012** local cross-encoder rerank
-(zero recurring cost) → **ADR-0013** LLM rerank (last resort, recurring cost,
-must clear the R$ 0.10 / 4 s budget).
+**Path forward (cost-ordered, rerank last):** ADR-0009 set the v2 baseline
+(32.6% top-3); next is **ADR-0010** corpus enrichment (synonyms, brands —
+attacks the colloquial hole) → **ADR-0011** BM25 + e5 hybrid retrieval →
+**ADR-0012** local cross-encoder rerank (zero recurring cost) → **ADR-0013**
+LLM rerank (last resort, recurring cost, must clear the R$ 0.10 / 4 s budget).
 
 ## Engineering discipline
 
