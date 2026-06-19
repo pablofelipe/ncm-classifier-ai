@@ -30,12 +30,13 @@ docs/adr/          # Architecture Decision Records (NNNN-title.md)
 ## Commands
 
 ```bash
+make help       # list all targets with one-line descriptions
 make run        # start FastAPI dev server
-make eval       # run eval/run_eval.py against the live classifier
-make lint       # ruff + mypy
-make test       # pytest
+make eval       # run eval/run_eval.py against the live classifier (v1, CI baseline)
+make lint       # ruff + format check + mypy
+make test       # pytest (unit only)
+make test-integration  # integration tests (downloads models, requires network)
 make index      # (re)build ChromaDB from data/tipi/*.json
-make snapshot   # version embeddings for eval reproducibility
 ```
 
 ## Architecture

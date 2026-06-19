@@ -158,12 +158,16 @@ def rebuild_index() -> None:
 
 
 def snapshot() -> None:
-    """Version current embeddings for eval reproducibility."""
+    """Version current embeddings for eval reproducibility.
+
+    Not implemented and not exposed as a CLI command (no `make snapshot`); kept
+    as a placeholder for the planned reproducibility-snapshot work.
+    """
     raise NotImplementedError
 
 
 if __name__ == "__main__":
-    commands: dict[str, object] = {"rebuild": rebuild_index, "snapshot": snapshot}
+    commands: dict[str, object] = {"rebuild": rebuild_index}
     cmd = sys.argv[1] if len(sys.argv) > 1 else ""
     if cmd not in commands:
         print(f"Usage: python -m src.retrieval.chroma_client [{' | '.join(commands)}]")
