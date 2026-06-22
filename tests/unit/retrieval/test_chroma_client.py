@@ -9,8 +9,10 @@ from chromadb import Collection
 from src.core.domain.enrichment import EnrichStrategy
 from src.retrieval.chroma_client import (
     _find_latest_tipi_json,
+    _synonyms_for_chapter,
     build_document_text,
     index_entries,
+    load_synonyms,
     reset_collection,
 )
 from src.retrieval.embedding import (
@@ -340,3 +342,112 @@ def test_rebuild_rewrites_enrich_metadata_after_drop(real_entries: list[dict]) -
     )
 
     assert fresh.metadata["enrich_strategy"] == EnrichStrategy.OFF.value
+
+
+# ---------------------------------------------------------------------------
+# corpus enrichment — synonyms (ADR-0010)
+#
+# Brands and colloquial names absent from the official nomenclature are appended
+# to the OFF baseline document. This enriches the *corpus*, not the document-text
+# strategy: injection composes with OFF only (no new EnrichStrategy variant), and
+# the synonym source is injected (a mapping / a file path) so tests never touch
+# the real beverage_synonyms.json.
+# ---------------------------------------------------------------------------
+
+
+@pytest.fixture
+def synonyms() -> dict[str, list[str]]:
+    return {"2208.60.00": ["vodca", "Smirnoff", "Absolut"]}
+
+
+@pytest.fixture
+def vodka_entry() -> dict:
+    # mirrors 2208.60.00 (- Vodca) in the enriched JSON schema, with the ncm key
+    # that build_document_text needs to look a synonym list up.
+    return {
+        "ncm": "2208.60.00",
+        "description": "- Vodca",
+        "heading_description": "Álcool etílico; aguardentes, licores e outras bebidas espirituosas",
+        "subheading_description": "",
+        "ipi_rate": "19.5",
+        "ex_tipi": None,
+    }
+
+
+def test_off_appends_synonyms_for_known_ncm(vodka_entry: dict, synonyms: dict) -> None:
+    # OFF text, then " | " and the comma-separated synonyms for that NCM.
+    assert build_document_text(vodka_entry, EnrichStrategy.OFF, synonyms) == (
+        "- Vodca | vodca, Smirnoff, Absolut"
+    )
+
+
+def test_off_leaves_text_unchanged_for_unknown_ncm(synonyms: dict) -> None:
+    # 2201.10.00 is not in the synonyms mapping -> the OFF text is untouched.
+    entry = {"ncm": "2201.10.00", "description": "- Águas minerais", "ex_tipi": None}
+    assert build_document_text(entry, EnrichStrategy.OFF, synonyms) == "- Águas minerais"
+
+
+def test_off_unchanged_when_synonyms_empty(vodka_entry: dict) -> None:
+    # Graceful: an empty mapping (the file-absent case) leaves OFF byte-for-byte.
+    assert build_document_text(vodka_entry, EnrichStrategy.OFF, {}) == build_document_text(
+        vodka_entry, EnrichStrategy.OFF
+    )
+
+
+def test_synonyms_not_injected_for_non_off_strategy(vodka_entry: dict, synonyms: dict) -> None:
+    # Corpus enrichment rides on the OFF baseline only; never on FULL/SUBHEADING.
+    assert "Smirnoff" not in build_document_text(vodka_entry, EnrichStrategy.FULL, synonyms)
+
+
+def test_load_synonyms_returns_empty_when_file_absent(tmp_path: Path) -> None:
+    # File-absent -> empty mapping, so rebuild proceeds (graceful, no synonyms).
+    assert load_synonyms(tmp_path / "missing.json") == {}
+
+
+def test_load_synonyms_reads_mapping_from_file(tmp_path: Path) -> None:
+    path = tmp_path / "syn.json"
+    path.write_text(json.dumps({"2208.60.00": ["vodca", "Smirnoff"]}), encoding="utf-8")
+    assert load_synonyms(path) == {"2208.60.00": ["vodca", "Smirnoff"]}
+
+
+def test_index_entries_threads_synonyms_into_documents(memory_collection: Collection) -> None:
+    entries = [
+        {
+            "ncm": "2208.60.00",
+            "chapter": "22",
+            "heading": "22.08",
+            "subheading": "2208.60",
+            "description": "- Vodca",
+            "ipi_rate": "19.5",
+            "ex_tipi": None,
+        }
+    ]
+    index_entries(
+        memory_collection,
+        entries,
+        E5EmbeddingFunction(encoder=SpyEncoder()),
+        EnrichStrategy.OFF,
+        EmbedderModel.E5_SMALL,
+        {"2208.60.00": ["Smirnoff"]},
+    )
+    assert "Smirnoff" in memory_collection.get(ids=["22086000"])["documents"][0]
+
+
+# ---------------------------------------------------------------------------
+# baseline blindagem (ADR-0010): corpus synonyms apply to the beverage (v2)
+# corpus only. The v1/cap22 production baseline (frozen at 63.3% top-3) must
+# never be enriched, even if the synonyms file exists on disk.
+# ---------------------------------------------------------------------------
+
+
+def test_synonyms_gated_off_for_non_beverage_chapter(tmp_path: Path) -> None:
+    # cap22 (production v1): synonyms suppressed even though the file is present.
+    path = tmp_path / "syn.json"
+    path.write_text(json.dumps({"2208.60.00": ["Smirnoff"]}), encoding="utf-8")
+    assert _synonyms_for_chapter("22", path) == {}
+
+
+def test_synonyms_loaded_for_beverage_chapter(tmp_path: Path) -> None:
+    path = tmp_path / "syn.json"
+    path.write_text(json.dumps({"2208.60.00": ["Smirnoff"]}), encoding="utf-8")
+    assert _synonyms_for_chapter("beverage", path) == {"2208.60.00": ["Smirnoff"]}

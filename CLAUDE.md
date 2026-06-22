@@ -88,10 +88,12 @@ Rejected — closes the enrichment line:
 Rejected — closes the offline retrieval-quality line:
 - **ADR-0008** — Embedder swap to bge-m3 rejected: bge OFF regressed −20 pp top-3 (43.3%), bge FULL recovered only to 53.3% (the enrichment ceiling), neither beats e5 OFF (63.3%). Offline manipulation (document text *or* embedder) is exhausted; remaining failures are query-understanding + ranking, not document representation. Infra kept (configurable embedder + dual guard, bge opt-in via `EMBEDDER`); e5-small OFF still ships (see `docs/adr/0008-embedder-swap-bge-m3-rejected.md`).
 
+Accepted — v2 measurement line (ships on the beverage corpus; v1/cap22 production untouched):
+- **ADR-0009** — Dataset + corpus expansion: `eval/v2_cases.json` (350 cases) over a curated 64-NCM beverage corpus (`data/tipi/tipi_beverage_*.json`, Ch.20/21/22). Measured e5 OFF v2 baseline **20.3% top-1 / 32.6% top-3**; colloquial the dominant hole (20.5% top-3, 127/350). Recalibrated v2 targets to ≥40% / ≥65% (see `docs/adr/0009-dataset-corpus-expansion-v2-baseline.md`).
+- **ADR-0010** — Corpus enrichment via synonyms file (`data/synonyms/beverage_synonyms.json`, 22 NCMs, 129 terms, evidence-bound to v2). Appended to OFF documents only in `build_document_text`; v1 blindado via `_synonyms_for_chapter` (synonyms gated to `NCM_CHAPTER=beverage`, cap22 stays 63.3%). v2 **20.3%→30.9% / 32.6%→51.7%** (+19.1 pp top-3); colloquial 20.5%→59.1%; `multi_attr` flat (Brix/volume aren't synonyms); −4 top-1 cases (all preserved in top-3). Below v2 targets; opens ADR-0011 (see `docs/adr/0010-corpus-enrichment-synonyms.md`).
+
 Path forward (cost-ordered, rerank LAST — corrected from the earlier "ADR-0009 = rerank"):
-- **ADR-0009** — Dataset + corpus expansion (this line): `eval/v2_cases.json` (350 cases) over a curated 64-NCM beverage corpus (`data/tipi/tipi_beverage_*.json`, Ch.20/21/22). Widens the measurement surface and isolates query-understanding failures by `mode` before any accuracy work; prevents overfitting the 30-case v1 set. Infra landed; v2 measurement itself is the next step.
-- **ADR-0010** — Corpus enrichment (commercial descriptions, synonyms, brand names) — offline, cheap; attacks the colloquial/brand gap on the document side.
-- **ADR-0011** — Hybrid retrieval (BM25 + e5): lexical recall fused with dense; zero recurring cost.
+- **ADR-0011** — Hybrid retrieval (BM25 + e5): lexical recall fused with dense; zero recurring cost. Next: attacks the exact-token holes synonyms can't (`multi_attr` / Brix, hard-brand colloquial residual).
 - **ADR-0012** — Local cross-encoder rerank (BGE/Jina/MS-MARCO): the ranking-precision lever, zero recurring API cost.
 - **ADR-0013** — LLM rerank (last resort): reorder e5 OFF's top-k with an LLM that understands colloquial input and negation. Must measure recurring cost + latency against the R$ 0.10 / 4 s budget, not only accuracy. Recalibrating the v1 target is the fallback.
 - Confidence threshold T — still the `confidence_threshold=0.7` placeholder; calibration awaits a real rerank stage (rerank is Passthrough today).
