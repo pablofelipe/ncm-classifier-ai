@@ -1,5 +1,6 @@
 import json
 import sys
+from collections.abc import Mapping, Sequence
 from pathlib import Path
 from typing import Any, cast
 
@@ -12,7 +13,11 @@ from src.core.domain.tipi_parsing import clean_level_text, is_substantive
 from src.retrieval.embedding import EmbedderModel, EmbeddingFunction, make_embedding_function
 
 
-def build_document_text(entry: dict[str, Any], strategy: EnrichStrategy) -> str:
+def build_document_text(
+    entry: dict[str, Any],
+    strategy: EnrichStrategy,
+    synonyms: Mapping[str, Sequence[str]] | None = None,
+) -> str:
     """Build the text to embed for a TIPI entry.
 
     ``strategy`` is explicit (no default) so every call site chooses
@@ -24,6 +29,13 @@ def build_document_text(entry: dict[str, Any], strategy: EnrichStrategy) -> str:
     - FULL (ADR-0005): heading + subheading + leaf.
     - SUBHEADING_ONLY (ADR-0006, Form B): subheading + leaf, and only when the
       subheading is substantive; the heading is never injected.
+
+    ``synonyms`` is corpus enrichment (ADR-0010): a NCM → terms mapping of brands
+    and colloquial names absent from the official nomenclature. When the entry's
+    NCM has terms, they are appended ``"{text} | term, term"``. This enriches the
+    *corpus*, not the document-text strategy, so it composes with the OFF baseline
+    only — never with FULL/SUBHEADING_ONLY (which are closed experiments). An
+    absent/empty mapping leaves the text unchanged (graceful when no file exists).
 
     Prefixing (if any) is the embedder's concern, not this function's: the
     shipping e5-small embedder adds "passage: " to documents (ADR-0004); the
@@ -47,7 +59,38 @@ def build_document_text(entry: dict[str, Any], strategy: EnrichStrategy) -> str:
     parts = [body]
     for ex in entry.get("ex_tipi") or []:
         parts.append(f"EX {ex['ex']}: {ex['description']}")
-    return " | ".join(parts)
+    text = " | ".join(parts)
+    if strategy is EnrichStrategy.OFF and synonyms:
+        terms = synonyms.get(entry.get("ncm", ""))
+        if terms:
+            text = f"{text} | {', '.join(terms)}"
+    return text
+
+
+def load_synonyms(path: Path) -> dict[str, list[str]]:
+    """Load the NCM → synonyms mapping for corpus enrichment (ADR-0010).
+
+    Returns an empty mapping when the file is absent so indexing proceeds
+    gracefully on a corpus without a synonyms file. The path is configurable
+    (``Settings.synonyms_path``) and the loaded mapping is injected into
+    ``index_entries``/``build_document_text``, so tests use a fixture instead.
+    """
+    if not path.exists():
+        return {}
+    return cast(dict[str, list[str]], json.loads(path.read_text(encoding="utf-8")))
+
+
+def _synonyms_for_chapter(chapter: str, path: Path) -> dict[str, list[str]]:
+    """Return corpus-enrichment synonyms for ``chapter``, gated to beverage (v2).
+
+    Corpus enrichment (ADR-0010) is a v2 experiment over the beverage corpus.
+    The v1/cap22 production baseline is frozen at 63.3% top-3 (ADR-0004), so it
+    must never be enriched — even with the synonyms file present on disk. Any
+    chapter other than ``beverage`` gets an empty mapping (no enrichment).
+    """
+    if chapter != "beverage":
+        return {}
+    return load_synonyms(path)
 
 
 def _find_latest_tipi_json(data_dir: Path, chapter: str) -> Path:
@@ -93,6 +136,7 @@ def index_entries(
     embedding_fn: EmbeddingFunction,
     strategy: EnrichStrategy,
     embedder: EmbedderModel,
+    synonyms: Mapping[str, Sequence[str]] | None = None,
 ) -> int:
     """Embed and upsert TIPI entries into the collection, returning the count.
 
@@ -101,10 +145,11 @@ def index_entries(
     the default Chroma embedder is never invoked.
     ``strategy`` selects the document-text strategy (see build_document_text)
     and is recorded on the collection so the adapter can detect an
-    index<->strategy mismatch.
+    index<->strategy mismatch. ``synonyms`` is optional corpus enrichment
+    (ADR-0010), appended to OFF documents only (see build_document_text).
     """
     ids = [e["ncm"].replace(".", "") for e in entries]
-    documents = [build_document_text(e, strategy) for e in entries]
+    documents = [build_document_text(e, strategy, synonyms) for e in entries]
     metadatas = [
         {
             "ncm_dotted": e["ncm"],
@@ -151,7 +196,10 @@ def rebuild_index() -> None:
     client = chromadb.PersistentClient(path=settings.chroma_path)
     col = reset_collection(client, _collection_name())
     embedding_fn = make_embedding_function(settings.embedder)
-    count = index_entries(col, entries, embedding_fn, settings.enrich_strategy, settings.embedder)
+    synonyms = _synonyms_for_chapter(settings.ncm_chapter, Path(settings.synonyms_path))
+    count = index_entries(
+        col, entries, embedding_fn, settings.enrich_strategy, settings.embedder, synonyms
+    )
 
     source = payload.get("source", json_path.name)
     print(f"Indexed {count} entries from {source} into '{col.name}'")

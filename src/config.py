@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     tipi_data_dir: str = "data/tipi"
     confidence_threshold: float = 0.7
     ncm_chapter: str = "22"
+    # Corpus-enrichment synonyms (env: SYNONYMS_PATH), ADR-0010: a NCM -> terms
+    # JSON of brands and colloquial names absent from the official nomenclature.
+    # Appended to OFF documents only (see build_document_text). Absent file ->
+    # no enrichment (graceful); rebuild the index to apply.
+    synonyms_path: str = "data/synonyms/beverage_synonyms.json"
     # Document-enrichment strategy (env: ENRICH_STRATEGY). OFF keeps the
     # ADR-0004 baseline (63.3% top-3); FULL is the ADR-0005 experiment (net
     # regression, kept reproducible); SUBHEADING_ONLY is ADR-0006 Form B
