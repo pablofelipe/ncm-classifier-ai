@@ -39,6 +39,10 @@ scripts = [
 ml = [
     "sentence-transformers>=3.0,<4",
     "torch>=2.2,<3",
+    # Lexical retrieval for the BM25 + e5 hybrid (ADR-0011). Pure Python (numpy
+    # only, already transitive); no heavy dependency. Built in-memory at startup
+    # from the same Chroma documents the dense index uses.
+    "rank-bm25>=0.2.2",
 ]
 
 [tool.hatch.build.targets.wheel]

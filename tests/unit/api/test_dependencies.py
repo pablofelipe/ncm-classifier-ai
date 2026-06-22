@@ -15,10 +15,13 @@ import pytest
 from chromadb import Collection
 
 from src.api.dependencies import build_classify_use_case
+from src.config import RetrievalMode, Settings, settings
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ProductQuery
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
 from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction, EmbedderModel
+from src.retrieval.hierarchical import ChromaRetrievalAdapter
+from src.retrieval.hybrid import HybridRetrievalAdapter
 
 
 class SpyEncoder:
@@ -67,3 +70,33 @@ def test_classifies_through_chroma_index_when_populated(
     )
     result = use_case.execute(ProductQuery(product_name="cerveja", description=""))
     assert all(c.metadata["chapter"] == "22" for c in result.top_candidates)
+
+
+# ---------------------------------------------------------------------------
+# retrieval mode (ADR-0011): DENSE default keeps production unchanged; HYBRID
+# wires BM25 + e5 fused by RRF. Selected at the composition root, no index change.
+# ---------------------------------------------------------------------------
+
+
+def test_retrieval_mode_defaults_to_dense() -> None:
+    # No RETRIEVAL_MODE env var -> production stays dense-only.
+    assert Settings().retrieval_mode is RetrievalMode.DENSE
+
+
+def test_default_mode_wires_dense_only(indexed_collection: Collection) -> None:
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+    )
+    assert isinstance(use_case._retrieval, ChromaRetrievalAdapter)
+
+
+def test_hybrid_mode_wires_hybrid_adapter(
+    indexed_collection: Collection, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(settings, "retrieval_mode", RetrievalMode.HYBRID)
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+    )
+    assert isinstance(use_case._retrieval, HybridRetrievalAdapter)
