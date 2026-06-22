@@ -1,7 +1,22 @@
+from enum import StrEnum
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from src.core.domain.enrichment import EnrichStrategy
 from src.retrieval.embedding import EmbedderModel
+
+
+class RetrievalMode(StrEnum):
+    """Retrieval composition (env: RETRIEVAL_MODE), ADR-0011.
+
+    - DENSE: e5-small only — the ADR-0004 production baseline (default).
+    - HYBRID: BM25 + e5 fused by RRF, wired at the composition root. Reads the
+      same Chroma documents as the dense index, so no index rebuild is needed and
+      the existing index<->config guard still suffices.
+    """
+
+    DENSE = "dense"
+    HYBRID = "hybrid"
 
 
 class Settings(BaseSettings):
@@ -33,6 +48,10 @@ class Settings(BaseSettings):
     # baseline; BGE_M3 is the ADR-0008 experiment, opt-in only. The index must be
     # rebuilt to match; the adapter enforces index<->embedder agreement.
     embedder: EmbedderModel = EmbedderModel.E5_SMALL
+    # Retrieval mode (env: RETRIEVAL_MODE), ADR-0011. DENSE (default) keeps the
+    # production dense-only path unchanged; HYBRID fuses BM25 + e5 via RRF at the
+    # composition root. No index rebuild — BM25 reads the stored Chroma documents.
+    retrieval_mode: RetrievalMode = RetrievalMode.DENSE
 
 
 # NOTE: instantiates at import time. CI environments must provide
