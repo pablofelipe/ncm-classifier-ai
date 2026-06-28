@@ -243,7 +243,9 @@ def _print_report(suite: EvalSuite, report: CrossValidationReport, tipi_version:
 def _print_evaluation(suite: EvalSuite, report: EvalReport) -> None:
     print(
         f"\nEvaluation: semantic retrieval (Chroma embedder={settings.embedder.value} "
-        f"enrich={settings.enrich_strategy.value} + Passthrough rerank)"
+        f"enrich={settings.enrich_strategy.value} "
+        f"retrieval={settings.retrieval_mode.value} "
+        f"rerank={settings.rerank_mode.value})"
     )
     print(f"Top-1 accuracy:  {report.top_1_hits}/{report.total} = {report.top_1_accuracy:.1%}")
     print(f"Top-3 accuracy:  {report.top_3_hits}/{report.total} = {report.top_3_accuracy:.1%}")

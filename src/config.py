@@ -6,6 +6,19 @@ from src.core.domain.enrichment import EnrichStrategy
 from src.retrieval.embedding import EmbedderModel
 
 
+class RerankMode(StrEnum):
+    """Rerank strategy (env: RERANK_MODE), ADR-0012.
+
+    - PASSTHROUGH: no reranking — the ADR-0011 production default.
+    - CROSS_ENCODER: local cross-encoder (mmarco-mMiniLMv2-L12-H384-v1),
+      zero recurring cost. Opt-in; requires the model weights (~120 MB,
+      downloaded on first use and cached by HuggingFace Hub).
+    """
+
+    PASSTHROUGH = "passthrough"
+    CROSS_ENCODER = "cross_encoder"
+
+
 class RetrievalMode(StrEnum):
     """Retrieval composition (env: RETRIEVAL_MODE), ADR-0011.
 
@@ -52,6 +65,10 @@ class Settings(BaseSettings):
     # production dense-only path unchanged; HYBRID fuses BM25 + e5 via RRF at the
     # composition root. No index rebuild — BM25 reads the stored Chroma documents.
     retrieval_mode: RetrievalMode = RetrievalMode.DENSE
+    # Rerank strategy (env: RERANK_MODE), ADR-0012. PASSTHROUGH (default) keeps
+    # the production path unchanged; CROSS_ENCODER loads the local cross-encoder
+    # at the composition root and reranks the retrieval pool before slicing top-3.
+    rerank_mode: RerankMode = RerankMode.PASSTHROUGH
 
 
 # NOTE: instantiates at import time. CI environments must provide

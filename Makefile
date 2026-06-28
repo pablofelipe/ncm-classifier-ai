@@ -1,4 +1,4 @@
-.PHONY: help run test test-integration eval eval-v1 eval-v2 eval-full eval-subheading lint fmt index index-v2
+.PHONY: help run test test-integration eval eval-v1 eval-v2 eval-rerank eval-full eval-subheading lint fmt index index-v2
 
 .DEFAULT_GOAL := help
 
@@ -29,6 +29,12 @@ eval-v1:  ## run the v1 eval (explicit alias of `eval`)
 # Requires `make index-v2` first.
 eval-v2:  ## run the v2 eval (350 cases, Ch.20/21/22); needs `make index-v2`
 	NCM_CHAPTER=beverage python -m eval.run_eval eval/v2_cases.json
+
+# ADR-0012: cross-encoder rerank (mmarco-mMiniLMv2-L12-H384-v1).
+# Stacks on top of the ADR-0011 hybrid baseline; both levers active.
+# Downloads ~120 MB model on first run (cached by HuggingFace Hub).
+eval-rerank:  ## ADR-0012 experiment: v2 eval with cross-encoder rerank (hybrid+rerank)
+	NCM_CHAPTER=beverage RETRIEVAL_MODE=hybrid RERANK_MODE=cross_encoder python -m eval.run_eval eval/v2_cases.json
 
 # ADR-0005 experiment (FULL): heading + subheading + leaf. Net regression,
 # kept reproducible. ENRICH_STRATEGY drives both the index strategy and the

@@ -1,8 +1,9 @@
 from chromadb import Collection
 
-from src.config import RetrievalMode, settings
-from src.core.ports import RetrievalPort
+from src.config import RerankMode, RetrievalMode, settings
+from src.core.ports import LLMRerankPort, RetrievalPort
 from src.core.use_cases.classify_product import ClassifyProduct
+from src.llm.cross_encoder_adapter import CrossEncoderRerankAdapter
 from src.llm.passthrough_adapter import PassthroughRerankAdapter
 from src.retrieval.bm25_adapter import BM25RetrievalAdapter
 from src.retrieval.chroma_client import get_collection
@@ -48,9 +49,15 @@ def build_classify_use_case(
     if settings.retrieval_mode is RetrievalMode.HYBRID:
         retrieval = HybridRetrievalAdapter(dense, BM25RetrievalAdapter(col))
 
+    # ADR-0012: CROSS_ENCODER swaps in the local cross-encoder; PASSTHROUGH (default)
+    # keeps the production path unchanged (zero model load, zero latency overhead).
+    reranker: LLMRerankPort = PassthroughRerankAdapter()
+    if settings.rerank_mode is RerankMode.CROSS_ENCODER:
+        reranker = CrossEncoderRerankAdapter()
+
     return ClassifyProduct(
         retrieval,
-        PassthroughRerankAdapter(),
+        reranker,
         confidence_threshold=settings.confidence_threshold,
     )
 
