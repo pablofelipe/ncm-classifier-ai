@@ -96,9 +96,13 @@ Accepted — v2 measurement line (ships on the beverage corpus; v1/cap22 product
 Rejected — domain gap, closes the local cross-encoder line:
 - **ADR-0012** — Cross-encoder rerank with `cross-encoder/mmarco-mMiniLMv2-L12-H384-v1` REJECTED: hybrid+rerank **49.1%→20.3% / 68.0%→38.6%** (−28.8/−29.4 pp). Root: mMARCO cross-encoder trained on (question, web-passage) pairs; TIPI descriptions are 2-8 token fiscal nomenclature — domain gap produces near-random logits. Colloquial 85.0%→43.3% (the ADR-0010/0011 compounding gain destroyed). Infrastructure kept (`CrossEncoderRerankAdapter`, `RERANK_MODE`); production stays `PASSTHROUGH` (see `docs/adr/0012-cross-encoder-rerank-rejected.md`).
 
+Accepted — LLM rerank, ships on v2 config:
+- **ADR-0013** — Gemini 2.5 Flash LLM rerank (`GeminiRerankAdapter`, `RERANK_MODE=gemini`, top-5 pool, PT-BR fiscal prompt, `response_mime_type=application/json`). v2 **49.1%→71.7% / 68.0%→75.7%** (+22.6/+7.7 pp); negation +23.4 pp, frontier +21.7 pp; 0 JSON fallbacks; cost R$ 0.00013/query; latency ~2.1 s/query. Both v2 targets met with margin; top-1 exceeds v1 target on v2 corpus. `gemini_flash_model` updated to `gemini-2.5-flash` (2.0 deprecated mid-2026). `Makefile` target: `eval-gemini-rerank` (see `docs/adr/0013-gemini-flash-rerank.md`).
+- Confidence threshold T — `confidence_threshold=0.7` placeholder; calibration deferred (Gemini ranking order now drives top-3 selection, but scores are uncalibrated).
+
 Path forward:
-- **ADR-0013** — LLM rerank (last resort): an instruction-following LLM understands colloquial product names and fiscal nomenclature without fine-tuning. Must measure recurring cost + latency against the R$ 0.10 / 4 s budget. Recalibrating the v1 target is the fallback.
-- Confidence threshold T — still the `confidence_threshold=0.7` placeholder; calibration awaits a real rerank stage (rerank is Passthrough today).
+- Expand corpus and dataset beyond beverages (test generalization)
+- Wire deterministic verification gate (ADR-0002, implemented in `src/core/verification/deterministic.py`, not yet called by the pipeline)
 
 Infra available (no re-implementation needed for experiments): configurable `EnrichStrategy` (enrichment line closed at 53.3%, kept reproducible) and configurable `EmbedderModel` + factory + dual index↔config guard (ADR-0008; bge opt-in via `EMBEDDER`, e5 OFF ships).
 

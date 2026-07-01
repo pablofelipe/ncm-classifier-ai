@@ -19,28 +19,31 @@ the decision log, not the headline numbers.
 Active baseline — `multilingual-e5-small`, `OFF` strategy. The honest metric is
 now the 350-case **v2** set (Ch.20/21/22, mode-tagged); the 30-case **v1** set
 stays frozen for retroactive ADR comparison. The v2 column below is **hybrid
-retrieval** (BM25 + e5, ADR-0011, opt-in `RETRIEVAL_MODE=hybrid`) — the first
-config to clear both v2 targets; v1/cap22 production stays dense-only.
+retrieval + Gemini Flash rerank** (BM25 + e5 via RRF, ADR-0011; Gemini 2.5 Flash
+rerank, ADR-0013; opt-in `RETRIEVAL_MODE=hybrid RERANK_MODE=gemini`).
 
-| Metric | v2 (350, ADR-0011 hybrid) | v2 target | v1 (frozen, 30) | v1 target (v1 only) |
+| Metric | v2 (350, ADR-0013 hybrid+Gemini) | v2 target | v1 (frozen, 30) | v1 target (v1 only) |
 |---|---|---|---|---|
-| Top-1 accuracy | 49.1% (172/350) | ≥ 40% ✓ | 33.3% (10/30) | ≥ 70% |
-| Top-3 accuracy | **68.0% (238/350)** | ≥ 65% ✓ | **63.3% (19/30)** | ≥ 90% |
-| ECE | uncalibrated (Passthrough rerank) | ≤ 0.15 | 0.54 | — |
-| Median latency | within budget | ≤ 4s | within budget | — |
-| Cost / classification | within budget | ≤ R$ 0.10 | within budget | — |
+| Top-1 accuracy | **71.7% (251/350)** | ≥ 40% ✓ | 33.3% (10/30) | ≥ 70% |
+| Top-3 accuracy | **75.7% (265/350)** | ≥ 65% ✓ | **63.3% (19/30)** | ≥ 90% |
+| ECE | uncalibrated | ≤ 0.15 | 0.54 | — |
+| Median latency | ~2.1 s/query | ≤ 4s | within budget | — |
+| Cost / classification | ~R$ 0.00013 | ≤ R$ 0.10 | within budget | — |
 
-Eleven ADRs narrowed the problem from "which text do we feed the model" to
+Thirteen ADRs narrowed the problem from "which text do we feed the model" to
 "query understanding and ranking between similar products" — and proved, on
 evidence, that **offline manipulation (document text *and* embedder) caps out
 around 63% top-3 on v1.** ADR-0009 then widened the measurement surface: on 350
 multi-chapter, mode-tagged cases the honest baseline was **32.6% top-3**, with
 **colloquial/brand input the dominant hole** (20.5% top-3). ADR-0010 attacked
 that hole with a corpus-synonyms file (brands + colloquial names): colloquial
-top-3 jumped 20.5% → 59.1% and the aggregate rose to 51.7% top-3. ADR-0011 then
-fused BM25 with e5 via RRF — synonyms put the brand in the document, BM25 makes
-the exact-token match decisive — clearing **both v2 targets** at **49.1% top-1 /
-68.0% top-3** (colloquial 85.0%). The decision log below is the most useful part
+top-3 jumped 20.5% → 59.1% and the aggregate rose to 51.7% top-3. ADR-0011
+fused BM25 with e5 via RRF — clearing **both v2 targets** at **49.1% / 68.0%**
+(colloquial 85.0%). ADR-0012 (local cross-encoder) was rejected due to domain
+gap (−29 pp). ADR-0013 added Gemini 2.5 Flash rerank — an instruction-following
+LLM that reasons over fiscal nomenclature without fine-tuning — reaching
+**71.7% top-1 / 75.7% top-3** (+22.6 / +7.7 pp), with negation and frontier
+modes showing the largest gains. The decision log below is the most useful part
 of this repo.
 
 ### Dataset & corpus
@@ -49,6 +52,7 @@ of this repo.
 |---|---|---|
 | Eval cases | 30 (Chapter 22) | 350 (Ch.20/21/22), tagged by `mode` |
 | Corpus | 34 NCMs (Ch.22) | 64 NCMs (Ch.20/21/22) |
+| Best config | dense, PASSTHROUGH | hybrid + Gemini Flash rerank (ADR-0013) |
 | Role | historical baseline, comparable across ADRs 0003-0008 | honest surface (ADR-0009 32.6% → ADR-0010 51.7% → ADR-0011 hybrid 68.0% top-3); the measurement target for ADR-0010 onward |
 
 v1 stays **frozen** so every ADR delta remains comparable. v2 widens the
@@ -107,6 +111,7 @@ experiment is a config flag plus a rebuild, not a code change.
 | [0010](docs/adr/0010-corpus-enrichment-synonyms.md) | Corpus enrichment (synonyms) | **Accepted (ships on v2)** | Synonyms file (22 NCMs, 129 terms, evidence-bound) appended to OFF docs; v1 blindado. v2 **20.3%→30.9% / 32.6%→51.7%** (+19.1 pp top-3); colloquial 20.5%→59.1%. multi_attr flat; opens ADR-0011 |
 | [0011](docs/adr/0011-hybrid-retrieval-bm25-rrf.md) | Hybrid retrieval (BM25 + e5, RRF) | **Accepted (opt-in on v2)** | BM25 over the same Chroma docs, fused with e5 via RRF (k=60); `RETRIEVAL_MODE` default DENSE. v2 **30.9%→49.1% / 51.7%→68.0%** — first to clear **both** targets. colloquial 59.1%→85.0% (synonyms + BM25 compound); opens ADR-0012 |
 | [0012](docs/adr/0012-cross-encoder-rerank-rejected.md) | Local cross-encoder rerank (mmarco-mMiniLMv2) | **Rejected** | `RERANK_MODE=cross_encoder` on ADR-0011 baseline: **49.1%→20.3% / 68.0%→38.6%** (−28.8/−29.4 pp). Domain gap: mMARCO cross-encoder trained on web QA pairs; TIPI descriptions are 2-8 token fiscal nomenclature — model produces near-random logits. Colloquial 85.0%→43.3% (ADR-0010/0011 compounding gain destroyed). Infrastructure kept; production `PASSTHROUGH`; opens ADR-0013 |
+| [0013](docs/adr/0013-gemini-flash-rerank.md) | Gemini 2.5 Flash LLM rerank | **Accepted (ships on v2)** | `RERANK_MODE=gemini`, top-5 pool, PT-BR fiscal prompt, `response_mime_type=application/json`, logged fallback. ADR-0011 baseline: **49.1%→71.7% / 68.0%→75.7%** (+22.6/+7.7 pp). Top-1/top-3 gap collapsed 18.9 pp → 4.0 pp. Negation +23.4 pp, frontier +21.7 pp (LLM reasons over fiscal semantics without fine-tuning). 0 JSON fallbacks. Cost: R$ 0.00013/query (770× below budget). Latency: ~2.1 s/query. Both v2 targets met with margin; top-1 exceeds v1 target (≥70%) on v2 corpus |
 
 **Root finding (ADRs 0005-0008):** offline manipulation — of the document text
 *or* of the embedder — is exhausted at ~63% top-3. Even bge-m3, a top
@@ -114,14 +119,15 @@ multilingual retrieval model, regressed. The remaining failures are
 **query-understanding** (colloquial/brand input) and **ranking precision**, not
 document representation.
 
-**Path forward (cost-ordered, rerank last):** ADR-0009 set the v2 baseline
-(32.6% top-3); **ADR-0010** corpus enrichment (synonyms, brands) lifted it to
-51.7% and closed the colloquial hole (20.5% → 59.1%); **ADR-0011** BM25 + e5
-hybrid via RRF reached **49.1% / 68.0%** — both v2 targets met (colloquial 85.0%).
-Headroom remains where lexical and dense both struggle (`frontier` 43.5%,
-`multi_attr` 45.5%, sibling juice leaves): next is **ADR-0012** local
-cross-encoder rerank (zero recurring cost) → **ADR-0013** LLM rerank (last
-resort, recurring cost, must clear the R$ 0.10 / 4 s budget).
+**Path completed (ADRs 0009–0013):** ADR-0009 set the v2 baseline (32.6% top-3);
+**ADR-0010** synonyms closed the colloquial hole (20.5% → 59.1%, aggregate 51.7%);
+**ADR-0011** BM25+e5 hybrid hit **49.1% / 68.0%** (colloquial 85.0%); **ADR-0012**
+cross-encoder rejected (domain gap, −29 pp); **ADR-0013** Gemini Flash rerank
+reached **71.7% / 75.7%** — all v2 targets met with margin. Remaining gaps:
+`frontier` 65.2% top-3, `hard` 63.8% top-3 (correct NCM not in top-5 retrieval
+pool — retrieval limit, not rerank limit). Logical next steps: expand corpus
+beyond beverages; wire the deterministic verification gate (ADR-0002, implemented,
+not yet called).
 
 ## Engineering discipline
 
