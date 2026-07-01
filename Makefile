@@ -36,6 +36,9 @@ eval-v2:  ## run the v2 eval (350 cases, Ch.20/21/22); needs `make index-v2`
 eval-rerank:  ## ADR-0012 experiment: v2 eval with cross-encoder rerank (hybrid+rerank)
 	NCM_CHAPTER=beverage RETRIEVAL_MODE=hybrid RERANK_MODE=cross_encoder python -m eval.run_eval eval/v2_cases.json
 
+eval-gemini-rerank:  ## ADR-0013 experiment: v2 eval with Gemini Flash rerank (hybrid+LLM); requires GEMINI_API_KEY
+	NCM_CHAPTER=beverage RETRIEVAL_MODE=hybrid RERANK_MODE=gemini python -m eval.run_eval eval/v2_cases.json
+
 # ADR-0005 experiment (FULL): heading + subheading + leaf. Net regression,
 # kept reproducible. ENRICH_STRATEGY drives both the index strategy and the
 # adapter's expected strategy, keeping index and eval in agreement.
