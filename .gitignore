@@ -13,6 +13,10 @@ venv/
 # Environment
 .env
 
+# Local tooling (project uses pip + hatchling; these are per-developer)
+.python-version
+poetry.lock
+
 # Generated data
 data/chroma/
 data/tipi/raw/
