@@ -1,5 +1,8 @@
 # NCM Classifier AI
 
+[![eval](https://github.com/pablofelipe/ncm-classifier-ai/actions/workflows/eval.yml/badge.svg)](https://github.com/pablofelipe/ncm-classifier-ai/actions/workflows/eval.yml)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
+
 A RAG pipeline that classifies Brazilian products into 8-digit NCM
 (Nomenclatura Comum do Mercosul) fiscal codes, grounded on the official
 TIPI table.
@@ -95,7 +98,7 @@ re-implementing the pipeline:
 Both are wired through `Settings` (env: `ENRICH_STRATEGY`, `EMBEDDER`), so an
 experiment is a config flag plus a rebuild, not a code change.
 
-## Decision log — eleven ADRs, what worked, what didn't, and why
+## Decision log — thirteen ADRs, what worked, what didn't, and why
 
 | ADR | Title | Status | Central finding |
 |---|---|---|---|
@@ -213,3 +216,7 @@ scripts/                     # ingest_tipi.py — XLSX → corpus JSON (incl. `b
 
 - `CLAUDE.md` — architecture, constraints, and decision-log conventions.
 - `docs/adr/` — full ADR series, including per-case analysis data.
+
+## License
+
+Licensed under the [Apache License 2.0](LICENSE).
