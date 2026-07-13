@@ -1,10 +1,11 @@
-"""Deterministic TIPI verification (ADR-0002).
+"""Deterministic TIPI verification (ADR-0002, wired in ADR-0014).
 
-NOTE: This module is NOT yet integrated into the classification pipeline.
-``TIPIIndex.verify`` is implemented and unit-tested, but it is not called by
-``ClassifyProduct`` — the shipping pipeline is retrieval -> rerank -> confidence
-gate, with no verification step. Wiring it in (and routing failures to an
-escalation path) is planned for a future ADR.
+``TIPIIndex.verify`` checks existence + hierarchy consistency and is called by
+``ClassifyProduct`` after rerank, when a ``TIPIIndex`` is injected. Chapter
+coherence is not checked here (ADR-0014): the index can span multiple
+chapters (``NCM_CHAPTER=beverage`` covers Ch.20/21/22), so a fixed expected
+chapter doesn't fit — existence against the loaded index is the equivalent
+check for codes outside its scope.
 """
 
 import re
@@ -22,7 +23,6 @@ def validate_ncm_format(code: str) -> bool:
 class VerificationStatus(StrEnum):
     PASSED = "passed"
     CODE_NOT_FOUND = "code_not_found"
-    WRONG_CHAPTER = "wrong_chapter"
     INVALID_HIERARCHY = "invalid_hierarchy"
 
 
@@ -50,18 +50,12 @@ class TIPIIndex:
     def __init__(self, codes: dict[str, dict[str, str]]) -> None:
         self._codes = codes
 
-    def verify(self, code: str, expected_chapter: str) -> VerificationResult:
+    def verify(self, code: str) -> VerificationResult:
         if code not in self._codes:
             return VerificationResult(
                 status=VerificationStatus.CODE_NOT_FOUND,
                 code=code,
                 message=f"NCM {code} not found in TIPI index",
-            )
-        if not code.startswith(expected_chapter):
-            return VerificationResult(
-                status=VerificationStatus.WRONG_CHAPTER,
-                code=code,
-                message=f"NCM {code} belongs to chapter {code[:2]}, expected {expected_chapter}",
             )
         if not _hierarchy_consistent(code, self._codes[code]):
             return VerificationResult(

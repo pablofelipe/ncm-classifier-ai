@@ -18,6 +18,7 @@ class ClassifyResponse(BaseModel):
     confidence_label: Literal["high", "needs_review"]
     candidates: list[NCMCandidate]  # exactly 3 in v1
     latency_ms: float  # measured at the route, not in the domain
+    escalation_reason: str | None = None  # ADR-0014: set when verification fails
 
     @model_validator(mode="after")
     def _exactly_three_candidates(self) -> "ClassifyResponse":

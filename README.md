@@ -71,18 +71,19 @@ Hexagonal / ports-and-adapters. Retrieval and rerank are swappable
 adapters behind `RetrievalPort` and `LLMRerankPort`, validated by two
 implementations each (naive baseline + production adapter).
 
-> ⚠️ **Planned — not yet integrated.** A **deterministic verification gate**
-> (ADR-0002) is implemented and unit-tested in
-> `src/core/verification/deterministic.py` (existence, chapter coherence,
-> hierarchy consistency), but it is **not yet wired into the pipeline**: the
-> shipping flow is retrieval → rerank → confidence gate, with no verification
-> step. It was chosen over a second LLM call because it's testable, has zero
-> marginal cost, and produces an auditable rejection reason; wiring it in (with
-> failures routed to an escalation path) is planned for a future ADR.
+A **deterministic verification gate** (ADR-0002, wired in ADR-0014) runs after
+rerank in `src/core/verification/deterministic.py`: existence and hierarchy
+consistency against the loaded TIPI index. Chapter coherence was dropped at
+wiring time (ADR-0014) — a fixed expected chapter doesn't fit the multi-chapter
+v2 corpus, and existence already covers the equivalent case. It was chosen over
+a second LLM call because it's testable, has zero marginal cost, and produces
+an auditable rejection reason. A failing verification forces
+`confidence_label="needs_review"` and sets `escalation_reason` to the failure
+status, regardless of the rerank score; it never changes which candidates are
+returned.
 
 ```
-HTTP → ClassifyProduct use case → RetrievalPort → LLMRerankPort → confidence gate → result
-                                                              (Verification gate → escalate: planned, not yet wired)
+HTTP → ClassifyProduct use case → RetrievalPort → LLMRerankPort → confidence gate + verification gate → result
 ```
 
 Two infrastructure seams make experimentation cheap and reproducible without
@@ -98,7 +99,7 @@ re-implementing the pipeline:
 Both are wired through `Settings` (env: `ENRICH_STRATEGY`, `EMBEDDER`), so an
 experiment is a config flag plus a rebuild, not a code change.
 
-## Decision log — thirteen ADRs, what worked, what didn't, and why
+## Decision log — fourteen ADRs, what worked, what didn't, and why
 
 | ADR | Title | Status | Central finding |
 |---|---|---|---|
@@ -115,6 +116,7 @@ experiment is a config flag plus a rebuild, not a code change.
 | [0011](docs/adr/0011-hybrid-retrieval-bm25-rrf.md) | Hybrid retrieval (BM25 + e5, RRF) | **Accepted (opt-in on v2)** | BM25 over the same Chroma docs, fused with e5 via RRF (k=60); `RETRIEVAL_MODE` default DENSE. v2 **30.9%→49.1% / 51.7%→68.0%** — first to clear **both** targets. colloquial 59.1%→85.0% (synonyms + BM25 compound); opens ADR-0012 |
 | [0012](docs/adr/0012-cross-encoder-rerank-rejected.md) | Local cross-encoder rerank (mmarco-mMiniLMv2) | **Rejected** | `RERANK_MODE=cross_encoder` on ADR-0011 baseline: **49.1%→20.3% / 68.0%→38.6%** (−28.8/−29.4 pp). Domain gap: mMARCO cross-encoder trained on web QA pairs; TIPI descriptions are 2-8 token fiscal nomenclature — model produces near-random logits. Colloquial 85.0%→43.3% (ADR-0010/0011 compounding gain destroyed). Infrastructure kept; production `PASSTHROUGH`; opens ADR-0013 |
 | [0013](docs/adr/0013-gemini-flash-rerank.md) | Gemini 2.5 Flash LLM rerank | **Accepted (ships on v2)** | `RERANK_MODE=gemini`, top-5 pool, PT-BR fiscal prompt, `response_mime_type=application/json`, logged fallback. ADR-0011 baseline: **49.1%→71.7% / 68.0%→75.7%** (+22.6/+7.7 pp). Top-1/top-3 gap collapsed 18.9 pp → 4.0 pp. Negation +23.4 pp, frontier +21.7 pp (LLM reasons over fiscal semantics without fine-tuning). 0 JSON fallbacks. Cost: R$ 0.00013/query (770× below budget). Latency: ~2.1 s/query. Both v2 targets met with margin; top-1 exceeds v1 target (≥70%) on v2 corpus |
+| [0014](docs/adr/0014-verification-gate-wiring-chapter-coherence-dropped.md) | Verification gate wiring (chapter-coherence dropped) | **Accepted (ships)** | ADR-0002's deterministic check finally wired into `ClassifyProduct` after rerank. Fixed `expected_chapter` doesn't fit the multi-chapter v2 corpus (`NCM_CHAPTER=beverage` spans Ch.20/21/22) — dropped in favor of existence + hierarchy-consistency only, since existence already subsumes the chapter check for a corpus-scoped index. Failing verification forces `needs_review` and sets `escalation_reason`, regardless of rerank score; candidates returned are unchanged |
 
 **Root finding (ADRs 0005-0008):** offline manipulation — of the document text
 *or* of the embedder — is exhausted at ~63% top-3. Even bge-m3, a top
@@ -126,11 +128,12 @@ document representation.
 **ADR-0010** synonyms closed the colloquial hole (20.5% → 59.1%, aggregate 51.7%);
 **ADR-0011** BM25+e5 hybrid hit **49.1% / 68.0%** (colloquial 85.0%); **ADR-0012**
 cross-encoder rejected (domain gap, −29 pp); **ADR-0013** Gemini Flash rerank
-reached **71.7% / 75.7%** — all v2 targets met with margin. Remaining gaps:
-`frontier` 65.2% top-3, `hard` 63.8% top-3 (correct NCM not in top-5 retrieval
-pool — retrieval limit, not rerank limit). Logical next steps: expand corpus
-beyond beverages; wire the deterministic verification gate (ADR-0002, implemented,
-not yet called).
+reached **71.7% / 75.7%** — all v2 targets met with margin; **ADR-0014** wired
+the deterministic verification gate (ADR-0002) into the pipeline, dropping the
+chapter-coherence check as ill-fitting for the multi-chapter corpus. Remaining
+gaps: `frontier` 65.2% top-3, `hard` 63.8% top-3 (correct NCM not in top-5
+retrieval pool — retrieval limit, not rerank limit). Logical next steps: expand
+corpus beyond beverages; calibrate confidence scores (ECE).
 
 ## Engineering discipline
 
@@ -205,7 +208,7 @@ src/
     domain/                  # ncm, enrichment, tipi_parsing
     ports.py                 # RetrievalPort, LLMRerankPort
     use_cases/               # classify_product
-    verification/            # deterministic.py — deterministic TIPI check (planned, not yet wired)
+    verification/            # deterministic.py — deterministic TIPI check, wired into ClassifyProduct (ADR-0014)
   retrieval/                 # RetrievalPort adapters (naive, Chroma/e5-small) + embedding
   llm/                       # LLMRerankPort adapters (passthrough; gemini_client stub)
   api/                       # composition root + HTTP endpoint

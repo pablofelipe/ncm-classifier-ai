@@ -18,6 +18,7 @@ from src.api.dependencies import build_classify_use_case
 from src.config import RetrievalMode, Settings, settings
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ProductQuery
+from src.core.verification.deterministic import TIPIIndex
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
 from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction, EmbedderModel
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
@@ -100,3 +101,35 @@ def test_hybrid_mode_wires_hybrid_adapter(
         embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
     )
     assert isinstance(use_case._retrieval, HybridRetrievalAdapter)
+
+
+# ---------------------------------------------------------------------------
+# verification gate (ADR-0014): the composition root builds a TIPIIndex from
+# the same TIPI JSON used to populate the Chroma collection, and injects it
+# into ClassifyProduct.
+# ---------------------------------------------------------------------------
+
+
+def test_wires_a_tipi_index_for_verification(indexed_collection: Collection) -> None:
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+    )
+    assert isinstance(use_case._verification, TIPIIndex)
+
+
+def test_wired_verification_index_passes_a_real_indexed_ncm(
+    indexed_collection: Collection,
+) -> None:
+    entries = json.loads(
+        _find_latest_tipi_json(Path("data/tipi"), "22").read_text(encoding="utf-8")
+    )["entries"]
+    sample_dotless = entries[0]["ncm"].replace(".", "")
+
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+    )
+    assert use_case._verification is not None
+    result = use_case._verification.verify(sample_dotless)
+    assert result.passed

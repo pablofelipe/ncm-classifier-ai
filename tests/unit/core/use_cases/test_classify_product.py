@@ -2,6 +2,7 @@ import pytest
 
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
 from src.core.use_cases.classify_product import ClassifyProduct
+from src.core.verification.deterministic import TIPIIndex
 
 # --- Local fakes implementing the Protocols structurally (no Naive/Passthrough) ---
 
@@ -11,9 +12,7 @@ class FakeRetrieval:
         self._to_return = to_return
         self.calls: list[int] = []
 
-    def retrieve_candidates(
-        self, query: ProductQuery, k: int
-    ) -> list[ClassificationCandidate]:
+    def retrieve_candidates(self, query: ProductQuery, k: int) -> list[ClassificationCandidate]:
         self.calls.append(k)
         return self._to_return
 
@@ -36,9 +35,7 @@ def _query() -> ProductQuery:
 
 def _candidates(*scores: float) -> list[ClassificationCandidate]:
     return [
-        ClassificationCandidate(
-            ncm_code=f"2201.10.{i:02d}", description=f"bebida {i}", score=s
-        )
+        ClassificationCandidate(ncm_code=f"2201.10.{i:02d}", description=f"bebida {i}", score=s)
         for i, s in enumerate(scores)
     ]
 
@@ -48,10 +45,16 @@ def _use_case(
     *,
     rerank: FakeRerank | None = None,
     threshold: float = 0.5,
+    verification: TIPIIndex | None = None,
 ) -> tuple[ClassifyProduct, FakeRetrieval, FakeRerank]:
     fake_retrieval = FakeRetrieval(retrieved)
     fake_rerank = rerank if rerank is not None else FakeRerank()
-    uc = ClassifyProduct(fake_retrieval, fake_rerank, confidence_threshold=threshold)
+    uc = ClassifyProduct(
+        fake_retrieval,
+        fake_rerank,
+        confidence_threshold=threshold,
+        verification=verification,
+    )
     return uc, fake_retrieval, fake_rerank
 
 
@@ -123,3 +126,75 @@ def test_execute_needs_review_when_top_score_exactly_zero() -> None:
     uc, _, _ = _use_case(_candidates(0.0, 0.0, 0.0), threshold=0.5)
     result = uc.execute(_query())
     assert result.confidence_label == "needs_review"
+
+
+# --- Verification gate (ADR-0014) ---
+
+
+def _tipi_index() -> TIPIIndex:
+    return TIPIIndex(
+        {
+            "22011000": {"chapter": "22", "heading": "22.01", "description": "agua mineral"},
+        }
+    )
+
+
+def _candidate_with_code(ncm_code: str, score: float) -> ClassificationCandidate:
+    return ClassificationCandidate(ncm_code=ncm_code, description="bebida", score=score)
+
+
+def _three_candidates_with_top(top_code: str, top_score: float) -> list[ClassificationCandidate]:
+    return [
+        _candidate_with_code(top_code, top_score),
+        _candidate_with_code("2202.10.01", 0.1),
+        _candidate_with_code("2202.10.02", 0.0),
+    ]
+
+
+def test_execute_without_verification_gates_purely_by_score() -> None:
+    candidates = _three_candidates_with_top("9999.99.99", 0.8)
+    uc, _, _ = _use_case(candidates, threshold=0.5, verification=None)
+    result = uc.execute(_query())
+    assert result.confidence_label == "high"
+
+
+def test_execute_without_verification_escalation_reason_is_none() -> None:
+    uc, _, _ = _use_case(_candidates(0.8, 0.1, 0.0), threshold=0.5, verification=None)
+    result = uc.execute(_query())
+    assert result.escalation_reason is None
+
+
+def test_execute_with_verification_passing_top_candidate_gates_by_score() -> None:
+    candidates = _three_candidates_with_top("2201.10.00", 0.8)
+    uc, _, _ = _use_case(candidates, threshold=0.5, verification=_tipi_index())
+    result = uc.execute(_query())
+    assert result.confidence_label == "high"
+
+
+def test_execute_with_verification_passing_top_candidate_escalation_reason_is_none() -> None:
+    candidates = _three_candidates_with_top("2201.10.00", 0.8)
+    uc, _, _ = _use_case(candidates, threshold=0.5, verification=_tipi_index())
+    result = uc.execute(_query())
+    assert result.escalation_reason is None
+
+
+def test_execute_with_verification_failing_top_candidate_forces_needs_review() -> None:
+    # Score is well above threshold, but the top NCM doesn't exist in the index.
+    candidates = _three_candidates_with_top("9999.99.99", 0.9)
+    uc, _, _ = _use_case(candidates, threshold=0.5, verification=_tipi_index())
+    result = uc.execute(_query())
+    assert result.confidence_label == "needs_review"
+
+
+def test_execute_with_verification_failing_top_candidate_sets_escalation_reason() -> None:
+    candidates = _three_candidates_with_top("9999.99.99", 0.9)
+    uc, _, _ = _use_case(candidates, threshold=0.5, verification=_tipi_index())
+    result = uc.execute(_query())
+    assert result.escalation_reason == "code_not_found"
+
+
+def test_execute_with_verification_failing_top_candidate_keeps_same_top_candidates() -> None:
+    candidates = _three_candidates_with_top("9999.99.99", 0.9)
+    uc, _, _ = _use_case(candidates, threshold=0.5, verification=_tipi_index())
+    result = uc.execute(_query())
+    assert result.top_candidates == candidates

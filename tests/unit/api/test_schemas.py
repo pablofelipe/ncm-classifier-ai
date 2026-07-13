@@ -27,3 +27,22 @@ def test_response_accepts_three_candidates() -> None:
         latency_ms=1.0,
     )
     assert len(response.candidates) == 3
+
+
+def test_response_escalation_reason_defaults_to_none() -> None:
+    response = ClassifyResponse(
+        confidence_label="high",
+        candidates=_candidates(3),
+        latency_ms=1.0,
+    )
+    assert response.escalation_reason is None
+
+
+def test_response_escalation_reason_is_settable() -> None:
+    response = ClassifyResponse(
+        confidence_label="needs_review",
+        candidates=_candidates(3),
+        latency_ms=1.0,
+        escalation_reason="code_not_found",
+    )
+    assert response.escalation_reason == "code_not_found"

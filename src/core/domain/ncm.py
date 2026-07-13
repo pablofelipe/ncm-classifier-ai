@@ -46,6 +46,7 @@ def candidate_metadata_from_entry(entry: dict[str, object]) -> dict[str, str | f
 class ClassificationResult:
     top_candidates: list[ClassificationCandidate]
     confidence_label: ConfidenceLabel
+    escalation_reason: str | None = None
 
     def __post_init__(self) -> None:
         if len(self.top_candidates) != 3:
