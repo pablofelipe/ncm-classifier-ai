@@ -73,9 +73,7 @@ def test_rejects_top_candidates_not_length_three(n: int) -> None:
 
 
 def test_accepts_exactly_three_candidates() -> None:
-    result = ClassificationResult(
-        top_candidates=_candidates(3), confidence_label="needs_review"
-    )
+    result = ClassificationResult(top_candidates=_candidates(3), confidence_label="needs_review")
     assert len(result.top_candidates) == 3
 
 
@@ -89,3 +87,17 @@ def test_accepts_valid_confidence_label(label: str) -> None:
 def test_rejects_invalid_confidence_label(label: str) -> None:
     with pytest.raises(ValueError):
         ClassificationResult(top_candidates=_candidates(3), confidence_label=label)
+
+
+def test_escalation_reason_defaults_to_none() -> None:
+    result = ClassificationResult(top_candidates=_candidates(3), confidence_label="high")
+    assert result.escalation_reason is None
+
+
+def test_escalation_reason_is_settable() -> None:
+    result = ClassificationResult(
+        top_candidates=_candidates(3),
+        confidence_label="needs_review",
+        escalation_reason="code_not_found",
+    )
+    assert result.escalation_reason == "code_not_found"

@@ -44,7 +44,7 @@ make index      # (re)build ChromaDB from data/tipi/*.json
 **RAG pipeline (hierarchical retrieval):**
 1. Section → Chapter → Heading → NCM (structured, not flat vector search)
 2. Confidence gate: above threshold T → return single classification; below T → escalate with ranked candidates
-3. Verification step after retrieval (⚠️ **planned — not yet wired** into `ClassifyProduct`): deterministic check against TIPI metadata — NCM exists in table, chapter coherent, digit-by-digit hierarchy consistent. Implemented and unit-tested in `src/core/verification/deterministic.py`, but not called by the shipping pipeline (see ADR-0002)
+3. Verification step after rerank, before the confidence gate: deterministic check against TIPI metadata — NCM exists in the loaded index, digit-by-digit hierarchy consistent. Implemented in `src/core/verification/deterministic.py` and wired into `ClassifyProduct` via an optional `verification: TIPIIndex | None` constructor parameter, injected at the composition root (`src/api/dependencies.py`). A failing check forces `confidence_label="needs_review"` and sets `ClassificationResult.escalation_reason`, regardless of rerank score (see ADR-0002, wired in ADR-0014). Chapter-coherence, part of the original ADR-0002 design, was dropped at wiring time — see ADR-0014
 
 **Evaluation-first discipline:**
 - `eval/v1_cases.json` must exist before the classifier is built
@@ -100,9 +100,11 @@ Accepted — LLM rerank, ships on v2 config:
 - **ADR-0013** — Gemini 2.5 Flash LLM rerank (`GeminiRerankAdapter`, `RERANK_MODE=gemini`, top-5 pool, PT-BR fiscal prompt, `response_mime_type=application/json`). v2 **49.1%→71.7% / 68.0%→75.7%** (+22.6/+7.7 pp); negation +23.4 pp, frontier +21.7 pp; 0 JSON fallbacks; cost R$ 0.00013/query; latency ~2.1 s/query. Both v2 targets met with margin; top-1 exceeds v1 target on v2 corpus. `gemini_flash_model` updated to `gemini-2.5-flash` (2.0 deprecated mid-2026). `Makefile` target: `eval-gemini-rerank` (see `docs/adr/0013-gemini-flash-rerank.md`).
 - Confidence threshold T — `confidence_threshold=0.7` placeholder; calibration deferred (Gemini ranking order now drives top-3 selection, but scores are uncalibrated).
 
+- **ADR-0014** — Verification gate wiring: `TIPIIndex.verify` wired into `ClassifyProduct` after rerank, via an optional constructor parameter injected at the composition root. Chapter-coherence check (part of ADR-0002's original design) dropped: a fixed `expected_chapter` doesn't fit the multi-chapter v2 corpus (`NCM_CHAPTER=beverage` spans Ch.20/21/22), and existence-in-index already covers the equivalent case for a corpus-scoped `TIPIIndex`. Kept: existence + hierarchy-consistency. A failing check forces `needs_review` + `escalation_reason`, without changing which candidates are returned (see `docs/adr/0014-verification-gate-wiring-chapter-coherence-dropped.md`).
+
 Path forward:
 - Expand corpus and dataset beyond beverages (test generalization)
-- Wire deterministic verification gate (ADR-0002, implemented in `src/core/verification/deterministic.py`, not yet called by the pipeline)
+- Calibrate confidence scores (ECE currently uncalibrated; Gemini ranking order drives top-3 selection, but scores aren't probabilities)
 
 Infra available (no re-implementation needed for experiments): configurable `EnrichStrategy` (enrichment line closed at 53.3%, kept reproducible) and configurable `EmbedderModel` + factory + dual index↔config guard (ADR-0008; bge opt-in via `EMBEDDER`, e5 OFF ships).
 

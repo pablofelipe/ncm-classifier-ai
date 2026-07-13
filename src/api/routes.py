@@ -34,4 +34,5 @@ async def classify(
             for c in result.top_candidates
         ],
         latency_ms=latency_ms,
+        escalation_reason=result.escalation_reason,
     )

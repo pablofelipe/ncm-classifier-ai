@@ -1,16 +1,38 @@
+import json
+from pathlib import Path
+
 from chromadb import Collection
 
 from src.config import RerankMode, RetrievalMode, settings
 from src.core.ports import LLMRerankPort, RetrievalPort
 from src.core.use_cases.classify_product import ClassifyProduct
+from src.core.verification.deterministic import TIPIIndex
 from src.llm.cross_encoder_adapter import CrossEncoderRerankAdapter
 from src.llm.gemini_rerank_adapter import GeminiRerankAdapter
 from src.llm.passthrough_adapter import PassthroughRerankAdapter
 from src.retrieval.bm25_adapter import BM25RetrievalAdapter
-from src.retrieval.chroma_client import get_collection
+from src.retrieval.chroma_client import _find_latest_tipi_json, get_collection
 from src.retrieval.embedding import EmbeddingFunction, make_embedding_function
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
 from src.retrieval.hybrid import HybridRetrievalAdapter
+
+
+def _build_verification_index() -> TIPIIndex:
+    """Build the ADR-0014 verification index from the same TIPI JSON used to
+    populate the Chroma collection (settings.tipi_data_dir / settings.ncm_chapter).
+    """
+    data_dir = Path(settings.tipi_data_dir)
+    json_path = _find_latest_tipi_json(data_dir, settings.ncm_chapter)
+    entries = json.loads(json_path.read_text(encoding="utf-8"))["entries"]
+    codes = {
+        entry["ncm"].replace(".", ""): {
+            "chapter": entry["chapter"],
+            "heading": entry["heading"],
+            "description": entry["description"],
+        }
+        for entry in entries
+    }
+    return TIPIIndex(codes)
 
 
 def build_classify_use_case(
@@ -63,6 +85,7 @@ def build_classify_use_case(
         retrieval,
         reranker,
         confidence_threshold=settings.confidence_threshold,
+        verification=_build_verification_index(),
     )
 
 
