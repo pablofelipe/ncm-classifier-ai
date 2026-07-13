@@ -144,6 +144,11 @@ not yet called).
 - **Termination clause**: a pre-armed rule closed the enrichment line on
   structural evidence after three negative results, rather than letting
   it drift on sunk cost.
+- **AI-assisted, same rules**: parts of this codebase are written with AI
+  coding agents. They operate under the same discipline as manual work —
+  TDD and hexagonal-boundary rules are encoded as enforced agent skills
+  (`.claude/skills/`), and every resulting change still has to clear the
+  same eval gate as any other.
 - **CI**: GitHub Actions gate on the production path (`OFF` strategy,
   63.3% baseline); experimental strategies are reproducible locally via
   `make eval-full` / `make eval-subheading` but don't run in CI.
