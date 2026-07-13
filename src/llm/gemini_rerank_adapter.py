@@ -3,10 +3,14 @@
 import json
 import logging
 import re
+from typing import TYPE_CHECKING
 
 from src.config import settings
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
 from src.llm.gemini_client import _client
+
+if TYPE_CHECKING:
+    import google.genai as genai
 
 logger = logging.getLogger(__name__)
 
@@ -43,11 +47,11 @@ class GeminiRerankAdapter:
     is absent and no client was injected.
     """
 
-    def __init__(self, client=None) -> None:
+    def __init__(self, client: "genai.Client | None" = None) -> None:
         self._override = client
-        self._cached: object | None = None
+        self._cached: genai.Client | None = None
 
-    def _get_client(self) -> object:
+    def _get_client(self) -> "genai.Client":
         if self._override is not None:
             return self._override
         if self._cached is None:
@@ -94,5 +98,5 @@ class GeminiRerankAdapter:
         index = {c.ncm_code: c for c in pool}
         reranked = [index.pop(code) for code in ranked_codes if code in index]
         reranked.extend(index.values())  # pool candidates not mentioned in ranked list
-        reranked.extend(rest)            # candidates beyond top-k stay at end
+        reranked.extend(rest)  # candidates beyond top-k stay at end
         return reranked
