@@ -70,3 +70,35 @@ response), candidates to revisit — none applied, no decision made — are a
 lightweight warm-up request on machine start, or `min_machines_running = 1`
 (trades the near-zero-cost property for latency). Worth an ADR only if it
 becomes an actual decision, not before.
+
+## 2026-07-14 — Fly.io account blocked from creating apps (not a token scope issue)
+
+**What happened:** the app created above was destroyed (the maintainer had
+originally created it by hand via the Fly.io dashboard to test, with the
+port mismatch documented above; the plan was to destroy it and recreate
+cleanly via `flyctl launch` from this repo). Recreating it failed with
+`Error: unauthorized`, both via `flyctl launch`/`flyctl apps create` using
+the configured `FLY_API_TOKEN` **and** when the maintainer ran the same
+`flyctl apps create` command directly, locally authenticated (no token
+involved). `flyctl tokens create org` also failed with
+`Not authorized to access this createLimitedAccessToken`.
+
+**Diagnosis:** since the failure reproduces for the account owner directly
+(not just a scoped API token), this rules out a token-permission problem —
+it points to an account/org-level restriction on Fly.io's side, most
+commonly a missing payment method (Fly.io requires one on file before
+provisioning new apps, even on usage that would stay within any free
+allowance, as an anti-abuse measure). Not confirmed further — the fix
+requires checking the Fly.io dashboard's Billing/Organization settings
+directly, which is account access only the maintainer has.
+
+**Current state: no app is deployed.** The previous app was destroyed as
+part of this diagnosis and could not be recreated in the same session.
+Deploying again requires: (1) resolving whatever Fly.io account restriction
+is producing `unauthorized` on app creation (check Billing first), then (2)
+a plain `flyctl launch --copy-config --yes --org personal --name
+ncm-classifier-ai --region gru --no-deploy --ha=false` followed by
+`flyctl deploy`, exactly as documented in `docs/deployment.md`. No code or
+config changes are needed — `fly.toml`/`Dockerfile` in this repo are
+already correct (this is the same config that ran successfully in
+production for about an hour before this teardown).

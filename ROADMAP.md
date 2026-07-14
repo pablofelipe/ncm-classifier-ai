@@ -22,6 +22,7 @@ anything · P3 low-effort housekeeping.
 
 | Priority | Status | Item | Reference |
 |---|---|---|---|
+| P0 | Blocked | Recreate the Fly.io app and redeploy — torn down after running successfully in v0.2.0; blocked on an account-level `unauthorized` error on app creation (check Fly.io Billing/Organization settings), not a config or token-scope problem | `docs/operational-notes.md` |
 | P2 | Planned | Distributed rate limiting (Redis-backed) if the deployment ever grows beyond a single Fly.io machine — today's in-memory per-process limiter (Etapa 7) is a deliberate, scoped choice, not a placeholder | — |
 | P3 | Planned | Reduce cold-start latency (~15s one-time per process, see `docs/operational-notes.md`) if real traffic makes it matter — no decision made yet on warm-up requests vs. `min_machines_running=1` | — |
 | P3 | Planned | Tune Fly.io VM size (`shared-cpu-2x`/2GB in `fly.toml` is a starting guess, not measured) once there's real traffic | — |

@@ -90,12 +90,17 @@ read from the Dockerfile):
 
 ## Deploy
 
-**Live at [https://ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev)** (v0.2.0). See
-[docs/operational-notes.md](operational-notes.md) for a real issue hit on
-the first deploy (a port mismatch between the live app config and this
-repo's `fly.toml`) and how it was diagnosed and fixed.
+**Not currently live.** `ncm-classifier-ai` ran successfully in production
+on Fly.io (v0.2.0) for about an hour, then was torn down while
+investigating how it had been created — see
+[docs/operational-notes.md](operational-notes.md) for both the port
+mismatch that came up during that deploy and the account-level
+`unauthorized` error currently blocking recreating the app (needs the
+maintainer to check Fly.io Billing/Organization settings before
+`flyctl launch` can create an app again). `fly.toml`/`Dockerfile` need no
+changes — this is the same config that ran successfully before.
 
-What `fly.toml` configures:
+What `fly.toml` configures, once deployed:
 
 - **`primary_region = "gru"`** (São Paulo) — closest Fly.io region to this
   project's domain (Brazilian NCM/TIPI data). Change if deploying from/for a

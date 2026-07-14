@@ -17,7 +17,7 @@ what's planned next, and [docs/adr/](docs/adr/) for why each decision was made.
 | Operational endpoints (`/`, `/health`, `/version`, `/info`) | ✅ |
 | OpenAPI/Swagger documentation (descriptions, examples, BYOK headers documented) | ✅ |
 | Fly.io config (`fly.toml` — scale-to-zero, health check, BYOK-safe) | ✅ |
-| Fly.io live deploy — [ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev) | ✅ |
+| Fly.io live deploy | 🚧 — ran successfully in v0.2.0, currently torn down (account-level blocker, see `docs/operational-notes.md`) |
 | API hardening (rate limit, clean provider errors, CORS, security headers, payload cap, provider timeout) | ✅ |
 | Observability (structured logging, metrics) | ⏳ |
 | Project documentation (roadmap / status / deployment guide) | ✅ |
