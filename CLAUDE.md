@@ -109,9 +109,10 @@ Accepted — LLM rerank, ships on v2 config:
 Path forward:
 - Expand corpus and dataset beyond beverages (test generalization)
 - Calibrate confidence scores (ECE currently uncalibrated; Gemini ranking order drives top-3 selection, but scores aren't probabilities)
-- Execute the public deployment ADR-0015 describes (Docker/Fly.io, image build, baked index)
-- Public API hardening (rate limiting, credential ergonomics) — deferred by both ADR-0015 and ADR-0016 to a future ADR
+- Execute the actual Fly.io deploy (`fly launch`/`fly deploy`) — the Docker image, `fly.toml`, and API hardening below are all done and validated; only running the deploy itself remains (see ROADMAP.md)
 - Rename `RerankMode.GEMINI` to something provider-neutral once a second `LLM_PROVIDER` is actually added (ADR-0016 technical debt)
+
+Done (see ROADMAP.md/STATUS.md for the full picture): production Docker image (baked index, non-root, offline model cache), `GET /`, `/version`, `/info` diagnostics, `fly.toml`, and public API hardening (rate limiting, clean provider-error responses, CORS, security headers, payload cap, provider timeout) — none of these are still open items.
 
 Infra available (no re-implementation needed for experiments): configurable `EnrichStrategy` (enrichment line closed at 53.3%, kept reproducible) and configurable `EmbedderModel` + factory + dual index↔config guard (ADR-0008; bge opt-in via `EMBEDDER`, e5 OFF ships).
 

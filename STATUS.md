@@ -13,9 +13,13 @@ what's planned next, and [docs/adr/](docs/adr/) for why each decision was made.
 | Corpus v2 (beverages, Ch.20/21/22) | ✅ |
 | Corpus beyond beverages | ⏳ |
 | Confidence calibration (ECE) | ⏳ |
-| Public deployment (Docker / Fly.io) | 🚧 |
-| API hardening (rate limiting, clean provider-error responses) | ⏳ |
-| Observability (logging, metrics) | ⏳ |
+| Production Docker image (baked index, non-root, offline model cache) | ✅ |
+| Operational endpoints (`/`, `/health`, `/version`, `/info`) | ✅ |
+| OpenAPI/Swagger documentation (descriptions, examples, BYOK headers documented) | ✅ |
+| Fly.io config (`fly.toml` — scale-to-zero, health check, BYOK-safe) | ✅ |
+| Fly.io live deploy (actual public URL) | ⏳ |
+| API hardening (rate limit, clean provider errors, CORS, security headers, payload cap, provider timeout) | ✅ |
+| Observability (structured logging, metrics) | ⏳ |
 | Project documentation (roadmap / status / deployment guide) | ✅ |
 
 ✅ done · 🚧 decided and in progress · ⏳ not started

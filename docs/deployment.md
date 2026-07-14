@@ -40,32 +40,135 @@ Running tests and evals is documented in the [README](../README.md#running-tests
 
 ## Docker
 
-**Not implemented yet** — tracked in [ROADMAP.md](../ROADMAP.md) (Deployment
-pillar, P0). ADR-0015 decided the target shape; there is no `Dockerfile` in
-the repo today. The planned flow, once built:
+Generic on purpose — nothing Fly.io-specific lives in the `Dockerfile` or
+here. Any platform that can run a container and probe `GET /health` can run
+this image unchanged (see [ROADMAP.md](../ROADMAP.md), Deployment pillar).
 
-- A single-stage image with the `ml` extra installed and the ChromaDB index
-  **baked in at build time** — no persistent volume, so a fresh container
-  starts ready to serve without a rebuild step.
-- No `GEMINI_API_KEY` (or any LLM credential) set in the image or its runtime
-  environment — the public deployment constraint from ADR-0015.
-- Build and run commands will be added here once the `Dockerfile` exists.
+```bash
+make docker-build   # docker build -t ncm-classifier .
+make docker-run     # docker run --rm -p 8000:8000 ncm-classifier
+```
+
+```bash
+curl http://localhost:8000/health
+curl http://localhost:8000/version
+curl http://localhost:8000/info
+```
+
+What's baked into the image at build time (ADR-0015 — "a deploy is a
+build"), so the container never touches the network or rebuilds anything at
+request time:
+
+- The ChromaDB index for the **Default Public Deployment Profile**: the
+  beverage corpus (ADR-0009, 64 NCMs, Ch.20/21/22), synonyms-enriched
+  (ADR-0010), served with `RETRIEVAL_MODE=hybrid` (ADR-0011) and
+  `RERANK_MODE=passthrough` by default — chosen for being deterministic,
+  reproducible and zero recurring cost, not for being the single highest
+  score. Your own `X-LLM-Api-Key` still reaches the stronger Gemini-rerank
+  result (ADR-0013) on top of this same index.
+- The `multilingual-e5-small` model weights themselves — `embed_query()` runs
+  on every retrieval call (not just at index-build time), so the model cache
+  is baked in too and the runtime image sets `HF_HUB_OFFLINE=1` /
+  `TRANSFORMERS_OFFLINE=1`: a request never attempts a HuggingFace network
+  call, only ever reads the baked cache.
+- No persistent volume anywhere — a fresh container from this image tag is a
+  fully self-contained, reproducible snapshot of code *and* data.
+
+Other properties, already validated (build + real `docker run`, not just
+read from the Dockerfile):
+
+- Multi-stage build; runs as a fixed non-root user (`app`, uid/gid 1000).
+- Respects `$PORT` (Cloud Run/Railway inject it; Fly.io and plain `docker
+  run` are fine with the default 8000) — e.g. `docker run --rm -e PORT=9000
+  -p 9000:9000 ncm-classifier`.
+- A native Docker `HEALTHCHECK` against `GET /health` — no curl/wget
+  dependency added, works the same under any orchestrator.
+- Image size is **~3.1GB** — large because `torch`/`sentence-transformers`
+  and the baked model cache are genuine runtime dependencies (query
+  embedding happens per-request), not build-time-only. "Generic and
+  reproducible" was the goal here, not "minimal footprint."
 
 ## Deploy
 
-**Not implemented yet** — tracked in [ROADMAP.md](../ROADMAP.md) (Deployment
-pillar, P0). ADR-0015 names Fly.io as the target; there is no `fly.toml` in
-the repo today. The planned flow:
+`fly.toml` exists and is configured (Etapa 6) — **the actual deploy has not
+been executed** (no `fly launch`/`fly deploy` has run, there is no live
+public URL yet). That execution is tracked as P0 in
+[ROADMAP.md](../ROADMAP.md) and is a deliberate, separate, explicit action —
+publishing a public URL and provisioning real cloud infrastructure isn't
+something to run as a side effect of writing this doc.
 
-- Scale-to-zero, so the recurring cost with no traffic is near zero.
-- The image described above (baked index, no LLM credential) is what gets
-  deployed — the public instance never holds `GEMINI_API_KEY`.
-- Rate limiting and clean provider-error handling (currently: an invalid
-  visitor `X-LLM-Api-Key` surfaces as an unhandled `500`) are called out as
-  P1 in the roadmap and are expected to land **before** the URL goes public,
-  not after.
+What `fly.toml` configures, once someone does run `fly launch`/`fly deploy`:
+
+- **`primary_region = "gru"`** (São Paulo) — closest Fly.io region to this
+  project's domain (Brazilian NCM/TIPI data). Change if deploying from/for a
+  different audience.
+- **Scale-to-zero**: `auto_stop_machines`/`auto_start_machines` on,
+  `min_machines_running = 0` — the instance suspends when idle and wakes on
+  request, so sparse demo traffic costs close to nothing while unused.
+- **Health check** against the same `GET /health` the Dockerfile's own
+  `HEALTHCHECK` already probes — this one is what Fly's proxy/scheduler uses
+  to decide whether a machine is ready and whether to restart it.
+- **`[[vm]]` sizing** (`shared-cpu-2x`, 2GB) is a starting guess for the
+  CPU-bound e5-small query embedding, not a measured optimum — revisit once
+  there's real traffic (ROADMAP.md, Performance pillar).
+- **No `[env]` section, deliberately** — `NCM_CHAPTER`/`RETRIEVAL_MODE`/
+  `RERANK_MODE` are already baked as Dockerfile defaults (the Default Public
+  Deployment Profile, Etapa 3); repeating them in `fly.toml` would just be a
+  second place to drift out of sync.
+- **No `GEMINI_API_KEY` secret, ever, on this app** — the file has a comment
+  saying so explicitly. The public instance holds no LLM credential of its
+  own (ADR-0015); visitors bring their own via `X-LLM-Api-Key`
+  (ADR-0016), which `fly.toml` never touches.
+
+Rate limiting and clean provider-error handling — the two P1 items this
+section used to flag as still needed before going live — are done (Etapa 7,
+below).
+
+## Hardening
+
+Applied at the app level (`src/main.py`, `src/api/`), so it's active locally
+and in Docker already — not something that only exists once Fly.io is live.
+
+- **Rate limit**: `POST /classify` only (never `/health`, `/version`,
+  `/info` — Fly's own health check must never be throttled), 20
+  requests/IP/minute by default (`RATE_LIMIT_PER_MINUTE`), in-memory and
+  per-process. A distributed limiter (Redis, etc.) is deliberately not used —
+  the deployment is a single scale-to-zero machine (ADR-0015), not a fleet;
+  see `ROADMAP.md` if that ever changes. Exceeding it returns `429` with a
+  `Retry-After` header.
+- **Clean provider errors**: an invalid visitor `X-LLM-Api-Key` (or any
+  provider-side rejection) now returns `422` (bad credential/request) or
+  `502` (provider outage), with a fixed generic message — never a stack
+  trace, never the provider's raw response (ADR-0016 Consequences, closed).
+- **Provider request timeout**: the Gemini SDK client is built with a bounded
+  15s timeout — previously unbounded, a stuck upstream connection could hold
+  a request open indefinitely.
+- **CORS**: open (`allow_origins=["*"]`), explicitly allowing the BYOK
+  headers (`X-LLM-Api-Key`, `LLM-Provider`, `LLM-Model`) so a browser-based
+  client can send them cross-origin. Safe here specifically because this API
+  has no cookies or session state to leak — "anyone can try it" (ADR-0015) is
+  the point.
+- **Security headers**: `X-Content-Type-Options`, `X-Frame-Options`,
+  `Referrer-Policy`, `Strict-Transport-Security` on every response. No CSP —
+  this is a JSON API with no HTML to constrain.
+- **Payload cap**: requests over 10KB are rejected (`413`) before the body is
+  even parsed — `schemas.py`'s per-field `max_length` only rejects *after*
+  the whole body is already in memory.
+- **Not done, deliberately**: response compression. Payloads here are a few
+  hundred bytes to a couple KB (a handful of NCM candidates); gzip's CPU cost
+  isn't justified at this size.
 
 ## Testing the API
+
+`GET /` — landing page for first-time visitors (project name, version,
+deployment profile label, and a pointer to the endpoints below); `GET /docs`
+is the interactive Swagger UI, with descriptions and worked examples for
+every endpoint and field (Release Polish):
+
+```bash
+curl http://localhost:8000/
+open http://localhost:8000/docs  # or just visit it in a browser
+```
 
 `GET /health` — liveness check, no auth, no LLM call:
 
