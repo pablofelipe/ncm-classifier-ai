@@ -12,11 +12,11 @@ The project has reached enough maturity in architecture, experimentation, and
 evaluation discipline that its remaining gap is no longer methodological —
 it's exposure. Fourteen ADRs document a hexagonal RAG pipeline, evidence-based
 retrieval/rerank decisions, and an eval-first discipline, but the system can
-still only be run locally. A recruiter can read the README, study the
+still only be run locally. A collaborator can read the README, study the
 decision log, and see the metrics table, but cannot send a product
-description and watch the pipeline classify it live. A public URL is worth
-more in a technical interview than any static metrics table — this is the
-last piece of maturity the project is missing.
+description and watch the pipeline classify it live. A public URL where the
+pipeline can be exercised directly is worth more than any static metrics
+table — this is the last piece of maturity the project is missing.
 
 `CLAUDE.md` already names Fly.io (or Railway) as the deploy target, but that
 step was never executed. This ADR is the decision that turns "deploy target"
@@ -103,8 +103,8 @@ The project will be prepared for public deployment under these constraints:
   Rate limiting to bound raw compute/hosting abuse is real but is an API
   Hardening concern (Fase 3), not fixed by this decision.
 - The deployment must support scale-to-zero — the instance suspends when
-  idle and wakes on request, so a portfolio demo with sparse traffic costs
-  close to nothing between interviews.
+  idle and wakes on request, so a demo with sparse, intermittent traffic
+  costs close to nothing while unused.
 - **The public server will hold no credential of its own for LLM
   consumption.** This is the architectural constraint this ADR exists to
   state; ADR-0016 is where it's actually implemented (provider-agnostic
@@ -139,6 +139,17 @@ The project will be prepared for public deployment under these constraints:
   (provider-agnostic LLM integration, no server-side credential) and a
   future Public API Hardening ADR (rate limiting, credential ergonomics)
   before the deployment is actually safe to make public.
+- **Operational risk, flagged for the deploy that executes this ADR (Fase
+  4), not solved by it:** ADR-0016's per-request `X-LLM-Api-Key` guarantees
+  the *application* never logs, caches, or persists a visitor's credential.
+  It does not, by itself, guarantee that *infrastructure* around the
+  application — a reverse proxy, an access-log pipeline, an APM/tracing
+  tool — won't capture that header by default, since many such tools log
+  request headers indiscriminately unless configured otherwise. Whoever
+  executes the deploy must explicitly configure the hosting platform's
+  logging/tracing to redact `X-LLM-Api-Key` (and any future per-request
+  credential header), rather than assume the application-level guarantee
+  is sufficient end to end.
 
 ## Relation to ADR-0016
 
