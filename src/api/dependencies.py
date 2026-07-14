@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 from chromadb import Collection
+from fastapi import Header, HTTPException
 
 from src.config import RerankMode, RetrievalMode, settings
 from src.core.ports import LLMRerankPort, RetrievalPort
@@ -39,6 +40,8 @@ def _build_verification_index() -> TIPIIndex:
 def build_classify_use_case(
     collection: Collection | None = None,
     embedding_fn: EmbeddingFunction | None = None,
+    *,
+    rerank_override: LLMRerankPort | None = None,
 ) -> ClassifyProduct:
     """Composition root: wire semantic retrieval into the use case.
 
@@ -50,6 +53,11 @@ def build_classify_use_case(
     (settings.embedder, default e5-small — the ADR-0007 production baseline; bge-m3
     opt-in via EMBEDDER for the ADR-0008 probe). Rerank defaults to Passthrough;
     opt-in to LLM rerank via RERANK_MODE=gemini (ADR-0013/0016).
+
+    `rerank_override` (ADR-0016), when given, supersedes settings.rerank_mode
+    entirely — this is how a per-request "bring your own LLM credentials"
+    header (see `get_classify_use_case`) reaches the pipeline without the use
+    case or any port ever knowing about credentials or vendors.
 
     Raises RuntimeError when the index has not been built — an explicit
     failure at startup beats a silent fallback that would mask a
@@ -84,6 +92,8 @@ def build_classify_use_case(
         reranker = GenericLLMRerankAdapter(
             resolve_llm_client(settings.llm_provider), model=settings.llm_model
         )
+    if rerank_override is not None:
+        reranker = rerank_override
 
     return ClassifyProduct(
         retrieval,
@@ -93,6 +103,51 @@ def build_classify_use_case(
     )
 
 
-def get_classify_use_case() -> ClassifyProduct:
-    """FastAPI driving-adapter wrapper around build_classify_use_case."""
-    return build_classify_use_case()
+def _resolve_rerank_override(
+    x_llm_api_key: str | None,
+    llm_provider: str | None = None,
+    llm_model: str | None = None,
+) -> LLMRerankPort | None:
+    """Build the ADR-0016 per-request rerank override from raw header values.
+
+    Returns None when no key was sent — the pipeline then falls back to
+    settings.rerank_mode unchanged (see build_classify_use_case). The key
+    lives only in this call's stack frame: it flows straight into a freshly
+    constructed GenericLLMRerankAdapter/GeminiClient and is never assigned to
+    settings, a module global, or a cache.
+
+    llm_provider/llm_model are optional refinements, defaulting to
+    settings.llm_provider/settings.llm_model when absent — and are only ever
+    consulted inside this "key present" branch. Sending them without a key
+    never triggers a call on the server's own credentials.
+    """
+    if not x_llm_api_key:
+        return None
+    provider = llm_provider or settings.llm_provider
+    model = llm_model or settings.llm_model
+    try:
+        client = resolve_llm_client(provider, api_key=x_llm_api_key)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return GenericLLMRerankAdapter(client, model=model)
+
+
+def get_classify_use_case(
+    x_llm_api_key: str | None = Header(default=None, alias="X-LLM-Api-Key"),
+    llm_provider: str | None = Header(default=None, alias="LLM-Provider"),
+    llm_model: str | None = Header(default=None, alias="LLM-Model"),
+) -> ClassifyProduct:
+    """FastAPI driving-adapter wrapper around build_classify_use_case.
+
+    ADR-0016: reads the optional X-LLM-Api-Key header — a visitor's own LLM
+    credential, used only for this one request's rerank call — plus the
+    optional LLM-Provider/LLM-Model headers, which refine which provider/model
+    that credential is used against (defaulting to settings when omitted).
+    The public deployment ships with no server-side LLM key, so this is the
+    only way a request gets LLM rerank there; without X-LLM-Api-Key, the
+    pipeline runs whatever settings.rerank_mode configures server-side
+    (Passthrough in production).
+    """
+    return build_classify_use_case(
+        rerank_override=_resolve_rerank_override(x_llm_api_key, llm_provider, llm_model)
+    )

@@ -13,11 +13,12 @@ from uuid import uuid4
 import chromadb
 import pytest
 from chromadb import Collection
+from fastapi import HTTPException
 
-from src.api.dependencies import build_classify_use_case
+from src.api.dependencies import _resolve_rerank_override, build_classify_use_case
 from src.config import RerankMode, RetrievalMode, Settings, settings
 from src.core.domain.enrichment import EnrichStrategy
-from src.core.domain.ncm import ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, ProductQuery
 from src.core.verification.deterministic import TIPIIndex
 from src.llm.generic_llm_rerank_adapter import GenericLLMRerankAdapter
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
@@ -171,3 +172,140 @@ def test_gemini_rerank_mode_uses_resolved_client_and_configured_model(
     )
     assert use_case._rerank._client is fake_client
     assert use_case._rerank._model == "gemini-2.5-pro"
+
+
+# ---------------------------------------------------------------------------
+# Per-request credential override (ADR-0016): X-LLM-Api-Key triggers building
+# an ephemeral GenericLLMRerankAdapter for that one request only. No server
+# credential (settings.gemini_api_key) is read on this path.
+# ---------------------------------------------------------------------------
+
+
+class _FakeRerankOverride:
+    def rerank(
+        self, query: ProductQuery, candidates: list[ClassificationCandidate]
+    ) -> list[ClassificationCandidate]:
+        return candidates
+
+
+def test_build_classify_use_case_uses_rerank_override_when_given(
+    indexed_collection: Collection,
+) -> None:
+    override = _FakeRerankOverride()
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+        rerank_override=override,
+    )
+    assert use_case._rerank is override
+
+
+def test_build_classify_use_case_ignores_rerank_mode_when_override_given(
+    indexed_collection: Collection, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Even PASSTHROUGH (the default) is superseded by an explicit override.
+    monkeypatch.setattr(settings, "rerank_mode", RerankMode.PASSTHROUGH)
+    override = _FakeRerankOverride()
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+        rerank_override=override,
+    )
+    assert use_case._rerank is override
+
+
+def test_resolve_rerank_override_returns_none_without_api_key() -> None:
+    assert _resolve_rerank_override(None) is None
+    assert _resolve_rerank_override("") is None
+
+
+def test_resolve_rerank_override_builds_adapter_from_request_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import src.api.dependencies as deps
+
+    monkeypatch.setattr(settings, "llm_provider", "google")
+    monkeypatch.setattr(settings, "llm_model", "gemini-2.5-flash")
+
+    received: dict[str, str | None] = {}
+
+    def _fake_resolve(provider: str, api_key: str | None = None) -> object:
+        received["provider"] = provider
+        received["api_key"] = api_key
+        return object()
+
+    monkeypatch.setattr(deps, "resolve_llm_client", _fake_resolve)
+
+    override = _resolve_rerank_override("visitor-key")
+    assert isinstance(override, GenericLLMRerankAdapter)
+    assert override._model == "gemini-2.5-flash"
+    assert received == {"provider": "google", "api_key": "visitor-key"}
+
+
+def test_resolve_rerank_override_raises_http_422_for_unknown_provider(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(settings, "llm_provider", "not-a-real-provider")
+    with pytest.raises(HTTPException) as exc_info:
+        _resolve_rerank_override("visitor-key")
+    assert exc_info.value.status_code == 422
+
+
+# ---------------------------------------------------------------------------
+# LLM-Provider / LLM-Model headers (ADR-0016): optional refinements, only
+# consulted when X-LLM-Api-Key is present. Sending them alone must never
+# trigger a call on the server's own credentials.
+# ---------------------------------------------------------------------------
+
+
+def test_resolve_rerank_override_uses_header_provider_and_model_when_given(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import src.api.dependencies as deps
+
+    monkeypatch.setattr(settings, "llm_provider", "google")
+    monkeypatch.setattr(settings, "llm_model", "gemini-2.5-flash")
+
+    received: dict[str, str | None] = {}
+
+    def _fake_resolve(provider: str, api_key: str | None = None) -> object:
+        received["provider"] = provider
+        received["api_key"] = api_key
+        return object()
+
+    monkeypatch.setattr(deps, "resolve_llm_client", _fake_resolve)
+
+    override = _resolve_rerank_override(
+        "visitor-key", llm_provider="google", llm_model="gemini-2.5-pro"
+    )
+    assert isinstance(override, GenericLLMRerankAdapter)
+    assert override._model == "gemini-2.5-pro"
+    assert received == {"provider": "google", "api_key": "visitor-key"}
+
+
+def test_resolve_rerank_override_falls_back_to_settings_when_headers_absent(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import src.api.dependencies as deps
+
+    monkeypatch.setattr(settings, "llm_provider", "google")
+    monkeypatch.setattr(settings, "llm_model", "gemini-2.5-flash")
+    monkeypatch.setattr(deps, "resolve_llm_client", lambda provider, api_key=None: object())
+
+    override = _resolve_rerank_override("visitor-key", llm_provider=None, llm_model=None)
+    assert isinstance(override, GenericLLMRerankAdapter)
+    assert override._model == "gemini-2.5-flash"
+
+
+def test_provider_and_model_headers_alone_never_trigger_server_credential_use(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import src.api.dependencies as deps
+
+    def _never_called(provider: str, api_key: str | None = None) -> object:
+        raise AssertionError("resolve_llm_client must not be called without X-LLM-Api-Key")
+
+    monkeypatch.setattr(deps, "resolve_llm_client", _never_called)
+
+    # LLM-Provider/LLM-Model sent, but no X-LLM-Api-Key: no override, no call.
+    assert _resolve_rerank_override(None, llm_provider="google", llm_model="gemini-2.5-pro") is None
