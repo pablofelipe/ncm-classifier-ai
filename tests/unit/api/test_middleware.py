@@ -9,12 +9,30 @@ from collections.abc import Iterator
 import pytest
 from fastapi.testclient import TestClient
 
+from src.api.dependencies import get_classify_use_case
+from src.core.domain.ncm import ClassificationCandidate, ClassificationResult
 from src.main import app
+
+
+class _FakeClassifyUseCase:
+    """Stands in for ClassifyProduct so these middleware tests never touch
+    the real Chroma index -- unit tests must stay isolated from I/O."""
+
+    def execute(self, query: object) -> ClassificationResult:
+        candidates = [
+            ClassificationCandidate(ncm_code=f"2201.10.{i:02d}", description="x", score=0.0)
+            for i in range(3)
+        ]
+        return ClassificationResult(top_candidates=candidates, confidence_label="needs_review")
 
 
 @pytest.fixture
 def client() -> Iterator[TestClient]:
-    yield TestClient(app)
+    app.dependency_overrides[get_classify_use_case] = lambda: _FakeClassifyUseCase()
+    try:
+        yield TestClient(app)
+    finally:
+        app.dependency_overrides.clear()
 
 
 # ---------------------------------------------------------------------------
