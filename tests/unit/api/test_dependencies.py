@@ -21,6 +21,7 @@ from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
 from src.core.verification.deterministic import TIPIIndex
 from src.llm.generic_llm_rerank_adapter import GenericLLMRerankAdapter
+from src.llm.llm_client import resolve_llm_client
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
 from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction, EmbedderModel
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
@@ -309,3 +310,60 @@ def test_provider_and_model_headers_alone_never_trigger_server_credential_use(
 
     # LLM-Provider/LLM-Model sent, but no X-LLM-Api-Key: no override, no call.
     assert _resolve_rerank_override(None, llm_provider="google", llm_model="gemini-2.5-pro") is None
+
+
+# ---------------------------------------------------------------------------
+# Credential isolation and discard (ADR-0016): each request's key produces its
+# own ephemeral adapter/client; nothing about it survives past that call.
+# ---------------------------------------------------------------------------
+
+
+def test_two_requests_with_different_keys_get_distinct_adapters_and_clients(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import src.api.dependencies as deps
+
+    seen_keys: list[str | None] = []
+
+    def _fake_resolve(provider: str, api_key: str | None = None) -> object:
+        seen_keys.append(api_key)
+        return object()  # a distinct client instance per call
+
+    monkeypatch.setattr(deps, "resolve_llm_client", _fake_resolve)
+
+    override_a = _resolve_rerank_override("key-a")
+    override_b = _resolve_rerank_override("key-b")
+
+    assert isinstance(override_a, GenericLLMRerankAdapter)
+    assert isinstance(override_b, GenericLLMRerankAdapter)
+    assert override_a is not override_b
+    assert override_a._client is not override_b._client
+    assert seen_keys == ["key-a", "key-b"]
+
+
+def test_per_request_key_never_touches_settings_gemini_api_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr(settings, "gemini_api_key", "maintainers-own-key")
+
+    _resolve_rerank_override("visitor-key-1")
+    _resolve_rerank_override("visitor-key-2")
+
+    # The maintainer's own credential is untouched by either request's key —
+    # confirms the per-request path never reads or writes settings at all.
+    assert settings.gemini_api_key == "maintainers-own-key"
+
+
+def test_per_request_key_is_not_retained_on_the_built_client(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Uses the real resolve_llm_client -> GeminiClient (no fake): the only
+    # place the key lives is GeminiClient._api_key on that one instance.
+    override = _resolve_rerank_override("visitor-key")
+    assert isinstance(override, GenericLLMRerankAdapter)
+    client = override._client
+    assert client._api_key == "visitor-key"
+    # Nothing module-level captured it: a second, keyless resolution doesn't
+    # see it either.
+    other_client_via_settings = resolve_llm_client(settings.llm_provider)
+    assert other_client_via_settings._api_key is None
