@@ -84,7 +84,21 @@ returned.
 
 ```
 HTTP → ClassifyProduct use case → RetrievalPort → LLMRerankPort → confidence gate + verification gate → result
+                                                        ↑
+                                        GenericLLMRerankAdapter → LLMClient → GeminiClient
 ```
+
+**LLM rerank is provider-agnostic (ADR-0016).** `LLMRerankPort` — the domain's
+only view of reranking — never changed. Behind it, `GenericLLMRerankAdapter`
+holds the (vendor-neutral) prompt/parsing logic and talks to an injected
+`LLMClient` — a small capability contract (`generate(model, system_instruction,
+prompt, response_format)`), not a specific SDK shape. `GeminiClient` is the only
+implementation today; adding OpenAI/Anthropic/DeepSeek is a new `LLMClient` plus
+one entry in `resolve_llm_client`'s provider dict, with no change to `core/`,
+the use case, or the composition root's branching. Reached via
+`RERANK_MODE=gemini` (server-side `LLM_PROVIDER`/`LLM_MODEL` + `GEMINI_API_KEY`,
+opt-in) **or** a per-request `X-LLM-Api-Key` header (see below) — whichever
+resolves first at the composition root wins for that one request.
 
 Two infrastructure seams make experimentation cheap and reproducible without
 re-implementing the pipeline:
@@ -99,7 +113,44 @@ re-implementing the pipeline:
 Both are wired through `Settings` (env: `ENRICH_STRATEGY`, `EMBEDDER`), so an
 experiment is a config flag plus a rebuild, not a code change.
 
-## Decision log — fifteen ADRs, what worked, what didn't, and why
+### Bring Your Own LLM Credentials
+
+The public deployment of this API ships with **no LLM credential of its own**
+— `GEMINI_API_KEY` is never set in its environment, and `RERANK_MODE` runs
+whatever the server-side default is there (Passthrough or hybrid retrieval,
+zero LLM cost). This is a deliberate property, not an oversight: a public
+portfolio demo must never let a visitor's traffic spend the maintainer's own
+API budget.
+
+To see the LLM-rerank path (the flagship 71.7%/75.7% result) live, send your
+own credential in a request header — it's used only for that one call, never
+persisted, logged, or cached:
+
+```bash
+curl -X POST https://<public-url>/classify \
+  -H "Content-Type: application/json" \
+  -H "X-LLM-Api-Key: <your-gemini-api-key>" \
+  -d '{"product_name": "agua mineral", "description": "garrafa 500ml"}'
+```
+
+`LLM-Provider` and `LLM-Model` are optional refinements (default to the
+server's `LLM_PROVIDER`/`LLM_MODEL`, currently `google` / `gemini-2.5-flash`
+— the only provider implemented so far):
+
+```bash
+curl -X POST https://<public-url>/classify \
+  -H "Content-Type: application/json" \
+  -H "X-LLM-Api-Key: <your-gemini-api-key>" \
+  -H "LLM-Provider: google" \
+  -H "LLM-Model: gemini-2.5-pro" \
+  -d '{"product_name": "agua mineral", "description": "garrafa 500ml"}'
+```
+
+Without `X-LLM-Api-Key`, `LLM-Provider`/`LLM-Model` are ignored entirely —
+sending them alone can never trigger a call on the server's credentials
+(there are none). See ADR-0016 for the full design.
+
+## Decision log — sixteen ADRs, what worked, what didn't, and why
 
 | ADR | Title | Status | Central finding |
 |---|---|---|---|
@@ -118,6 +169,7 @@ experiment is a config flag plus a rebuild, not a code change.
 | [0013](docs/adr/0013-gemini-flash-rerank.md) | Gemini 2.5 Flash LLM rerank | **Accepted (ships on v2)** | `RERANK_MODE=gemini`, top-5 pool, PT-BR fiscal prompt, `response_mime_type=application/json`, logged fallback. ADR-0011 baseline: **49.1%→71.7% / 68.0%→75.7%** (+22.6/+7.7 pp). Top-1/top-3 gap collapsed 18.9 pp → 4.0 pp. Negation +23.4 pp, frontier +21.7 pp (LLM reasons over fiscal semantics without fine-tuning). 0 JSON fallbacks. Cost: R$ 0.00013/query (770× below budget). Latency: ~2.1 s/query. Both v2 targets met with margin; top-1 exceeds v1 target (≥70%) on v2 corpus |
 | [0014](docs/adr/0014-verification-gate-wiring-chapter-coherence-dropped.md) | Verification gate wiring (chapter-coherence dropped) | **Accepted (ships)** | ADR-0002's deterministic check finally wired into `ClassifyProduct` after rerank. Fixed `expected_chapter` doesn't fit the multi-chapter v2 corpus (`NCM_CHAPTER=beverage` spans Ch.20/21/22) — dropped in favor of existence + hierarchy-consistency only, since existence already subsumes the chapter check for a corpus-scoped index. Failing verification forces `needs_review` and sets `escalation_reason`, regardless of rerank score; candidates returned are unchanged |
 | [0015](docs/adr/0015-public-deployment-architecture.md) | Public deployment architecture | **Accepted (decision only)** | Decision to prepare the project for a public URL: deterministic Docker deploy, Chroma index baked into the image (no persistent volume), scale-to-zero, near-zero recurring cost. Central constraint: the public server must hold no LLM credential of its own — a shared `GEMINI_API_KEY` would let any visitor spend the maintainer's budget. This constraint is what motivated ADR-0016; deploy execution and API hardening are deferred to later ADRs |
+| [0016](docs/adr/0016-provider-agnostic-llm-integration.md) | Provider-agnostic LLM integration | **Accepted (ships)** | `LLMRerankPort` unchanged; `GenericLLMRerankAdapter` + `LLMClient` (`GeminiClient` today) + `resolve_llm_client` decouple rerank from any vendor. `LLM_PROVIDER`/`LLM_MODEL` replace Gemini-specific config. Per-request `X-LLM-Api-Key`/`LLM-Provider`/`LLM-Model` headers let a caller supply their own credential — used only for that call, never persisted/logged/cached — so the public deployment carries no server-side LLM key at all, implementing the constraint ADR-0015 sets. 30-case stratified parity check: identical top-1/top-3 before/after the cutover (full 350-case confirmation pending, deferred by Gemini API instability during measurement) |
 
 **Root finding (ADRs 0005-0008):** offline manipulation — of the document text
 *or* of the embedder — is exhausted at ~63% top-3. Even bge-m3, a top
@@ -133,12 +185,14 @@ reached **71.7% / 75.7%** — all v2 targets met with margin; **ADR-0014** wired
 the deterministic verification gate (ADR-0002) into the pipeline, dropping the
 chapter-coherence check as ill-fitting for the multi-chapter corpus; **ADR-0015**
 decided the project will be prepared for a public URL, with one non-negotiable
-constraint — the public server holds no LLM credential of its own — which
-motivates the provider-agnostic LLM integration and per-request credentials
-that follow it. Remaining gaps: `frontier` 65.2% top-3, `hard` 63.8% top-3
-(correct NCM not in top-5 retrieval pool — retrieval limit, not rerank limit).
-Logical next steps: expand corpus beyond beverages; calibrate confidence
-scores (ECE); execute the public deployment ADR-0015 describes.
+constraint — the public server holds no LLM credential of its own; **ADR-0016**
+implements that constraint with provider-agnostic LLM integration and
+per-request "bring your own credentials" headers, so a public deployment can
+run with no server-side LLM key at all. Remaining gaps: `frontier` 65.2%
+top-3, `hard` 63.8% top-3 (correct NCM not in top-5 retrieval pool — retrieval
+limit, not rerank limit). Logical next steps: expand corpus beyond beverages;
+calibrate confidence scores (ECE); execute the public deployment ADR-0015
+describes (Fly.io/Railway).
 
 ## Engineering discipline
 
@@ -215,7 +269,10 @@ src/
     use_cases/               # classify_product
     verification/            # deterministic.py — deterministic TIPI check, wired into ClassifyProduct (ADR-0014)
   retrieval/                 # RetrievalPort adapters (naive, Chroma/e5-small) + embedding
-  llm/                       # LLMRerankPort adapters (passthrough; gemini_client stub)
+  llm/                       # LLMRerankPort adapters (passthrough, cross-encoder,
+                              #   generic_llm_rerank_adapter.py) + llm_client.py
+                              #   (LLMClient protocol + resolve_llm_client factory,
+                              #   ADR-0016) + gemini_client.py (GeminiClient)
   api/                       # composition root + HTTP endpoint
   config.py                  # Settings (EnrichStrategy, EmbedderModel)
   main.py                    # FastAPI app entrypoint

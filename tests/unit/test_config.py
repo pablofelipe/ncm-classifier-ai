@@ -27,3 +27,12 @@ def test_embedder_defaults_to_e5_small() -> None:
 
 def test_enrich_strategy_defaults_to_off() -> None:
     assert Settings.model_fields["enrich_strategy"].default is EnrichStrategy.OFF
+
+
+def test_llm_provider_defaults_to_google() -> None:
+    # ADR-0016: generic provider config replacing Gemini-specific naming.
+    assert Settings.model_fields["llm_provider"].default == "google"
+
+
+def test_llm_model_defaults_to_gemini_flash() -> None:
+    assert Settings.model_fields["llm_model"].default == "gemini-2.5-flash"

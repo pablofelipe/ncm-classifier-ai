@@ -1,16 +1,17 @@
-"""Gemini Flash LLM rerank adapter (ADR-0013)."""
+"""Provider-agnostic LLM rerank adapter (ADR-0016).
+
+Same prompt/reordering/fallback logic as the earlier Gemini-specific
+GeminiRerankAdapter (ADR-0013), but talks to an injected LLMClient instead of
+the google-genai SDK directly — the prompt itself is already vendor-neutral
+PT-BR fiscal text, nothing Gemini-specific about it.
+"""
 
 import json
 import logging
 import re
-from typing import TYPE_CHECKING
 
-from src.config import settings
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
-from src.llm.gemini_client import _client
-
-if TYPE_CHECKING:
-    import google.genai as genai
+from src.llm.llm_client import LLMClient
 
 logger = logging.getLogger(__name__)
 
@@ -36,27 +37,19 @@ def _build_prompt(query: ProductQuery, pool: list[ClassificationCandidate]) -> s
     return "\n".join(lines)
 
 
-class GeminiRerankAdapter:
-    """LLM rerank via Gemini Flash (ADR-0013).
+class GenericLLMRerankAdapter:
+    """LLM rerank via any LLMClient (ADR-0016).
 
-    Sends the top-k candidates to Gemini Flash with a PT-BR fiscal classification
-    prompt and reorders them by the returned JSON ranking. Falls back to the
-    original order if the response cannot be parsed, logging the raw output.
-
-    Raises ConfigurationError on the first rerank() call when GEMINI_API_KEY
-    is absent and no client was injected.
+    Sends the top-k candidates to the injected LLMClient with a PT-BR fiscal
+    classification prompt and reorders them by the returned JSON ranking.
+    Falls back to the original order if the response cannot be parsed,
+    logging the raw output. Vendor-agnostic: the credential/SDK concern lives
+    entirely inside whichever LLMClient is injected.
     """
 
-    def __init__(self, client: "genai.Client | None" = None) -> None:
-        self._override = client
-        self._cached: genai.Client | None = None
-
-    def _get_client(self) -> "genai.Client":
-        if self._override is not None:
-            return self._override
-        if self._cached is None:
-            self._cached = _client()  # raises ConfigurationError when no key
-        return self._cached
+    def __init__(self, client: LLMClient, *, model: str) -> None:
+        self._client = client
+        self._model = model
 
     def rerank(
         self,
@@ -66,20 +59,16 @@ class GeminiRerankAdapter:
         if not candidates:
             return []
 
-        client = self._get_client()
         pool = candidates[:_TOP_K]
         rest = candidates[_TOP_K:]
 
         prompt = _build_prompt(query, pool)
-        response = client.models.generate_content(
-            model=settings.gemini_flash_model,
-            contents=prompt,
-            config={
-                "system_instruction": _SYSTEM,
-                "response_mime_type": "application/json",
-            },
+        raw = self._client.generate(
+            model=self._model,
+            system_instruction=_SYSTEM,
+            prompt=prompt,
+            response_format="application/json",
         )
-        raw: str = (response.text or "").strip()
         # Strip markdown fences defensively (some model versions ignore mime type).
         cleaned = re.sub(r"^```[a-z]*\n?", "", raw)
         cleaned = re.sub(r"\n?```$", "", cleaned).strip()
@@ -89,7 +78,8 @@ class GeminiRerankAdapter:
             ranked_codes: list[str] = data["ranked"]
         except (json.JSONDecodeError, KeyError, TypeError) as exc:
             logger.warning(
-                "GeminiRerankAdapter: malformed response %r — %s; falling back to original order",
+                "GenericLLMRerankAdapter: malformed response %r — %s; "
+                "falling back to original order",
                 cleaned,
                 exc,
             )
