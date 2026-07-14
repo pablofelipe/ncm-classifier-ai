@@ -13,8 +13,10 @@ class RerankMode(StrEnum):
     - CROSS_ENCODER: local cross-encoder (mmarco-mMiniLMv2-L12-H384-v1),
       zero recurring cost. Rejected in ADR-0012 (domain gap). Kept for
       reproducibility; opt-in via RERANK_MODE=cross_encoder.
-    - GEMINI: Gemini Flash LLM rerank (ADR-0013). Requires GEMINI_API_KEY
-      and the 'llm' extra. Opt-in via RERANK_MODE=gemini.
+    - GEMINI: LLM rerank via the provider/model configured in LLM_PROVIDER /
+      LLM_MODEL (ADR-0013, generalized in ADR-0016). Requires GEMINI_API_KEY
+      (or a per-request credential, see ADR-0016) and the 'llm' extra.
+      Opt-in via RERANK_MODE=gemini.
     """
 
     PASSTHROUGH = "passthrough"
@@ -38,13 +40,21 @@ class RetrievalMode(StrEnum):
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 
-    # Optional: the Gemini rerank path is not yet implemented (see
-    # src/llm/gemini_client.py). Until the LLM-rerank ADR lands, the system
-    # ships with Passthrough rerank and needs no key, so Settings() must
-    # instantiate without GEMINI_API_KEY in the environment.
+    # Optional: PASSTHROUGH is the production default and needs no key, so
+    # Settings() must instantiate without GEMINI_API_KEY in the environment.
+    # This is the maintainer's own credential (local dev / CI / server-side
+    # default rerank) — never the per-request "bring your own key" path
+    # (ADR-0016), which reads its key from a request header, not from here.
     gemini_api_key: str | None = None
     gemini_flash_model: str = "gemini-2.5-flash"
-    gemini_pro_model: str = "gemini-2.5-pro"
+    # Generic LLM provider/model config (env: LLM_PROVIDER / LLM_MODEL,
+    # ADR-0016), replacing Gemini-specific naming. llm_provider is a plain
+    # str, not a StrEnum like RerankMode/RetrievalMode/EmbedderModel: those
+    # enums gate a fixed if/elif in dependencies.py, while LLM_PROVIDER is
+    # meant to stay open — new providers are a dict entry in
+    # llm_client.resolve_llm_client, not an edit here.
+    llm_provider: str = "google"
+    llm_model: str = "gemini-2.5-flash"
     chroma_path: str = "data/chroma"
     tipi_data_dir: str = "data/tipi"
     confidence_threshold: float = 0.7
