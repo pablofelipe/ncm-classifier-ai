@@ -99,7 +99,7 @@ re-implementing the pipeline:
 Both are wired through `Settings` (env: `ENRICH_STRATEGY`, `EMBEDDER`), so an
 experiment is a config flag plus a rebuild, not a code change.
 
-## Decision log — fourteen ADRs, what worked, what didn't, and why
+## Decision log — fifteen ADRs, what worked, what didn't, and why
 
 | ADR | Title | Status | Central finding |
 |---|---|---|---|
@@ -117,6 +117,7 @@ experiment is a config flag plus a rebuild, not a code change.
 | [0012](docs/adr/0012-cross-encoder-rerank-rejected.md) | Local cross-encoder rerank (mmarco-mMiniLMv2) | **Rejected** | `RERANK_MODE=cross_encoder` on ADR-0011 baseline: **49.1%→20.3% / 68.0%→38.6%** (−28.8/−29.4 pp). Domain gap: mMARCO cross-encoder trained on web QA pairs; TIPI descriptions are 2-8 token fiscal nomenclature — model produces near-random logits. Colloquial 85.0%→43.3% (ADR-0010/0011 compounding gain destroyed). Infrastructure kept; production `PASSTHROUGH`; opens ADR-0013 |
 | [0013](docs/adr/0013-gemini-flash-rerank.md) | Gemini 2.5 Flash LLM rerank | **Accepted (ships on v2)** | `RERANK_MODE=gemini`, top-5 pool, PT-BR fiscal prompt, `response_mime_type=application/json`, logged fallback. ADR-0011 baseline: **49.1%→71.7% / 68.0%→75.7%** (+22.6/+7.7 pp). Top-1/top-3 gap collapsed 18.9 pp → 4.0 pp. Negation +23.4 pp, frontier +21.7 pp (LLM reasons over fiscal semantics without fine-tuning). 0 JSON fallbacks. Cost: R$ 0.00013/query (770× below budget). Latency: ~2.1 s/query. Both v2 targets met with margin; top-1 exceeds v1 target (≥70%) on v2 corpus |
 | [0014](docs/adr/0014-verification-gate-wiring-chapter-coherence-dropped.md) | Verification gate wiring (chapter-coherence dropped) | **Accepted (ships)** | ADR-0002's deterministic check finally wired into `ClassifyProduct` after rerank. Fixed `expected_chapter` doesn't fit the multi-chapter v2 corpus (`NCM_CHAPTER=beverage` spans Ch.20/21/22) — dropped in favor of existence + hierarchy-consistency only, since existence already subsumes the chapter check for a corpus-scoped index. Failing verification forces `needs_review` and sets `escalation_reason`, regardless of rerank score; candidates returned are unchanged |
+| [0015](docs/adr/0015-public-deployment-architecture.md) | Public deployment architecture | **Accepted (decision only)** | Decision to prepare the project for a public URL: deterministic Docker deploy, Chroma index baked into the image (no persistent volume), scale-to-zero, near-zero recurring cost. Central constraint: the public server must hold no LLM credential of its own — a shared `GEMINI_API_KEY` would let any visitor spend the maintainer's budget. This constraint is what motivated ADR-0016; deploy execution and API hardening are deferred to later ADRs |
 
 **Root finding (ADRs 0005-0008):** offline manipulation — of the document text
 *or* of the embedder — is exhausted at ~63% top-3. Even bge-m3, a top
@@ -130,10 +131,14 @@ document representation.
 cross-encoder rejected (domain gap, −29 pp); **ADR-0013** Gemini Flash rerank
 reached **71.7% / 75.7%** — all v2 targets met with margin; **ADR-0014** wired
 the deterministic verification gate (ADR-0002) into the pipeline, dropping the
-chapter-coherence check as ill-fitting for the multi-chapter corpus. Remaining
-gaps: `frontier` 65.2% top-3, `hard` 63.8% top-3 (correct NCM not in top-5
-retrieval pool — retrieval limit, not rerank limit). Logical next steps: expand
-corpus beyond beverages; calibrate confidence scores (ECE).
+chapter-coherence check as ill-fitting for the multi-chapter corpus; **ADR-0015**
+decided the project will be prepared for a public URL, with one non-negotiable
+constraint — the public server holds no LLM credential of its own — which
+motivates the provider-agnostic LLM integration and per-request credentials
+that follow it. Remaining gaps: `frontier` 65.2% top-3, `hard` 63.8% top-3
+(correct NCM not in top-5 retrieval pool — retrieval limit, not rerank limit).
+Logical next steps: expand corpus beyond beverages; calibrate confidence
+scores (ECE); execute the public deployment ADR-0015 describes.
 
 ## Engineering discipline
 

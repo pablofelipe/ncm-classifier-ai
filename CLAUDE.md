@@ -102,9 +102,13 @@ Accepted — LLM rerank, ships on v2 config:
 
 - **ADR-0014** — Verification gate wiring: `TIPIIndex.verify` wired into `ClassifyProduct` after rerank, via an optional constructor parameter injected at the composition root. Chapter-coherence check (part of ADR-0002's original design) dropped: a fixed `expected_chapter` doesn't fit the multi-chapter v2 corpus (`NCM_CHAPTER=beverage` spans Ch.20/21/22), and existence-in-index already covers the equivalent case for a corpus-scoped `TIPIIndex`. Kept: existence + hierarchy-consistency. A failing check forces `needs_review` + `escalation_reason`, without changing which candidates are returned (see `docs/adr/0014-verification-gate-wiring-chapter-coherence-dropped.md`).
 
+- **ADR-0015** — Public deployment architecture (decision only, deploy not yet executed): the project will be prepared for a public URL — deterministic Docker deploy, Chroma index baked into the image (no persistent volume), scale-to-zero, near-zero recurring cost. Central constraint: **the public server must hold no LLM credential of its own** — a shared `GEMINI_API_KEY` would let any visitor spend the maintainer's budget, incompatible with a public portfolio project. This constraint is what motivated the provider-agnostic LLM integration (next ADR) rather than the other way around. API hardening (rate limiting, credential ergonomics) and the actual deploy are deferred to later ADRs (see `docs/adr/0015-public-deployment-architecture.md`).
+
 Path forward:
 - Expand corpus and dataset beyond beverages (test generalization)
 - Calibrate confidence scores (ECE currently uncalibrated; Gemini ranking order drives top-3 selection, but scores aren't probabilities)
+- Provider-agnostic LLM integration + per-request credentials (ADR-0016, implements the constraint ADR-0015 sets)
+- Execute the public deployment ADR-0015 describes (Docker/Fly.io, image build, baked index)
 
 Infra available (no re-implementation needed for experiments): configurable `EnrichStrategy` (enrichment line closed at 53.3%, kept reproducible) and configurable `EmbedderModel` + factory + dual index↔config guard (ADR-0008; bge opt-in via `EMBEDDER`, e5 OFF ships).
 
