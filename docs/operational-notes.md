@@ -92,13 +92,49 @@ allowance, as an anti-abuse measure). Not confirmed further — the fix
 requires checking the Fly.io dashboard's Billing/Organization settings
 directly, which is account access only the maintainer has.
 
-**Current state: no app is deployed.** The previous app was destroyed as
-part of this diagnosis and could not be recreated in the same session.
-Deploying again requires: (1) resolving whatever Fly.io account restriction
-is producing `unauthorized` on app creation (check Billing first), then (2)
-a plain `flyctl launch --copy-config --yes --org personal --name
-ncm-classifier-ai --region gru --no-deploy --ha=false` followed by
-`flyctl deploy`, exactly as documented in `docs/deployment.md`. No code or
-config changes are needed — `fly.toml`/`Dockerfile` in this repo are
-already correct (this is the same config that ran successfully in
-production for about an hour before this teardown).
+**Resolved:** a new Fly.io org-scoped API token (generated after the
+maintainer addressed the account-level restriction) fixed `flyctl launch`'s
+app-creation step. One residual error persisted even with the new token —
+`Error: failed creating token: ... createLimitedAccessToken Not authorized`
+— but this is `flyctl launch`'s *own* secondary step of minting a
+scoped deploy token for CI use, not a requirement for the app itself; the
+app was already created successfully by the time that error printed, and
+`flyctl deploy` (which doesn't need that sub-permission) worked normally
+right after.
+
+## 2026-07-14 — `flyctl deploy` defaults to 2 machines (HA), not 1
+
+**What happened:** the redeploy above (`flyctl deploy` against a
+newly-created app with no existing machines) provisioned **two** machines
+for high availability by default, even though `flyctl launch` had been run
+with `--ha=false`. That flag only affects `launch`, not a later plain
+`deploy` against an app with no machines yet — `deploy` has its own
+default of creating a second machine for zero-downtime deploys.
+
+**Why it matters here specifically:** the rate limiter
+(`src/api/rate_limit.py`) is an in-memory, per-process, per-machine
+counter — a deliberate choice documented in `ROADMAP.md` and
+`docs/deployment.md` *because* this deployment is a single machine. Two
+machines silently doubles the effective rate limit (each machine tracks its
+own count; Fly's proxy can route consecutive requests to either one) — not
+a security hole, but a real drift from the documented architecture that
+would go unnoticed without checking `flyctl status`.
+
+**Fix:** `flyctl scale count 1 -a ncm-classifier-ai` (after explicit
+confirmation — this is a production infrastructure change and Claude
+Code's own permission classifier correctly refused to run it
+unprompted). Both machines auto-stop when idle either way, so the actual
+cost difference is close to zero — this was about matching the documented
+single-machine architecture, not saving money.
+
+**Takeaway:** after any `flyctl deploy` that creates machines from scratch
+(new app, or scaled to zero and back), check `flyctl status -a
+<app>` and confirm the machine count matches what the architecture
+assumes, rather than trusting `fly.toml`/CLI flags from a *previous*
+command to still apply.
+
+**Current state: live.** `https://ncm-classifier-ai.fly.dev` (v0.2.0), one
+machine in `gru`, confirmed end-to-end: `/health`, `/`, `/docs`, `/classify`
+(both without a credential and with an invalid `X-LLM-Api-Key`, returning
+a clean `422`), and security headers all verified against the real
+deployment.
