@@ -4,7 +4,7 @@
 lazily so this module can be imported without the package installed.
 """
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 from src.config import settings
 
@@ -20,15 +20,6 @@ def _build_client(api_key: str) -> "genai.Client":
     import google.genai as genai
 
     return genai.Client(api_key=api_key)
-
-
-def _client() -> "genai.Client":
-    if not settings.gemini_api_key:
-        raise ConfigurationError(
-            "GEMINI_API_KEY is not set. The Gemini rerank path requires a key; "
-            "set it in the environment and install the 'llm' extra."
-        )
-    return _build_client(settings.gemini_api_key)
 
 
 class GeminiClient:
@@ -77,19 +68,3 @@ class GeminiClient:
             },
         )
         return (response.text or "").strip()
-
-
-def rank_candidates(
-    product_name: str,
-    description: str,
-    candidates: list[dict[str, Any]],
-    *,
-    use_pro: bool = False,
-) -> list[dict[str, Any]]:
-    """Re-rank NCM candidates and generate rationale via Gemini.
-
-    Superseded by ``GenericLLMRerankAdapter`` (ADR-0016) / the earlier
-    ``GeminiRerankAdapter`` (ADR-0013). Kept only for the duration of the
-    ADR-0016 rollout; removed once the cutover (ADR-0016 Etapa 4) lands.
-    """
-    raise NotImplementedError("LLM ranking not yet implemented")

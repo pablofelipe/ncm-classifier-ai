@@ -8,7 +8,8 @@ from src.core.ports import LLMRerankPort, RetrievalPort
 from src.core.use_cases.classify_product import ClassifyProduct
 from src.core.verification.deterministic import TIPIIndex
 from src.llm.cross_encoder_adapter import CrossEncoderRerankAdapter
-from src.llm.gemini_rerank_adapter import GeminiRerankAdapter
+from src.llm.generic_llm_rerank_adapter import GenericLLMRerankAdapter
+from src.llm.llm_client import resolve_llm_client
 from src.llm.passthrough_adapter import PassthroughRerankAdapter
 from src.retrieval.bm25_adapter import BM25RetrievalAdapter
 from src.retrieval.chroma_client import _find_latest_tipi_json, get_collection
@@ -47,8 +48,8 @@ def build_classify_use_case(
     `collection` and `embedding_fn` are injectable for tests; the defaults
     construct the real persistent Chroma collection and the configured embedder
     (settings.embedder, default e5-small — the ADR-0007 production baseline; bge-m3
-    opt-in via EMBEDDER for the ADR-0008 probe). Rerank stays Passthrough until
-    the Gemini rerank ADR lands.
+    opt-in via EMBEDDER for the ADR-0008 probe). Rerank defaults to Passthrough;
+    opt-in to LLM rerank via RERANK_MODE=gemini (ADR-0013/0016).
 
     Raises RuntimeError when the index has not been built — an explicit
     failure at startup beats a silent fallback that would mask a
@@ -74,12 +75,15 @@ def build_classify_use_case(
 
     # Rerank adapter: PASSTHROUGH (default) keeps the production path unchanged.
     # CROSS_ENCODER loads the local cross-encoder (rejected ADR-0012, reproducibility).
-    # GEMINI calls Gemini Flash via the LLM rerank adapter (ADR-0013).
+    # GEMINI resolves the configured LLM_PROVIDER/LLM_MODEL via GenericLLMRerankAdapter
+    # (ADR-0016; provider-agnostic, supersedes the retired Gemini-specific adapter).
     reranker: LLMRerankPort = PassthroughRerankAdapter()
     if settings.rerank_mode is RerankMode.CROSS_ENCODER:
         reranker = CrossEncoderRerankAdapter()
     elif settings.rerank_mode is RerankMode.GEMINI:
-        reranker = GeminiRerankAdapter()
+        reranker = GenericLLMRerankAdapter(
+            resolve_llm_client(settings.llm_provider), model=settings.llm_model
+        )
 
     return ClassifyProduct(
         retrieval,

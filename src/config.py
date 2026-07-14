@@ -46,7 +46,6 @@ class Settings(BaseSettings):
     # default rerank) — never the per-request "bring your own key" path
     # (ADR-0016), which reads its key from a request header, not from here.
     gemini_api_key: str | None = None
-    gemini_flash_model: str = "gemini-2.5-flash"
     # Generic LLM provider/model config (env: LLM_PROVIDER / LLM_MODEL,
     # ADR-0016), replacing Gemini-specific naming. llm_provider is a plain
     # str, not a StrEnum like RerankMode/RetrievalMode/EmbedderModel: those

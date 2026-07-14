@@ -15,10 +15,11 @@ import pytest
 from chromadb import Collection
 
 from src.api.dependencies import build_classify_use_case
-from src.config import RetrievalMode, Settings, settings
+from src.config import RerankMode, RetrievalMode, Settings, settings
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ProductQuery
 from src.core.verification.deterministic import TIPIIndex
+from src.llm.generic_llm_rerank_adapter import GenericLLMRerankAdapter
 from src.retrieval.chroma_client import _find_latest_tipi_json, index_entries
 from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction, EmbedderModel
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
@@ -133,3 +134,40 @@ def test_wired_verification_index_passes_a_real_indexed_ncm(
     assert use_case._verification is not None
     result = use_case._verification.verify(sample_dotless)
     assert result.passed
+
+
+# ---------------------------------------------------------------------------
+# LLM rerank provider resolution (ADR-0016): RERANK_MODE=gemini wires the
+# generic, provider-agnostic adapter (not the retired Gemini-specific one).
+# ---------------------------------------------------------------------------
+
+
+def test_gemini_rerank_mode_wires_generic_llm_rerank_adapter(
+    indexed_collection: Collection, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(settings, "rerank_mode", RerankMode.GEMINI)
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+    )
+    assert isinstance(use_case._rerank, GenericLLMRerankAdapter)
+
+
+def test_gemini_rerank_mode_uses_resolved_client_and_configured_model(
+    indexed_collection: Collection, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import src.api.dependencies as deps
+
+    monkeypatch.setattr(settings, "rerank_mode", RerankMode.GEMINI)
+    monkeypatch.setattr(settings, "llm_provider", "google")
+    monkeypatch.setattr(settings, "llm_model", "gemini-2.5-pro")
+
+    fake_client = object()
+    monkeypatch.setattr(deps, "resolve_llm_client", lambda provider, api_key=None: fake_client)
+
+    use_case = build_classify_use_case(
+        collection=indexed_collection,
+        embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
+    )
+    assert use_case._rerank._client is fake_client
+    assert use_case._rerank._model == "gemini-2.5-pro"
