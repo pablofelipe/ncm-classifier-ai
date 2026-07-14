@@ -9,7 +9,7 @@ from src.llm.gemini_client import LLMProviderError
 
 app = FastAPI(
     title="NCM Classifier",
-    version="0.1.0",
+    version="0.2.0",
     description=(
         "RAG pipeline that classifies Brazilian products into 8-digit NCM "
         "(Nomenclatura Comum do Mercosul) fiscal codes, grounded on the "
