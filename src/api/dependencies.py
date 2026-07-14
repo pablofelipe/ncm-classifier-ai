@@ -4,6 +4,7 @@ from pathlib import Path
 from chromadb import Collection
 from fastapi import Header, HTTPException
 
+from src.api.schemas import IndexInfo
 from src.config import RerankMode, RetrievalMode, settings
 from src.core.ports import LLMRerankPort, RetrievalPort
 from src.core.use_cases.classify_product import ClassifyProduct
@@ -151,3 +152,36 @@ def get_classify_use_case(
     return build_classify_use_case(
         rerank_override=_resolve_rerank_override(x_llm_api_key, llm_provider, llm_model)
     )
+
+
+def build_index_info(collection: Collection | None = None) -> IndexInfo:
+    """Composition-root logic for GET /info (Etapa 4, ADR-0015).
+
+    Read-only diagnostic snapshot of the loaded Chroma collection: name, entry
+    count, and the embedder/enrich_strategy metadata already recorded at index
+    time (see chroma_client.index_entries), plus the TIPI source filename
+    baked into the image. Never touches a credential — there is nothing here
+    settings.gemini_api_key-adjacent to read.
+
+    `collection` is injectable for tests (mirrors build_classify_use_case);
+    the default constructs the real persistent Chroma collection. Not used
+    directly as a FastAPI dependency: a `Collection | None` parameter isn't a
+    type FastAPI can build a request field for (see get_index_info below).
+    """
+    col = collection if collection is not None else get_collection()
+    data_dir = Path(settings.tipi_data_dir)
+    source = _find_latest_tipi_json(data_dir, settings.ncm_chapter).name
+    metadata = col.metadata or {}
+    return IndexInfo(
+        collection=col.name,
+        source=source,
+        entries=col.count(),
+        embedder=str(metadata.get("embedder", "unknown")),
+        enrich_strategy=str(metadata.get("enrich_strategy", "unknown")),
+    )
+
+
+def get_index_info() -> IndexInfo:
+    """FastAPI driving-adapter wrapper around build_index_info (no parameters
+    FastAPI would need to build a request field for — mirrors get_classify_use_case)."""
+    return build_index_info()
