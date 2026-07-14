@@ -15,7 +15,7 @@ import pytest
 from chromadb import Collection
 from fastapi import HTTPException
 
-from src.api.dependencies import _resolve_rerank_override, build_classify_use_case
+from src.api.dependencies import _resolve_rerank_override, build_classify_use_case, build_index_info
 from src.config import RerankMode, RetrievalMode, Settings, settings
 from src.core.domain.enrichment import EnrichStrategy
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
@@ -367,3 +367,39 @@ def test_per_request_key_is_not_retained_on_the_built_client(
     # see it either.
     other_client_via_settings = resolve_llm_client(settings.llm_provider)
     assert other_client_via_settings._api_key is None
+
+
+# ---------------------------------------------------------------------------
+# GET /info diagnostics (Etapa 4, ADR-0015): a read-only snapshot of the
+# loaded Chroma collection and TIPI source, never touching credentials.
+# ---------------------------------------------------------------------------
+
+
+def test_get_index_info_returns_collection_name(indexed_collection: Collection) -> None:
+    info = build_index_info(collection=indexed_collection)
+    assert info.collection == indexed_collection.name
+
+
+def test_get_index_info_returns_entry_count(indexed_collection: Collection) -> None:
+    info = build_index_info(collection=indexed_collection)
+    assert info.entries == indexed_collection.count()
+
+
+def test_get_index_info_returns_embedder_from_collection_metadata(
+    indexed_collection: Collection,
+) -> None:
+    info = build_index_info(collection=indexed_collection)
+    assert info.embedder == EmbedderModel.E5_SMALL.value
+
+
+def test_get_index_info_returns_enrich_strategy_from_collection_metadata(
+    indexed_collection: Collection,
+) -> None:
+    info = build_index_info(collection=indexed_collection)
+    assert info.enrich_strategy == EnrichStrategy.OFF.value
+
+
+def test_get_index_info_returns_tipi_source_filename(indexed_collection: Collection) -> None:
+    info = build_index_info(collection=indexed_collection)
+    expected = _find_latest_tipi_json(Path("data/tipi"), "22").name
+    assert info.source == expected
