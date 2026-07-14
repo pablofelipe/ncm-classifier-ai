@@ -90,14 +90,12 @@ read from the Dockerfile):
 
 ## Deploy
 
-`fly.toml` exists and is configured (Etapa 6) — **the actual deploy has not
-been executed** (no `fly launch`/`fly deploy` has run, there is no live
-public URL yet). That execution is tracked as P0 in
-[ROADMAP.md](../ROADMAP.md) and is a deliberate, separate, explicit action —
-publishing a public URL and provisioning real cloud infrastructure isn't
-something to run as a side effect of writing this doc.
+**Live at [https://ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev)** (v0.2.0). See
+[docs/operational-notes.md](operational-notes.md) for a real issue hit on
+the first deploy (a port mismatch between the live app config and this
+repo's `fly.toml`) and how it was diagnosed and fixed.
 
-What `fly.toml` configures, once someone does run `fly launch`/`fly deploy`:
+What `fly.toml` configures:
 
 - **`primary_region = "gru"`** (São Paulo) — closest Fly.io region to this
   project's domain (Brazilian NCM/TIPI data). Change if deploying from/for a
@@ -119,10 +117,6 @@ What `fly.toml` configures, once someone does run `fly launch`/`fly deploy`:
   saying so explicitly. The public instance holds no LLM credential of its
   own (ADR-0015); visitors bring their own via `X-LLM-Api-Key`
   (ADR-0016), which `fly.toml` never touches.
-
-Rate limiting and clean provider-error handling — the two P1 items this
-section used to flag as still needed before going live — are done (Etapa 7,
-below).
 
 ## Hardening
 

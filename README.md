@@ -289,6 +289,7 @@ scripts/                     # ingest_tipi.py — XLSX → corpus JSON (incl. `b
 - `ROADMAP.md` — planned evolution, organized by architectural pillar.
 - `STATUS.md` — current state, at a glance.
 - `docs/deployment.md` — how to run locally and how deployment is planned.
+- `docs/operational-notes.md` — learnings from actually operating the deployment, below ADR weight.
 
 ## License
 

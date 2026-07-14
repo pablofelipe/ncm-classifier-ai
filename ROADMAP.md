@@ -22,8 +22,8 @@ anything · P3 low-effort housekeeping.
 
 | Priority | Status | Item | Reference |
 |---|---|---|---|
-| P0 | Planned | Execute the actual Fly.io deploy (`fly launch`/`fly deploy`, live public URL) — `fly.toml` exists and is configured (scale-to-zero, health check, BYOK-safe), but has never been run | ADR-0015 |
 | P2 | Planned | Distributed rate limiting (Redis-backed) if the deployment ever grows beyond a single Fly.io machine — today's in-memory per-process limiter (Etapa 7) is a deliberate, scoped choice, not a placeholder | — |
+| P3 | Planned | Reduce cold-start latency (~15s one-time per process, see `docs/operational-notes.md`) if real traffic makes it matter — no decision made yet on warm-up requests vs. `min_machines_running=1` | — |
 | P3 | Planned | Tune Fly.io VM size (`shared-cpu-2x`/2GB in `fly.toml` is a starting guess, not measured) once there's real traffic | — |
 
 ## Retrieval
