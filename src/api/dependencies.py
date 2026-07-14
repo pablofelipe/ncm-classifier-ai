@@ -134,9 +134,36 @@ def _resolve_rerank_override(
 
 
 def get_classify_use_case(
-    x_llm_api_key: str | None = Header(default=None, alias="X-LLM-Api-Key"),
-    llm_provider: str | None = Header(default=None, alias="LLM-Provider"),
-    llm_model: str | None = Header(default=None, alias="LLM-Model"),
+    x_llm_api_key: str | None = Header(
+        default=None,
+        alias="X-LLM-Api-Key",
+        description=(
+            "Optional. Your own LLM provider API key (e.g. a Gemini API key), "
+            "used only for this one request's rerank call — never persisted, "
+            "logged, or cached (ADR-0016). This deployment holds no LLM "
+            "credential of its own, so omitting this header runs the "
+            "zero-cost server-side default (Passthrough or hybrid retrieval) "
+            "instead of LLM rerank."
+        ),
+    ),
+    llm_provider: str | None = Header(
+        default=None,
+        alias="LLM-Provider",
+        description=(
+            'Optional. Which provider X-LLM-Api-Key belongs to (currently only "google" is '
+            "implemented). Defaults to the server's configured provider — see GET /info. "
+            "Ignored entirely if X-LLM-Api-Key is absent."
+        ),
+    ),
+    llm_model: str | None = Header(
+        default=None,
+        alias="LLM-Model",
+        description=(
+            'Optional. Which model to use with X-LLM-Api-Key (e.g. "gemini-2.5-pro"). '
+            "Defaults to the server's configured model — see GET /info. Ignored entirely "
+            "if X-LLM-Api-Key is absent."
+        ),
+    ),
 ) -> ClassifyProduct:
     """FastAPI driving-adapter wrapper around build_classify_use_case.
 
