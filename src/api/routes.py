@@ -9,6 +9,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 
 from src.api.dependencies import get_classify_use_case
+from src.api.rate_limit import enforce_rate_limit
 from src.api.schemas import ClassifyRequest, ClassifyResponse, NCMCandidate
 from src.core.domain.ncm import ProductQuery
 from src.core.use_cases.classify_product import ClassifyProduct
@@ -16,7 +17,21 @@ from src.core.use_cases.classify_product import ClassifyProduct
 router = APIRouter()
 
 
-@router.post("/classify", response_model=ClassifyResponse)
+@router.post(
+    "/classify",
+    response_model=ClassifyResponse,
+    dependencies=[Depends(enforce_rate_limit)],
+    summary="Classify a product into its NCM fiscal code",
+    description=(
+        "Returns the top-3 candidate NCM codes for a product, ranked by "
+        "confidence. Works with no credential at all (Passthrough or hybrid "
+        "retrieval — zero LLM cost). Send your own Gemini API key via the "
+        "X-LLM-Api-Key header to route through the stronger LLM-rerank path "
+        "instead — it's used only for that one request, never persisted, "
+        "logged, or cached (ADR-0016). Rate-limited per IP; see the 429 "
+        "response for limits."
+    ),
+)
 async def classify(
     request: ClassifyRequest,
     use_case: Annotated[ClassifyProduct, Depends(get_classify_use_case)],

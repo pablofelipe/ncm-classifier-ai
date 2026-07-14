@@ -16,10 +16,38 @@ class ConfigurationError(RuntimeError):
     """Raised when a required setting is missing at the point it is needed."""
 
 
+class LLMProviderError(Exception):
+    """Raised when the LLM provider itself rejects or fails a request (Etapa 7).
+
+    Carries a fixed, generic message per error class — never the raw provider
+    response body — so nothing the provider returns can leak into an HTTP
+    response. `status_code` is what src/main.py's exception handler returns:
+    422 for a client-side problem (e.g. an invalid visitor-supplied API key),
+    502 for a provider-side outage. Closes the gap flagged in ADR-0016
+    Consequences, where this previously surfaced as an unhandled 500 with a
+    full stack trace.
+    """
+
+    def __init__(self, status_code: int, message: str) -> None:
+        super().__init__(message)
+        self.status_code = status_code
+        self.message = message
+
+
+# Etapa 7 hardening: the SDK sets no timeout of its own, so a stuck upstream
+# connection could hold a request (and, given the current sync-in-async route,
+# the whole worker) open indefinitely. Bounded, not tuned via env — this is a
+# safety net, not a knob callers are expected to need.
+_REQUEST_TIMEOUT_MS = 15_000
+
+
 def _build_client(api_key: str) -> "genai.Client":
     import google.genai as genai
+    from google.genai import types
 
-    return genai.Client(api_key=api_key)
+    return genai.Client(
+        api_key=api_key, http_options=types.HttpOptions(timeout=_REQUEST_TIMEOUT_MS)
+    )
 
 
 class GeminiClient:
@@ -59,12 +87,29 @@ class GeminiClient:
         response_format: str = "application/json",
     ) -> str:
         client = self._get_client()
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt,
-            config={
-                "system_instruction": system_instruction,
-                "response_mime_type": response_format,
-            },
-        )
+        try:
+            response = client.models.generate_content(
+                model=model,
+                contents=prompt,
+                config={
+                    "system_instruction": system_instruction,
+                    "response_mime_type": response_format,
+                },
+            )
+        except Exception as exc:
+            import google.genai.errors as genai_errors
+
+            # ServerError before ClientError: ServerError subclasses APIError
+            # directly, same as ClientError — order matters for isinstance,
+            # not inheritance, since neither is a subclass of the other.
+            if isinstance(exc, genai_errors.ServerError):
+                raise LLMProviderError(
+                    502, "LLM provider is currently unavailable — try again shortly."
+                ) from exc
+            if isinstance(exc, genai_errors.ClientError):
+                raise LLMProviderError(
+                    422,
+                    "LLM provider rejected the request — check the API key, provider, or model.",
+                ) from exc
+            raise
         return (response.text or "").strip()

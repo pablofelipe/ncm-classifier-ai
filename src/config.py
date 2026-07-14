@@ -82,6 +82,10 @@ class Settings(BaseSettings):
     # (rejected ADR-0012, kept for reproducibility). GEMINI calls Gemini Flash
     # (ADR-0013, requires GEMINI_API_KEY).
     rerank_mode: RerankMode = RerankMode.PASSTHROUGH
+    # Rate limit (env: RATE_LIMIT_PER_MINUTE), Etapa 7: max POST /classify
+    # requests per client IP per 60s window (src/api/rate_limit.py). Health
+    # checks and other GETs are never throttled by this.
+    rate_limit_per_minute: int = 20
 
 
 # NOTE: instantiates at import time. CI environments must provide
