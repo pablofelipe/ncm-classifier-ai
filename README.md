@@ -286,6 +286,9 @@ scripts/                     # ingest_tipi.py — XLSX → corpus JSON (incl. `b
 
 - `CLAUDE.md` — architecture, constraints, and decision-log conventions.
 - `docs/adr/` — full ADR series, including per-case analysis data.
+- `ROADMAP.md` — planned evolution, organized by architectural pillar.
+- `STATUS.md` — current state, at a glance.
+- `docs/deployment.md` — how to run locally and how deployment is planned.
 
 ## License
 
