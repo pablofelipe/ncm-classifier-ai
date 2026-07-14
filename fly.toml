@@ -1,0 +1,60 @@
+# fly.toml — Fly.io deployment config (ADR-0015, Etapa 6)
+#
+# This is the ONLY Fly.io-specific artifact in the repo. It configures how
+# Fly.io runs the generic Docker image built by ../Dockerfile (Etapas 2-5) —
+# it does not, and must not, change the image or the application. Swapping
+# this file for a Cloud Run/ECS/Railway/k8s equivalent moves the deployment
+# to a different platform without touching the image at all.
+#
+# `app` must be globally unique on Fly.io — rename before the first
+# `fly launch` / `fly deploy` if this name is already taken.
+app = "ncm-classifier-ai"
+primary_region = "gru"  # São Paulo — closest Fly.io region to the project's domain (NCM/TIPI is Brazilian fiscal data)
+
+[build]
+  # No dockerfile= override needed — Fly finds ./Dockerfile at the repo root,
+  # the same generic image validated in Etapas 2-5.
+
+[http_service]
+  internal_port = 8000       # matches the Dockerfile's default $PORT (CMD respects ${PORT:-8000})
+  force_https = true
+
+  # Scale-to-zero (ADR-0015): the instance suspends when idle and wakes on
+  # request, so a demo with sparse traffic costs close to nothing while unused.
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  # Fly-native health check against the same GET /health the Dockerfile's own
+  # HEALTHCHECK already probes (Etapa 2) — additive, not a replacement: the
+  # Docker-level check works under any orchestrator, this one is what Fly's
+  # proxy/scheduler uses to decide whether a machine is ready to receive
+  # traffic and whether to restart it.
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/health"
+
+# Starting point, not a measured optimum — 2 shared CPUs / 2GB covers the
+# CPU-bound e5-small query embedding (no GPU) plus the baked Chroma index and
+# model cache resident in memory. Revisit with real traffic (ROADMAP.md,
+# Performance pillar) rather than guessing further before there's a signal.
+[[vm]]
+  size = "shared-cpu-2x"
+  memory = "2gb"
+
+# Deliberately no [env] section here: NCM_CHAPTER, RETRIEVAL_MODE and
+# RERANK_MODE are already baked as Dockerfile ENV defaults (the "Default
+# Public Deployment Profile", Etapa 3) — repeating them here would just be a
+# second place to keep in sync. ADR-0015's whole point is that a deploy is a
+# build; per-environment drift belongs in the image tag, not in this file.
+#
+# NEVER add GEMINI_API_KEY (or any LLM_PROVIDER credential) via
+# `fly secrets set` on this app. The public server must hold no LLM
+# credential of its own (ADR-0015) — visitors bring their own key through
+# the X-LLM-Api-Key header (ADR-0016), which this file cannot see and does
+# not need to. If a future ADR ever adds a maintainer-side credential (e.g.
+# for an internal/staging app, not this public one), it belongs in
+# `fly secrets set`, never in this file or in the image.

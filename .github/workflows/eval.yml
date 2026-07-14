@@ -31,7 +31,10 @@ jobs:
         # otherwise ".[ml]" pulls the ~2 GB CUDA wheel. See README.
         run: pip install torch --index-url https://download.pytorch.org/whl/cpu
       - name: Install dependencies
-        run: pip install -e ".[dev,ml]"
+        # `llm` extra (google-genai) is needed for unit tests to import
+        # google.genai.errors (Etapa 7 provider-error hardening) -- no real
+        # Gemini call happens in CI, gemini_api_key stays optional.
+        run: pip install -e ".[dev,ml,llm]"
       - name: Run unit tests
         run: make test
       - name: Build Chroma index

@@ -1,0 +1,25 @@
+# Deny-by-default allowlist (ADR-0015): only what the builder stage actually
+# needs enters the build context. This is deliberately stricter than
+# enumerating "known junk" (.git, .venv, caches, tests, docs, data/tipi/raw,
+# .env...) — an allowlist can't accidentally leak a new file nobody thought
+# to blocklist, including a local .env with a real GEMINI_API_KEY.
+*
+!pyproject.toml
+!src
+!src/**
+
+# Etapa 3: the beverage corpus JSON (ADR-0009) — needed both to bake the
+# Chroma index at build time and by the verification gate at request time
+# (src/api/dependencies.py::_build_verification_index reads it directly).
+# Each ancestor must be un-ignored explicitly (dockerignore, like
+# .gitignore, won't look inside an already-excluded directory). Only *.json
+# survives — data/tipi/raw/*.xlsx (the large source spreadsheet) stays out.
+!data
+!data/tipi
+!data/tipi/*.json
+
+# The ADR-0010 synonyms file — build-time only (baked into the indexed
+# document text by chroma_client.rebuild_index), never read at request
+# time, so it's allowed into the builder stage but never copied to runtime.
+!data/synonyms
+!data/synonyms/*.json

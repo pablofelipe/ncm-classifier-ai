@@ -1,4 +1,4 @@
-.PHONY: help run test test-integration eval eval-v1 eval-v2 eval-rerank eval-full eval-subheading lint fmt index index-v2
+.PHONY: help run test test-integration eval eval-v1 eval-v2 eval-rerank eval-full eval-subheading lint fmt index index-v2 docker-build docker-run
 
 .DEFAULT_GOAL := help
 
@@ -69,3 +69,12 @@ index:  ## (re)build the ChromaDB index for the production chapter (Ch.22)
 # Regenerate the source file first with: python scripts/ingest_tipi.py beverage
 index-v2:  ## build the isolated beverage index (64 NCMs, tipi_capbeverage)
 	NCM_CHAPTER=beverage python -m src.retrieval.chroma_client rebuild
+
+# Generic Docker artifact (ADR-0015, Etapas 2-5) — no Fly.io config here.
+# Bakes the "Default Public Deployment Profile" (beverage corpus, hybrid
+# retrieval, Passthrough rerank) at build time; see docs/deployment.md.
+docker-build:  ## build the production image (multi-stage, baked index, non-root)
+	docker build -t ncm-classifier .
+
+docker-run:  ## run the production image locally on :8000 (no LLM credential)
+	docker run --rm -p 8000:8000 ncm-classifier

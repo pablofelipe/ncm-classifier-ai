@@ -4,6 +4,7 @@ from pathlib import Path
 from chromadb import Collection
 from fastapi import Header, HTTPException
 
+from src.api.schemas import IndexInfo
 from src.config import RerankMode, RetrievalMode, settings
 from src.core.ports import LLMRerankPort, RetrievalPort
 from src.core.use_cases.classify_product import ClassifyProduct
@@ -133,9 +134,36 @@ def _resolve_rerank_override(
 
 
 def get_classify_use_case(
-    x_llm_api_key: str | None = Header(default=None, alias="X-LLM-Api-Key"),
-    llm_provider: str | None = Header(default=None, alias="LLM-Provider"),
-    llm_model: str | None = Header(default=None, alias="LLM-Model"),
+    x_llm_api_key: str | None = Header(
+        default=None,
+        alias="X-LLM-Api-Key",
+        description=(
+            "Optional. Your own LLM provider API key (e.g. a Gemini API key), "
+            "used only for this one request's rerank call — never persisted, "
+            "logged, or cached (ADR-0016). This deployment holds no LLM "
+            "credential of its own, so omitting this header runs the "
+            "zero-cost server-side default (Passthrough or hybrid retrieval) "
+            "instead of LLM rerank."
+        ),
+    ),
+    llm_provider: str | None = Header(
+        default=None,
+        alias="LLM-Provider",
+        description=(
+            'Optional. Which provider X-LLM-Api-Key belongs to (currently only "google" is '
+            "implemented). Defaults to the server's configured provider — see GET /info. "
+            "Ignored entirely if X-LLM-Api-Key is absent."
+        ),
+    ),
+    llm_model: str | None = Header(
+        default=None,
+        alias="LLM-Model",
+        description=(
+            'Optional. Which model to use with X-LLM-Api-Key (e.g. "gemini-2.5-pro"). '
+            "Defaults to the server's configured model — see GET /info. Ignored entirely "
+            "if X-LLM-Api-Key is absent."
+        ),
+    ),
 ) -> ClassifyProduct:
     """FastAPI driving-adapter wrapper around build_classify_use_case.
 
@@ -151,3 +179,36 @@ def get_classify_use_case(
     return build_classify_use_case(
         rerank_override=_resolve_rerank_override(x_llm_api_key, llm_provider, llm_model)
     )
+
+
+def build_index_info(collection: Collection | None = None) -> IndexInfo:
+    """Composition-root logic for GET /info (Etapa 4, ADR-0015).
+
+    Read-only diagnostic snapshot of the loaded Chroma collection: name, entry
+    count, and the embedder/enrich_strategy metadata already recorded at index
+    time (see chroma_client.index_entries), plus the TIPI source filename
+    baked into the image. Never touches a credential — there is nothing here
+    settings.gemini_api_key-adjacent to read.
+
+    `collection` is injectable for tests (mirrors build_classify_use_case);
+    the default constructs the real persistent Chroma collection. Not used
+    directly as a FastAPI dependency: a `Collection | None` parameter isn't a
+    type FastAPI can build a request field for (see get_index_info below).
+    """
+    col = collection if collection is not None else get_collection()
+    data_dir = Path(settings.tipi_data_dir)
+    source = _find_latest_tipi_json(data_dir, settings.ncm_chapter).name
+    metadata = col.metadata or {}
+    return IndexInfo(
+        collection=col.name,
+        source=source,
+        entries=col.count(),
+        embedder=str(metadata.get("embedder", "unknown")),
+        enrich_strategy=str(metadata.get("enrich_strategy", "unknown")),
+    )
+
+
+def get_index_info() -> IndexInfo:
+    """FastAPI driving-adapter wrapper around build_index_info (no parameters
+    FastAPI would need to build a request field for — mirrors get_classify_use_case)."""
+    return build_index_info()

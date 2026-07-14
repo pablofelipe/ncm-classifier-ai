@@ -22,11 +22,9 @@ anything · P3 low-effort housekeeping.
 
 | Priority | Status | Item | Reference |
 |---|---|---|---|
-| P0 | Planned | Docker image with the Chroma index baked in (no persistent volume) | ADR-0015 |
-| P0 | Planned | Fly.io deploy, scale-to-zero | ADR-0015 |
-| P1 | Planned | Map provider API errors (e.g. an invalid visitor-supplied `X-LLM-Api-Key`) to a clean `4xx`/`502` instead of an unhandled `500` with a full stack trace | ADR-0016 (Consequences) |
-| P1 | Planned | Application-level rate limiting on the public API | ADR-0015, ADR-0016 (deferred) |
-| P2 | Planned | `/version` endpoint (today the version only exists as OpenAPI metadata, no HTTP route) | — |
+| P0 | Planned | Execute the actual Fly.io deploy (`fly launch`/`fly deploy`, live public URL) — `fly.toml` exists and is configured (scale-to-zero, health check, BYOK-safe), but has never been run | ADR-0015 |
+| P2 | Planned | Distributed rate limiting (Redis-backed) if the deployment ever grows beyond a single Fly.io machine — today's in-memory per-process limiter (Etapa 7) is a deliberate, scoped choice, not a placeholder | — |
+| P3 | Planned | Tune Fly.io VM size (`shared-cpu-2x`/2GB in `fly.toml` is a starting guess, not measured) once there's real traffic | — |
 
 ## Retrieval
 
