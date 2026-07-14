@@ -12,11 +12,11 @@
 
 ADR-0013 shipped Gemini 2.5 Flash rerank, reaching the project's flagship
 result (71.7% top-1 / 75.7% top-3 on the v2 corpus). That path worked and
-needed no fixing on its own merits. What changed is the project's next goal:
-turning `ncm-classifier-ai` from a project that only runs locally into a
-system with a public URL, so recruiters, architects, and engineers can
-exercise the pipeline live during a technical interview — not just read the
-README and the decision log.
+needed no fixing on its own merits. What changed is the project's next goal,
+decided in ADR-0015: turning `ncm-classifier-ai` from a project that only
+runs locally into a system with a public URL, so the pipeline can be
+exercised live by anyone — not just read about in the README and the
+decision log.
 
 ### The problem publishing the API actually introduces
 
@@ -265,6 +265,16 @@ case, confirming they never trigger a call on their own.
   not introduced by this ADR, but worth closing before the public deployment
   ships (mapping provider `APIError`s to a clean `4xx`/`502` without leaking
   internals).
+- **Accepted technical debt, naming**: `RerankMode.GEMINI` keeps its
+  original enum name even though the mechanism it now selects is fully
+  generic — it resolves whatever `LLM_PROVIDER` is configured, not
+  necessarily Gemini. Renaming it (e.g. to `RerankMode.LLM`, mirroring the
+  `LLM_PROVIDER`/`LLM_MODEL` rename this ADR already made) would be a
+  breaking `RERANK_MODE` config change on top of the ones already shipped
+  here; deferred rather than compounding two breaking renames in one ADR.
+  Revisit when a second provider is actually added — the naming gap will
+  be more conspicuous once `RERANK_MODE=gemini` can select something that
+  isn't Gemini.
 - **Full-350 eval-parity confirmation** is open, deferred by external API
   instability during this ADR's measurement window (see `Measured Delta`).
 - **Path forward**: Fase 1 (Docker/Fly.io deterministic deploy, baked Chroma
