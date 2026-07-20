@@ -7,6 +7,18 @@ A RAG pipeline that classifies Brazilian products into 8-digit NCM
 (Nomenclatura Comum do Mercosul) fiscal codes, grounded on the official
 TIPI table.
 
+**Live at [ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev)** — try it now:
+
+```bash
+curl -X POST https://ncm-classifier-ai.fly.dev/classify \
+  -H "Content-Type: application/json" \
+  -d '{"product_name": "agua mineral", "description": "garrafa 500ml"}'
+```
+
+No credential required (see "Bring Your Own LLM Credentials" below for the
+higher-accuracy path). Interactive docs at
+[ncm-classifier-ai.fly.dev/docs](https://ncm-classifier-ai.fly.dev/docs).
+
 This repository is a portfolio project built under one constraint:
 **every architectural decision is measured, not assumed.** Each change
 to the retrieval pipeline is reported as an ADR with a before/after eval
@@ -127,7 +139,7 @@ own credential in a request header — it's used only for that one call, never
 persisted, logged, or cached:
 
 ```bash
-curl -X POST https://<public-url>/classify \
+curl -X POST https://ncm-classifier-ai.fly.dev/classify \
   -H "Content-Type: application/json" \
   -H "X-LLM-Api-Key: <your-gemini-api-key>" \
   -d '{"product_name": "agua mineral", "description": "garrafa 500ml"}'
@@ -138,7 +150,7 @@ server's `LLM_PROVIDER`/`LLM_MODEL`, currently `google` / `gemini-2.5-flash`
 — the only provider implemented so far):
 
 ```bash
-curl -X POST https://<public-url>/classify \
+curl -X POST https://ncm-classifier-ai.fly.dev/classify \
   -H "Content-Type: application/json" \
   -H "X-LLM-Api-Key: <your-gemini-api-key>" \
   -H "LLM-Provider: google" \
@@ -168,7 +180,7 @@ sending them alone can never trigger a call on the server's credentials
 | [0012](docs/adr/0012-cross-encoder-rerank-rejected.md) | Local cross-encoder rerank (mmarco-mMiniLMv2) | **Rejected** | `RERANK_MODE=cross_encoder` on ADR-0011 baseline: **49.1%→20.3% / 68.0%→38.6%** (−28.8/−29.4 pp). Domain gap: mMARCO cross-encoder trained on web QA pairs; TIPI descriptions are 2-8 token fiscal nomenclature — model produces near-random logits. Colloquial 85.0%→43.3% (ADR-0010/0011 compounding gain destroyed). Infrastructure kept; production `PASSTHROUGH`; opens ADR-0013 |
 | [0013](docs/adr/0013-gemini-flash-rerank.md) | Gemini 2.5 Flash LLM rerank | **Accepted (ships on v2)** | `RERANK_MODE=gemini`, top-5 pool, PT-BR fiscal prompt, `response_mime_type=application/json`, logged fallback. ADR-0011 baseline: **49.1%→71.7% / 68.0%→75.7%** (+22.6/+7.7 pp). Top-1/top-3 gap collapsed 18.9 pp → 4.0 pp. Negation +23.4 pp, frontier +21.7 pp (LLM reasons over fiscal semantics without fine-tuning). 0 JSON fallbacks. Cost: R$ 0.00013/query (770× below budget). Latency: ~2.1 s/query. Both v2 targets met with margin; top-1 exceeds v1 target (≥70%) on v2 corpus |
 | [0014](docs/adr/0014-verification-gate-wiring-chapter-coherence-dropped.md) | Verification gate wiring (chapter-coherence dropped) | **Accepted (ships)** | ADR-0002's deterministic check finally wired into `ClassifyProduct` after rerank. Fixed `expected_chapter` doesn't fit the multi-chapter v2 corpus (`NCM_CHAPTER=beverage` spans Ch.20/21/22) — dropped in favor of existence + hierarchy-consistency only, since existence already subsumes the chapter check for a corpus-scoped index. Failing verification forces `needs_review` and sets `escalation_reason`, regardless of rerank score; candidates returned are unchanged |
-| [0015](docs/adr/0015-public-deployment-architecture.md) | Public deployment architecture | **Accepted (decision only)** | Decision to prepare the project for a public URL: deterministic Docker deploy, Chroma index baked into the image (no persistent volume), scale-to-zero, near-zero recurring cost. Central constraint: the public server must hold no LLM credential of its own — a shared `GEMINI_API_KEY` would let any visitor spend the maintainer's budget. This constraint is what motivated ADR-0016; deploy execution and API hardening are deferred to later ADRs |
+| [0015](docs/adr/0015-public-deployment-architecture.md) | Public deployment architecture | **Accepted (ships)** | Decision to prepare the project for a public URL: deterministic Docker deploy, Chroma index baked into the image (no persistent volume), scale-to-zero, near-zero recurring cost. Central constraint: the public server must hold no LLM credential of its own — a shared `GEMINI_API_KEY` would let any visitor spend the maintainer's budget. This constraint is what motivated ADR-0016. Execution completed: production Docker image, `fly.toml`, and API hardening (rate limiting, clean provider-error responses, CORS, security headers, payload cap, provider timeout) are all live at [ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev) |
 | [0016](docs/adr/0016-provider-agnostic-llm-integration.md) | Provider-agnostic LLM integration | **Accepted (ships)** | `LLMRerankPort` unchanged; `GenericLLMRerankAdapter` + `LLMClient` (`GeminiClient` today) + `resolve_llm_client` decouple rerank from any vendor. `LLM_PROVIDER`/`LLM_MODEL` replace Gemini-specific config. Per-request `X-LLM-Api-Key`/`LLM-Provider`/`LLM-Model` headers let a caller supply their own credential — used only for that call, never persisted/logged/cached — so the public deployment carries no server-side LLM key at all, implementing the constraint ADR-0015 sets. 30-case stratified parity check: identical top-1/top-3 before/after the cutover (full 350-case confirmation pending, deferred by Gemini API instability during measurement) |
 
 **Root finding (ADRs 0005-0008):** offline manipulation — of the document text
@@ -188,11 +200,11 @@ decided the project will be prepared for a public URL, with one non-negotiable
 constraint — the public server holds no LLM credential of its own; **ADR-0016**
 implements that constraint with provider-agnostic LLM integration and
 per-request "bring your own credentials" headers, so a public deployment can
-run with no server-side LLM key at all. Remaining gaps: `frontier` 65.2%
-top-3, `hard` 63.8% top-3 (correct NCM not in top-5 retrieval pool — retrieval
-limit, not rerank limit). Logical next steps: expand corpus beyond beverages;
-calibrate confidence scores (ECE); execute the public deployment ADR-0015
-describes (Fly.io/Railway).
+run with no server-side LLM key at all. The public deployment ADR-0015
+describes is live at [ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev).
+Remaining gaps: `frontier` 65.2% top-3, `hard` 63.8% top-3 (correct NCM not
+in top-5 retrieval pool — retrieval limit, not rerank limit). Logical next
+steps: expand corpus beyond beverages; calibrate confidence scores (ECE).
 
 ## Engineering discipline
 
