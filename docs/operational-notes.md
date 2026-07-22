@@ -138,3 +138,34 @@ machine in `gru`, confirmed end-to-end: `/health`, `/`, `/docs`, `/classify`
 (both without a credential and with an invalid `X-LLM-Api-Key`, returning
 a clean `422`), and security headers all verified against the real
 deployment.
+
+## 2026-07-15 — Fly.io trial ended, app unreachable (billing, not config)
+
+**What happened:** the deployment above went unreachable a day later.
+`flyctl status -a ncm-classifier-ai` returns
+`Error: failed to list active VMs: trial has ended, please add a credit
+card by visiting https://fly.io/trial` — confirmed by `GET /health` also
+timing out against the public URL. No config or code issue: `fly.toml`/
+`Dockerfile` are unchanged and were working correctly right up to this
+point.
+
+**Diagnosis:** Fly.io's free trial period expired on the account. Unlike
+the earlier `unauthorized` app-creation block (a separate, already-resolved
+issue), this one explicitly names the fix: add a payment method at
+[fly.io/trial](https://fly.io/trial) (or the dashboard's Billing page).
+This is account/billing access only the maintainer has — entering payment
+details isn't something to automate here.
+
+**Current state: down**, pending the maintainer adding a payment method.
+No redeploy or config change is needed once billing is sorted — the
+existing app should resume; if it doesn't, fall back to the recreate flow
+already documented above (`flyctl launch --copy-config --yes --org
+personal --name ncm-classifier-ai --region gru --no-deploy --ha=false`
+then `flyctl deploy`, then `flyctl scale count 1`).
+
+**Takeaway:** a portfolio deployment on any pay-as-you-go platform's free
+tier carries this exact risk — trial/free-tier limits can lapse
+independently of anything in the repo. README/STATUS.md now describe the
+deployment without an unconditional "it's live" claim, precisely so a
+lapse like this doesn't leave the docs asserting something false to a
+visitor who clicks through.

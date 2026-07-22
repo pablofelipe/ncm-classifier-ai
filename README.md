@@ -7,7 +7,9 @@ A RAG pipeline that classifies Brazilian products into 8-digit NCM
 (Nomenclatura Comum do Mercosul) fiscal codes, grounded on the official
 TIPI table.
 
-**Live at [ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev)** — try it now:
+Deployed at [ncm-classifier-ai.fly.dev](https://ncm-classifier-ai.fly.dev)
+(see [STATUS.md](STATUS.md) for current reachability — a scale-to-zero demo
+instance, not a guaranteed-uptime service):
 
 ```bash
 curl -X POST https://ncm-classifier-ai.fly.dev/classify \
