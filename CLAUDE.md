@@ -36,6 +36,7 @@ make eval       # run eval/run_eval.py against the live classifier (v1, CI basel
 make lint       # ruff + format check + mypy + import-linter (core boundary)
 make test       # pytest (unit only)
 make test-integration  # integration tests (downloads models, requires network)
+make coverage   # unit tests with a local coverage report (visibility only, not a CI gate)
 make index      # (re)build ChromaDB from data/tipi/*.json
 ```
 

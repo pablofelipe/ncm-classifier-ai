@@ -1,4 +1,4 @@
-.PHONY: help run test test-integration eval eval-v1 eval-v2 eval-rerank eval-full eval-subheading lint fmt index index-v2 docker-build docker-run
+.PHONY: help run test test-integration coverage eval eval-v1 eval-v2 eval-rerank eval-full eval-subheading lint fmt index index-v2 docker-build docker-run
 
 .DEFAULT_GOAL := help
 
@@ -14,6 +14,9 @@ test:  ## run unit tests only (tests/unit)
 
 test-integration:  ## run integration tests (downloads models, requires network)
 	pytest tests/integration -v
+
+coverage:  ## unit tests with a local coverage report (visibility only, not a CI gate)
+	pytest --cov=src --cov-report=term-missing
 
 # Default eval — v1 (30 cases, Ch.22). Unchanged so CI stays on the historical
 # baseline (33.3% top-1 / 63.3% top-3). `eval-v1` is the explicit alias.
