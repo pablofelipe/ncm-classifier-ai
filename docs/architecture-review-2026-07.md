@@ -2,7 +2,7 @@
 
 **Reviewer stance:** Principal Architect / Staff Engineer perspective, applied to the project's declared hexagonal architecture (`CLAUDE.md`) and to a new set of engineering premises: TDD as a hard requirement, DDD as an architectural lens, and English-only code/docs/commits.
 
-**Update, same day:** three of the recommendations below were implemented in follow-up commits after this review was first written — the `import-linter` architecture contract, moving `LLMClient` into `core/ports.py`, and `pytest-cov` for local visibility. Each is marked **Implemented** inline where it was originally recommended. The `NCMCode` Value Object recommendation (Section 3) remains open by deliberate choice.
+**Update:** all four recommendations below were implemented in follow-up commits after this review was first written — the `import-linter` architecture contract, moving `LLMClient` into `core/ports.py`, `pytest-cov` for local visibility, and the `NCMCode` Value Object (ADR-0017). Each is marked **Implemented** inline where it was originally recommended.
 
 ## 1. Purpose & Method
 
@@ -50,13 +50,13 @@ Everything else — `ProductQuery` (`ncm.py:7-10`), `ClassificationCandidate` (`
 
 There are **no Aggregates** in the DDD sense — no root entity governing transactional consistency over a cluster of objects. `TIPIIndex` is better described as an in-memory read model/lookup than an aggregate: nothing here has multi-object write consistency to protect, which is expected for a system with no persistence beyond an immutable, build-time-baked Chroma index.
 
-### Recommendation (not implemented this round): `NCMCode` as a Value Object
+### `NCMCode` as a Value Object — **Implemented (ADR-0017)**
 
-Today, "is this a valid NCM code" and "what's its hierarchy" are handled by ad hoc regexes and string operations scattered across `tipi_parsing.py` and `deterministic.py` (see Section 5 for the duplicate this caused, now resolved). A dedicated `NCMCode` Value Object — validating format at construction, exposing `.chapter`, `.heading`, `.is_descendant_of(other)` — would consolidate that logic in one place with one set of tests, and make illegal states (a malformed code reaching business logic) unrepresentable rather than caught by scattered `if` checks.
+At the time of the original review, "is this a valid NCM code" and "what's its hierarchy" were handled by ad hoc regexes and string operations scattered across `tipi_parsing.py` and `deterministic.py` (see Section 5 for the duplicate this caused). This was deferred to its own ADR rather than folded into the lint-hygiene pass, given its cross-cutting surface.
 
-- **Benefit:** single source of truth for NCM structure; removes primitive obsession from `ClassificationCandidate.ncm_code: str` and `TIPIIndex`'s `dict[str, dict[str, str]]` keys.
-- **Trade-off:** touches every call site that currently treats an NCM code as a plain string — `ClassificationCandidate`, `TIPIIndex`, the retrieval adapters, the API schemas, the eval harness. This is a cross-cutting refactor, not a localized one.
-- **Why not now:** the project is mid-expansion on corpus/dataset breadth (see `CLAUDE.md` "Path forward"), not in a domain-modeling phase; a refactor of this surface deserves its own ADR with a before/after correctness check (do all 350 v2 eval cases still parse/verify identically?), not a rider on a lint-hygiene pass.
+`NCMCode` (`src/core/domain/ncm.py`) now exists: a frozen dataclass validating the dotted format at construction, exposing `.dotless` and `.matches_heading()` — deliberately minimal, no `.chapter`/`.heading` properties added speculatively (nothing demanded them). It is wired into `ClassificationCandidate.ncm_code`, `TIPIIndex` (keys + `verify()`), `VerificationResult.code`, `HybridRetrievalAdapter`'s RRF fusion dict, all four retrieval adapters, `chroma_client.index_entries`, `GenericLLMRerankAdapter` (with defensive parsing so a malformed LLM-returned code can't crash `rerank()`), and converted back to `str` at the HTTP and eval boundaries. `TIPIEntry`/`tipi_parsing.py` deliberately kept `str` (JSON-serialized ingestion, not the live path) but now imports `NCMCode`'s regex instead of duplicating it.
+
+Two real bugs surfaced during the wiring, neither caught by `mypy` (its Pydantic-plugin checking has a blind spot for this project's model construction — confirmed by directly probing it): `routes.py` passed `NCMCode` into a Pydantic `str` field (a runtime `ValidationError` on every real response), and `eval/run_eval.py` compared `NCMCode` against `str` (silently zeroing every top-1/top-3 hit, no crash). Both are fixed. Full detail, alternatives considered, and the measured before/after (v1 33.3%/63.3%, v2 hybrid 49.1%/68.0% — both reproduced exactly) are in `docs/adr/0017-ncm-code-value-object.md`.
 
 ### Bounded context
 
