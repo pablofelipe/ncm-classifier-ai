@@ -9,6 +9,7 @@ from eval.schema import EvalCase, EvalSuite
 from src.core.domain.ncm import (
     ClassificationCandidate,
     ClassificationResult,
+    NCMCode,
     ProductQuery,
 )
 
@@ -25,7 +26,8 @@ class FakeUseCase:
     def execute(self, query: ProductQuery) -> ClassificationResult:
         ncms = self._predictions[query.product_name]
         candidates = [
-            ClassificationCandidate(ncm_code=ncm, description="x", score=0.0) for ncm in ncms
+            ClassificationCandidate(ncm_code=NCMCode(ncm), description="x", score=0.0)
+            for ncm in ncms
         ]
         return ClassificationResult(top_candidates=candidates, confidence_label="needs_review")
 

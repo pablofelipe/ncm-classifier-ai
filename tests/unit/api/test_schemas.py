@@ -46,3 +46,26 @@ def test_response_escalation_reason_is_settable() -> None:
         escalation_reason="code_not_found",
     )
     assert response.escalation_reason == "code_not_found"
+
+
+# ---------------------------------------------------------------------------
+# NCM format validation (closes the gap: previously unvalidated `str`)
+# ---------------------------------------------------------------------------
+
+
+def test_ncm_candidate_accepts_valid_dotted_format() -> None:
+    candidate = NCMCandidate(ncm="2201.10.00", description="Águas minerais", score=0.5)
+    assert candidate.ncm == "2201.10.00"
+
+
+@pytest.mark.parametrize(
+    "code",
+    [
+        "22011000",  # dotless
+        "2201.1.00",  # wrong grouping
+        "not-a-code",
+    ],
+)
+def test_ncm_candidate_rejects_malformed_format(code: str) -> None:
+    with pytest.raises(ValidationError):
+        NCMCandidate(ncm=code, description="x", score=0.5)

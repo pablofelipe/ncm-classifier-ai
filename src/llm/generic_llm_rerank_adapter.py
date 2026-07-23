@@ -10,7 +10,7 @@ import json
 import logging
 import re
 
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 from src.core.ports import LLMClient
 
 logger = logging.getLogger(__name__)
@@ -86,7 +86,16 @@ class GenericLLMRerankAdapter:
             return candidates
 
         index = {c.ncm_code: c for c in pool}
-        reranked = [index.pop(code) for code in ranked_codes if code in index]
+        parsed_codes: list[NCMCode] = []
+        for code in ranked_codes:
+            try:
+                parsed_codes.append(NCMCode(code))
+            except ValueError:
+                # Malformed code in an otherwise-valid response: skip it rather
+                # than crash the whole rerank, same as an unmatched code today.
+                logger.warning("GenericLLMRerankAdapter: ignoring malformed ranked code %r", code)
+
+        reranked = [index.pop(code) for code in parsed_codes if code in index]
         reranked.extend(index.values())  # pool candidates not mentioned in ranked list
         reranked.extend(rest)  # candidates beyond top-k stay at end
         return reranked

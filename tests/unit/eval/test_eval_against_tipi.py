@@ -204,10 +204,10 @@ def test_out_of_scope_cases_emit_warning_only(real_report) -> None:
 
 class _FakeUseCase:
     def execute(self, query) -> object:
-        from src.core.domain.ncm import ClassificationCandidate, ClassificationResult
+        from src.core.domain.ncm import ClassificationCandidate, ClassificationResult, NCMCode
 
         candidates = [
-            ClassificationCandidate(ncm_code=f"2203.00.0{i}", description="x", score=0.0)
+            ClassificationCandidate(ncm_code=NCMCode(f"2203.00.0{i}"), description="x", score=0.0)
             for i in range(3)
         ]
         return ClassificationResult(top_candidates=candidates, confidence_label="needs_review")

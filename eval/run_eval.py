@@ -112,7 +112,7 @@ def evaluate_suite(suite: EvalSuite, use_case: ClassifyProduct) -> EvalReport:
     for case in suite.cases:
         query = ProductQuery(product_name=case.query, description=case.product_description)
         result = classify_via_use_case(query, use_case)
-        predicted = [c.ncm_code for c in result.top_candidates]
+        predicted = [str(c.ncm_code) for c in result.top_candidates]
 
         top_1 = predicted[0] == case.expected_ncm
         top_3 = case.expected_ncm in predicted

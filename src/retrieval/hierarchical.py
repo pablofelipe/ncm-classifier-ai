@@ -3,7 +3,7 @@ from typing import Any, cast
 from chromadb import Collection
 
 from src.core.domain.enrichment import EnrichStrategy
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 from src.retrieval.embedding import EmbedderModel, EmbeddingFunction
 
 
@@ -74,7 +74,7 @@ class ChromaRetrievalAdapter:
             metadata: dict[str, str | float] = {key: str(value) for key, value in meta.items()}
             candidates.append(
                 ClassificationCandidate(
-                    ncm_code=str(meta["ncm_dotted"]),
+                    ncm_code=NCMCode(str(meta["ncm_dotted"])),
                     description=str(meta["description"]),
                     score=1.0 - distance,
                     metadata=metadata,

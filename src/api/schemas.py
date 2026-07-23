@@ -2,6 +2,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, model_validator
 
+from src.core.domain.ncm import NCM_CODE_RE
+
 
 class ClassifyRequest(BaseModel):
     product_name: str = Field(
@@ -30,6 +32,7 @@ class ClassifyRequest(BaseModel):
 class NCMCandidate(BaseModel):
     ncm: str = Field(
         ...,
+        pattern=NCM_CODE_RE.pattern,
         description="8-digit NCM fiscal code, dotted format.",
         examples=["2201.10.00"],
     )

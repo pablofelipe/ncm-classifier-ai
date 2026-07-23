@@ -4,7 +4,7 @@ from typing import Any, cast
 from chromadb import Collection
 from rank_bm25 import BM25Okapi
 
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 
 _TOKEN = re.compile(r"\w+", re.UNICODE)
 
@@ -46,7 +46,7 @@ class BM25RetrievalAdapter:
             metadata: dict[str, str | float] = {key: str(value) for key, value in meta.items()}
             candidates.append(
                 ClassificationCandidate(
-                    ncm_code=str(meta["ncm_dotted"]),
+                    ncm_code=NCMCode(str(meta["ncm_dotted"])),
                     description=str(meta["description"]),
                     score=float(scores[i]),
                     metadata=metadata,

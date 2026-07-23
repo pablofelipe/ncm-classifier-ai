@@ -35,7 +35,9 @@ def _query() -> ProductQuery:
 
 def _candidates(*scores: float) -> list[ClassificationCandidate]:
     return [
-        ClassificationCandidate(ncm_code=f"2201.10.{i:02d}", description=f"bebida {i}", score=s)
+        ClassificationCandidate(
+            ncm_code=NCMCode(f"2201.10.{i:02d}"), description=f"bebida {i}", score=s
+        )
         for i, s in enumerate(scores)
     ]
 
@@ -144,7 +146,7 @@ def _tipi_index() -> TIPIIndex:
 
 
 def _candidate_with_code(ncm_code: str, score: float) -> ClassificationCandidate:
-    return ClassificationCandidate(ncm_code=ncm_code, description="bebida", score=score)
+    return ClassificationCandidate(ncm_code=NCMCode(ncm_code), description="bebida", score=score)
 
 
 def _three_candidates_with_top(top_code: str, top_score: float) -> list[ClassificationCandidate]:

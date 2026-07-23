@@ -37,7 +37,7 @@ class ProductQuery:
 
 @dataclass
 class ClassificationCandidate:
-    ncm_code: str
+    ncm_code: NCMCode
     description: str
     score: float
     metadata: dict[str, str | float] = field(default_factory=dict)

@@ -1,4 +1,4 @@
-from src.core.domain.ncm import ProductQuery
+from src.core.domain.ncm import NCMCode, ProductQuery
 from src.core.ports import RetrievalPort
 from src.retrieval.naive_adapter import NaiveRetrievalAdapter
 
@@ -27,7 +27,11 @@ def _query() -> ProductQuery:
 def test_returns_first_k_entries_in_json_order() -> None:
     adapter = NaiveRetrievalAdapter(_entries(5))
     result = adapter.retrieve_candidates(_query(), k=3)
-    assert [c.ncm_code for c in result] == ["2201.10.00", "2201.10.01", "2201.10.02"]
+    assert [c.ncm_code for c in result] == [
+        NCMCode("2201.10.00"),
+        NCMCode("2201.10.01"),
+        NCMCode("2201.10.02"),
+    ]
 
 
 def test_returns_all_when_k_exceeds_available() -> None:

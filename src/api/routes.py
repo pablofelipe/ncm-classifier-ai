@@ -45,7 +45,7 @@ async def classify(
     return ClassifyResponse(
         confidence_label=result.confidence_label,
         candidates=[
-            NCMCandidate(ncm=c.ncm_code, description=c.description, score=c.score)
+            NCMCandidate(ncm=str(c.ncm_code), description=c.description, score=c.score)
             for c in result.top_candidates
         ],
         latency_ms=latency_ms,

@@ -1,4 +1,4 @@
-from src.core.domain.ncm import ClassificationResult, ConfidenceLabel, NCMCode, ProductQuery
+from src.core.domain.ncm import ClassificationResult, ConfidenceLabel, ProductQuery
 from src.core.ports import LLMRerankPort, RetrievalPort
 from src.core.verification.deterministic import TIPIIndex
 
@@ -43,9 +43,7 @@ class ClassifyProduct:
         escalation_reason: str | None = None
         verification_failed = False
         if self._verification is not None:
-            # NCMCode(...) wrap is temporary: ClassificationCandidate.ncm_code
-            # is still `str` here, migrated to NCMCode in the next commit.
-            verification_result = self._verification.verify(NCMCode(top[0].ncm_code))
+            verification_result = self._verification.verify(top[0].ncm_code)
             if not verification_result.passed:
                 verification_failed = True
                 escalation_reason = verification_result.status.value

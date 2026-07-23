@@ -9,6 +9,7 @@ from chromadb import Collection
 
 from src.config import settings
 from src.core.domain.enrichment import EnrichStrategy
+from src.core.domain.ncm import NCMCode
 from src.core.domain.tipi_parsing import clean_level_text, is_substantive
 from src.retrieval.embedding import EmbedderModel, EmbeddingFunction, make_embedding_function
 
@@ -148,18 +149,19 @@ def index_entries(
     index<->strategy mismatch. ``synonyms`` is optional corpus enrichment
     (ADR-0010), appended to OFF documents only (see build_document_text).
     """
-    ids = [e["ncm"].replace(".", "") for e in entries]
+    codes = [NCMCode(e["ncm"]) for e in entries]
+    ids = [code.dotless for code in codes]
     documents = [build_document_text(e, strategy, synonyms) for e in entries]
     metadatas = [
         {
-            "ncm_dotted": e["ncm"],
+            "ncm_dotted": str(code),
             "chapter": e["chapter"],
             "heading": e["heading"],
             "subheading": e["subheading"],
             "description": e["description"],
             "ipi_rate": e["ipi_rate"],
         }
-        for e in entries
+        for code, e in zip(codes, entries, strict=True)
     ]
     embeddings = embedding_fn.embed_documents(documents)
 

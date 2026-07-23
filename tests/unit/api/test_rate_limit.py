@@ -8,7 +8,7 @@ from fastapi.testclient import TestClient
 
 from src.api.dependencies import get_classify_use_case
 from src.api.rate_limit import RateLimiter, get_rate_limiter
-from src.core.domain.ncm import ClassificationCandidate, ClassificationResult
+from src.core.domain.ncm import ClassificationCandidate, ClassificationResult, NCMCode
 from src.main import app
 
 
@@ -66,7 +66,9 @@ def test_tracks_different_keys_independently() -> None:
 class _FakeClassifyUseCase:
     def execute(self, query: object) -> ClassificationResult:
         candidates = [
-            ClassificationCandidate(ncm_code=f"2201.10.{i:02d}", description="x", score=0.0)
+            ClassificationCandidate(
+                ncm_code=NCMCode(f"2201.10.{i:02d}"), description="x", score=0.0
+            )
             for i in range(3)
         ]
         return ClassificationResult(top_candidates=candidates, confidence_label="needs_review")

@@ -1,7 +1,7 @@
 import pytest
 
 from src.core.domain.enrichment import EnrichStrategy
-from src.core.domain.ncm import ProductQuery
+from src.core.domain.ncm import NCMCode, ProductQuery
 from src.retrieval.embedding import EMBEDDING_DIM, E5EmbeddingFunction, EmbedderModel
 from src.retrieval.hierarchical import ChromaRetrievalAdapter
 
@@ -127,14 +127,14 @@ def test_ncm_code_comes_from_metadata_ncm_dotted() -> None:
     query = ProductQuery(product_name="cerveja", description="lata 350ml")
     candidates = adapter.retrieve_candidates(query, k=2)
     codes = {c.ncm_code for c in candidates}
-    assert codes == {"2203.00.00", "2202.00.00"}
+    assert codes == {NCMCode("2203.00.00"), NCMCode("2202.00.00")}
 
 
 def test_description_comes_from_metadata() -> None:
     adapter = _adapter(BEER_RESULTS)
     query = ProductQuery(product_name="cerveja", description="lata 350ml")
     candidates = adapter.retrieve_candidates(query, k=2)
-    top = next(c for c in candidates if c.ncm_code == "2203.00.00")
+    top = next(c for c in candidates if c.ncm_code == NCMCode("2203.00.00"))
     assert top.description == "Cervejas de malte"
 
 
@@ -142,7 +142,7 @@ def test_metadata_dict_is_preserved() -> None:
     adapter = _adapter(BEER_RESULTS)
     query = ProductQuery(product_name="cerveja", description="lata 350ml")
     candidates = adapter.retrieve_candidates(query, k=2)
-    top = next(c for c in candidates if c.ncm_code == "2203.00.00")
+    top = next(c for c in candidates if c.ncm_code == NCMCode("2203.00.00"))
     assert top.metadata["chapter"] == "22"
     assert top.metadata["heading"] == "2203"
 

@@ -1,13 +1,13 @@
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 from src.core.ports import LLMRerankPort
 from src.llm.passthrough_adapter import PassthroughRerankAdapter
 
 
 def _candidates() -> list[ClassificationCandidate]:
     return [
-        ClassificationCandidate(ncm_code="2201.10.00", description="a", score=0.0),
-        ClassificationCandidate(ncm_code="2202.10.00", description="b", score=0.0),
-        ClassificationCandidate(ncm_code="2203.00.00", description="c", score=0.0),
+        ClassificationCandidate(ncm_code=NCMCode("2201.10.00"), description="a", score=0.0),
+        ClassificationCandidate(ncm_code=NCMCode("2202.10.00"), description="b", score=0.0),
+        ClassificationCandidate(ncm_code=NCMCode("2203.00.00"), description="c", score=0.0),
     ]
 
 

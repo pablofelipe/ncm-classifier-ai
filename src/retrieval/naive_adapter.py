@@ -1,5 +1,6 @@
 from src.core.domain.ncm import (
     ClassificationCandidate,
+    NCMCode,
     ProductQuery,
     candidate_metadata_from_entry,
 )
@@ -27,7 +28,7 @@ class NaiveRetrievalAdapter:
     def retrieve_candidates(self, query: ProductQuery, k: int) -> list[ClassificationCandidate]:
         return [
             ClassificationCandidate(
-                ncm_code=str(entry["ncm"]),
+                ncm_code=NCMCode(str(entry["ncm"])),
                 description=str(entry["description"]),
                 score=0.0,
                 metadata=candidate_metadata_from_entry(entry),

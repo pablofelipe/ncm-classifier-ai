@@ -4,7 +4,7 @@ import chromadb
 import pytest
 from chromadb import Collection
 
-from src.core.domain.ncm import ProductQuery
+from src.core.domain.ncm import NCMCode, ProductQuery
 from src.core.ports import RetrievalPort
 from src.retrieval.bm25_adapter import BM25RetrievalAdapter
 
@@ -41,7 +41,7 @@ def test_indexes_collection_documents_including_synonyms(collection: Collection)
     # the source TIPI JSON. A hit on it proves BM25 indexed the collection docs.
     adapter = BM25RetrievalAdapter(collection)
     top = adapter.retrieve_candidates(ProductQuery(product_name="Smirnoff", description=""), k=1)
-    assert top[0].ncm_code == "2208.60.00"
+    assert top[0].ncm_code == NCMCode("2208.60.00")
 
 
 def test_query_uses_raw_text_without_embedder_prefix(collection: Collection) -> None:
@@ -49,7 +49,7 @@ def test_query_uses_raw_text_without_embedder_prefix(collection: Collection) -> 
     # ranks its document first; were a "query" token prepended it would pollute.
     adapter = BM25RetrievalAdapter(collection)
     top = adapter.retrieve_candidates(ProductQuery(product_name="gin", description=""), k=1)
-    assert top[0].ncm_code == "2208.50.00"
+    assert top[0].ncm_code == NCMCode("2208.50.00")
 
 
 def test_returns_candidates_sorted_by_score_desc(collection: Collection) -> None:

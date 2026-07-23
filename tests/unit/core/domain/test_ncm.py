@@ -3,6 +3,7 @@ import pytest
 from src.core.domain.ncm import (
     ClassificationCandidate,
     ClassificationResult,
+    NCMCode,
     candidate_metadata_from_entry,
 )
 
@@ -55,7 +56,7 @@ def test_candidate_metadata_values_are_str_or_float_only() -> None:
 
 def _candidate(ncm_code: str = "2202.10.00") -> ClassificationCandidate:
     return ClassificationCandidate(
-        ncm_code=ncm_code,
+        ncm_code=NCMCode(ncm_code),
         description="bebida",
         score=0.0,
         metadata={},

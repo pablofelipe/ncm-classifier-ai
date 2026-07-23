@@ -57,5 +57,5 @@ def test_retrieve_candidates_preserves_ncm_metadata(
 ) -> None:
     query = ProductQuery(product_name="água mineral", description="")
     top = indexed_adapter.retrieve_candidates(query, k=3)[0]
-    assert top.ncm_code.count(".") == 2  # dotted NCM, e.g. 2201.10.00
+    assert str(top.ncm_code).count(".") == 2  # dotted NCM, e.g. 2201.10.00
     assert set(top.metadata) >= {"ncm_dotted", "description", "chapter", "heading"}

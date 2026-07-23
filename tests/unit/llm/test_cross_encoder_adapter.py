@@ -1,6 +1,6 @@
 import pytest
 
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 from src.core.ports import LLMRerankPort
 from src.llm.cross_encoder_adapter import CrossEncoderRerankAdapter
 
@@ -27,7 +27,7 @@ class _CapturingEncoder:
 
 
 def _cand(ncm: str, desc: str, score: float = 0.5) -> ClassificationCandidate:
-    return ClassificationCandidate(ncm_code=ncm, description=desc, score=score)
+    return ClassificationCandidate(ncm_code=NCMCode(ncm), description=desc, score=score)
 
 
 def _query(name: str = "Chivas 12 anos", description: str = "uísque escocês 750ml") -> ProductQuery:
@@ -52,7 +52,11 @@ def test_reorders_candidates_by_cross_encoder_score_descending() -> None:
     ]
     adapter = CrossEncoderRerankAdapter(encoder=_FakeEncoder(scores))
     result = adapter.rerank(_query(), candidates)
-    assert [c.ncm_code for c in result] == ["2208.30.00", "2203.00.00", "2208.40.00"]
+    assert [c.ncm_code for c in result] == [
+        NCMCode("2208.30.00"),
+        NCMCode("2203.00.00"),
+        NCMCode("2208.40.00"),
+    ]
 
 
 def test_score_reflects_cross_encoder_logit() -> None:
@@ -72,13 +76,13 @@ def test_ncm_code_and_description_preserved_after_rerank() -> None:
     candidates = [_cand("2201.10.00", "agua mineral")]
     adapter = CrossEncoderRerankAdapter(encoder=_FakeEncoder({}))
     result = adapter.rerank(_query(), candidates)
-    assert result[0].ncm_code == "2201.10.00"
+    assert result[0].ncm_code == NCMCode("2201.10.00")
     assert result[0].description == "agua mineral"
 
 
 def test_metadata_preserved_after_rerank() -> None:
     c = ClassificationCandidate(
-        ncm_code="2201.10.00",
+        ncm_code=NCMCode("2201.10.00"),
         description="agua mineral",
         score=0.5,
         metadata={"chapter": "22", "ipi_rate": "0"},
@@ -96,21 +100,21 @@ def test_metadata_preserved_after_rerank() -> None:
 def test_query_text_combines_product_name_and_description() -> None:
     enc = _CapturingEncoder()
     adapter = CrossEncoderRerankAdapter(encoder=enc)
-    adapter.rerank(_query(name="Chivas 12", description="750ml"), [_cand("X", "p")])
+    adapter.rerank(_query(name="Chivas 12", description="750ml"), [_cand("2201.10.00", "p")])
     assert enc.captured[0][0][0] == "Chivas 12 750ml"
 
 
 def test_query_text_uses_name_only_when_description_is_empty() -> None:
     enc = _CapturingEncoder()
     adapter = CrossEncoderRerankAdapter(encoder=enc)
-    adapter.rerank(_query(name="cerveja", description=""), [_cand("X", "p")])
+    adapter.rerank(_query(name="cerveja", description=""), [_cand("2201.10.00", "p")])
     assert enc.captured[0][0][0] == "cerveja"
 
 
 def test_passage_is_candidate_description() -> None:
     enc = _CapturingEncoder()
     adapter = CrossEncoderRerankAdapter(encoder=enc)
-    adapter.rerank(_query(), [_cand("X", "vodca premium")])
+    adapter.rerank(_query(), [_cand("2201.10.00", "vodca premium")])
     assert enc.captured[0][0][1] == "vodca premium"
 
 
@@ -129,7 +133,7 @@ def test_single_candidate_returned_unchanged_in_content() -> None:
     adapter = CrossEncoderRerankAdapter(encoder=_FakeEncoder({"vodca": 1.0}))
     result = adapter.rerank(_query(), [c])
     assert len(result) == 1
-    assert result[0].ncm_code == "2208.60.00"
+    assert result[0].ncm_code == NCMCode("2208.60.00")
 
 
 # ---------------------------------------------------------------------------

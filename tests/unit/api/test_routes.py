@@ -8,6 +8,7 @@ from src.core.domain.ncm import (
     ClassificationCandidate,
     ClassificationResult,
     ConfidenceLabel,
+    NCMCode,
 )
 from src.main import app
 
@@ -24,7 +25,7 @@ class FakeClassifyUseCase:
     def execute(self, query: object) -> ClassificationResult:
         candidates = [
             ClassificationCandidate(
-                ncm_code=f"2201.10.{i:02d}", description=f"bebida {i}", score=0.0
+                ncm_code=NCMCode(f"2201.10.{i:02d}"), description=f"bebida {i}", score=0.0
             )
             for i in range(3)
         ]

@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 from src.core.ports import RetrievalPort
 
 
@@ -33,8 +33,8 @@ class HybridRetrievalAdapter:
         self._pool = pool
 
     def retrieve_candidates(self, query: ProductQuery, k: int) -> list[ClassificationCandidate]:
-        rrf: dict[str, float] = defaultdict(float)
-        first_seen: dict[str, ClassificationCandidate] = {}
+        rrf: dict[NCMCode, float] = defaultdict(float)
+        first_seen: dict[NCMCode, ClassificationCandidate] = {}
         for retriever in (self._dense, self._lexical):
             for rank, candidate in enumerate(retriever.retrieve_candidates(query, self._pool)):
                 rrf[candidate.ncm_code] += 1.0 / (self._k_rrf + rank + 1)
