@@ -1,27 +1,15 @@
-"""Provider-agnostic LLM generation contract (ADR-0016).
+"""LLM provider factory (ADR-0016).
 
-Represents the capability "ask an LLM to generate text", not any specific
-vendor SDK shape. Adapters like ``GenericLLMRerankAdapter`` depend on this
-Protocol; concrete implementations (``GeminiClient`` today, others later)
-translate ``generate()`` into their own SDK's call shape.
+The LLMClient Protocol itself lives in src/core/ports.py -- it's a port, not
+an adapter-internal detail (see the hexagonal-boundaries review, 2026-07).
+This module only holds the infrastructure-side concern: picking a concrete
+LLMClient implementation by provider name.
 """
 
 from collections.abc import Callable
-from typing import Protocol
 
+from src.core.ports import LLMClient
 from src.llm.gemini_client import GeminiClient
-
-
-class LLMClient(Protocol):
-    def generate(
-        self,
-        *,
-        model: str,
-        system_instruction: str,
-        prompt: str,
-        response_format: str = "application/json",
-    ) -> str: ...
-
 
 # Provider name (settings.llm_provider / the LLM-Provider header) -> a
 # constructor accepting an optional api_key and returning an LLMClient.

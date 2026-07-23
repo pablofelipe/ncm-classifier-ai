@@ -11,7 +11,7 @@ import logging
 import re
 
 from src.core.domain.ncm import ClassificationCandidate, ProductQuery
-from src.llm.llm_client import LLMClient
+from src.core.ports import LLMClient
 
 logger = logging.getLogger(__name__)
 
