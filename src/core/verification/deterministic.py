@@ -8,16 +8,8 @@ chapter doesn't fit — existence against the loaded index is the equivalent
 check for codes outside its scope.
 """
 
-import re
 from dataclasses import dataclass
 from enum import StrEnum
-
-_NCM_FORMAT_RE = re.compile(r"^\d{4}\.\d{2}\.\d{2}$")
-
-
-def validate_ncm_format(code: str) -> bool:
-    """Return True if code matches the XXXX.XX.XX NCM dot-notation format."""
-    return bool(_NCM_FORMAT_RE.fullmatch(code))
 
 
 class VerificationStatus(StrEnum):
