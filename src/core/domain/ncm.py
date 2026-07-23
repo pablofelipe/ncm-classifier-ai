@@ -1,7 +1,32 @@
+import re
 from dataclasses import dataclass, field
 from typing import Literal, get_args
 
 ConfidenceLabel = Literal["high", "needs_review"]
+
+NCM_CODE_RE = re.compile(r"^\d{4}\.\d{2}\.\d{2}$")
+
+
+@dataclass(frozen=True)
+class NCMCode:
+    """8-digit NCM fiscal code, canonical dotted form (e.g. "2202.10.00")."""
+
+    value: str
+
+    def __post_init__(self) -> None:
+        if not NCM_CODE_RE.fullmatch(self.value):
+            raise ValueError(f"invalid NCM code format: {self.value!r} (expected XXXX.XX.XX)")
+
+    def __str__(self) -> str:
+        return self.value
+
+    @property
+    def dotless(self) -> str:
+        return self.value.replace(".", "")
+
+    def matches_heading(self, heading: str) -> bool:
+        """True if this code falls under the given heading (dotted or dotless)."""
+        return self.dotless.startswith(heading.replace(".", ""))
 
 
 @dataclass(frozen=True)
