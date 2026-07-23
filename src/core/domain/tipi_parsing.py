@@ -1,7 +1,8 @@
 import re
 from dataclasses import dataclass
 
-_NCM_FULL_RE = re.compile(r"^\d{4}\.\d{2}\.\d{2}$")
+from src.core.domain.ncm import NCM_CODE_RE
+
 _LEVEL_DASH_RE = re.compile(r"^-+\s*")
 _OUTROS_RE = re.compile(r"\boutr[oa]s\b", re.IGNORECASE)
 _WS_RE = re.compile(r"\s+")
@@ -111,7 +112,7 @@ def parse_tipi_rows(
             cleaned = clean_level_text(desc)
             if is_substantive(cleaned):
                 intermediates.append((digits, cleaned))
-        elif len(digits) == 8 and _NCM_FULL_RE.match(ncm):
+        elif len(digits) == 8 and NCM_CODE_RE.match(ncm):
             _flush()
             ancestors = sorted(
                 (lvl for lvl in intermediates if digits.startswith(lvl[0])),
