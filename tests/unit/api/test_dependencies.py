@@ -18,7 +18,7 @@ from fastapi import HTTPException
 from src.api.dependencies import _resolve_rerank_override, build_classify_use_case, build_index_info
 from src.config import RerankMode, RetrievalMode, Settings, settings
 from src.core.domain.enrichment import EnrichStrategy
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 from src.core.verification.deterministic import TIPIIndex
 from src.llm.generic_llm_rerank_adapter import GenericLLMRerankAdapter
 from src.llm.llm_client import resolve_llm_client
@@ -127,14 +127,14 @@ def test_wired_verification_index_passes_a_real_indexed_ncm(
     entries = json.loads(
         _find_latest_tipi_json(Path("data/tipi"), "22").read_text(encoding="utf-8")
     )["entries"]
-    sample_dotless = entries[0]["ncm"].replace(".", "")
+    sample_code = NCMCode(entries[0]["ncm"])
 
     use_case = build_classify_use_case(
         collection=indexed_collection,
         embedding_fn=E5EmbeddingFunction(encoder=SpyEncoder()),
     )
     assert use_case._verification is not None
-    result = use_case._verification.verify(sample_dotless)
+    result = use_case._verification.verify(sample_code)
     assert result.passed
 
 

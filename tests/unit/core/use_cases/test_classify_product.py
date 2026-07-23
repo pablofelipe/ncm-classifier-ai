@@ -1,6 +1,6 @@
 import pytest
 
-from src.core.domain.ncm import ClassificationCandidate, ProductQuery
+from src.core.domain.ncm import ClassificationCandidate, NCMCode, ProductQuery
 from src.core.use_cases.classify_product import ClassifyProduct
 from src.core.verification.deterministic import TIPIIndex
 
@@ -134,7 +134,11 @@ def test_execute_needs_review_when_top_score_exactly_zero() -> None:
 def _tipi_index() -> TIPIIndex:
     return TIPIIndex(
         {
-            "22011000": {"chapter": "22", "heading": "22.01", "description": "agua mineral"},
+            NCMCode("2201.10.00"): {
+                "chapter": "22",
+                "heading": "22.01",
+                "description": "agua mineral",
+            },
         }
     )
 

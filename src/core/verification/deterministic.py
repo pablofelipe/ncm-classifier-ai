@@ -11,6 +11,8 @@ check for codes outside its scope.
 from dataclasses import dataclass
 from enum import StrEnum
 
+from src.core.domain.ncm import NCMCode
+
 
 class VerificationStatus(StrEnum):
     PASSED = "passed"
@@ -21,7 +23,7 @@ class VerificationStatus(StrEnum):
 @dataclass
 class VerificationResult:
     status: VerificationStatus
-    code: str
+    code: NCMCode
     message: str
 
     @property
@@ -35,14 +37,14 @@ class TIPIIndex:
     No I/O here — receives an already-loaded ``codes`` dict (whoever wires this
     in is responsible for building it from the parsed TIPI entries).
 
-    Expected schema: {"22030000": {"chapter": "22", "heading": "22.03", "description": "..."}}
+    Expected schema: {NCMCode("2203.00.00"): {"chapter": "22", "heading": "22.03", ...}}
     heading uses dotted format (e.g. "22.03") as produced by tipi_parsing.parse_tipi_rows.
     """
 
-    def __init__(self, codes: dict[str, dict[str, str]]) -> None:
+    def __init__(self, codes: dict[NCMCode, dict[str, str]]) -> None:
         self._codes = codes
 
-    def verify(self, code: str) -> VerificationResult:
+    def verify(self, code: NCMCode) -> VerificationResult:
         if code not in self._codes:
             return VerificationResult(
                 status=VerificationStatus.CODE_NOT_FOUND,
@@ -58,12 +60,8 @@ class TIPIIndex:
         return VerificationResult(status=VerificationStatus.PASSED, code=code, message="OK")
 
 
-def _hierarchy_consistent(code: str, entry: dict[str, str]) -> bool:
-    if len(code) != 8:
-        return False
+def _hierarchy_consistent(code: NCMCode, entry: dict[str, str]) -> bool:
     heading = entry.get("heading", "")
     if not heading:
         return True
-    # Normalize dotted format ("22.03") or plain ("2203") before comparing
-    heading_digits = heading.replace(".", "")
-    return code.startswith(heading_digits)
+    return code.matches_heading(heading)

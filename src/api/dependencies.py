@@ -6,6 +6,7 @@ from fastapi import Header, HTTPException
 
 from src.api.schemas import IndexInfo
 from src.config import RerankMode, RetrievalMode, settings
+from src.core.domain.ncm import NCMCode
 from src.core.ports import LLMRerankPort, RetrievalPort
 from src.core.use_cases.classify_product import ClassifyProduct
 from src.core.verification.deterministic import TIPIIndex
@@ -28,7 +29,7 @@ def _build_verification_index() -> TIPIIndex:
     json_path = _find_latest_tipi_json(data_dir, settings.ncm_chapter)
     entries = json.loads(json_path.read_text(encoding="utf-8"))["entries"]
     codes = {
-        entry["ncm"].replace(".", ""): {
+        NCMCode(entry["ncm"]): {
             "chapter": entry["chapter"],
             "heading": entry["heading"],
             "description": entry["description"],
