@@ -2,6 +2,8 @@
 
 **Reviewer stance:** Principal Architect / Staff Engineer perspective, applied to the project's declared hexagonal architecture (`CLAUDE.md`) and to a new set of engineering premises: TDD as a hard requirement, DDD as an architectural lens, and English-only code/docs/commits.
 
+**Update, same day:** three of the recommendations below were implemented in follow-up commits after this review was first written — the `import-linter` architecture contract, moving `LLMClient` into `core/ports.py`, and `pytest-cov` for local visibility. Each is marked **Implemented** inline where it was originally recommended. The `NCMCode` Value Object recommendation (Section 3) remains open by deliberate choice.
+
 ## 1. Purpose & Method
 
 This review audits the current state of the codebase against Clean/Hexagonal Architecture and Domain-Driven Design principles, and against the project's own TDD/CI discipline. It is not tied to a single feature change, so it is not filed as a numbered ADR (`docs/adr/` records binary decisions with a measured before/after; this document is a multi-topic audit).
@@ -20,17 +22,16 @@ Method: automated exploration of `src/`, `tests/`, `.github/workflows/`, and `do
 |---|---|---|
 | `RetrievalPort` | `src/core/ports.py` | `NaiveRetrievalAdapter`, `ChromaRetrievalAdapter`, `BM25RetrievalAdapter`, `HybridRetrievalAdapter` (composes two `RetrievalPort`s) |
 | `LLMRerankPort` | `src/core/ports.py` | `PassthroughRerankAdapter`, `CrossEncoderRerankAdapter` (rejected by ADR-0012, kept for reproducibility), `GenericLLMRerankAdapter` |
-| `LLMClient` | `src/llm/llm_client.py` | `GeminiClient` (only implementation today) |
+| `LLMClient` | `src/core/ports.py` (moved — see finding below) | `GeminiClient` (only implementation today) |
 
 Both `core/ports.py` ports have multiple real, ADR-justified implementations — not speculative interfaces. `LLMClient` having a single implementer is a documented, deliberate choice (ADR-0016), not an oversight.
 
-### Finding: `LLMClient` is a port declared outside the hexagon
+### Finding: `LLMClient` is a port declared outside the hexagon — **Implemented**
 
-`LLMClient` (`src/llm/llm_client.py:15-23`) is structurally a port — a `Protocol` that `GenericLLMRerankAdapter` depends on — but it lives in `src/llm/`, an adapter package, rather than in `src/core/ports.py` alongside `RetrievalPort`/`LLMRerankPort`. `core/` never references it (correctly — `ClassifyProduct` only knows `LLMRerankPort`), so this is not a boundary violation in the strict sense checked above, but it is an inconsistency in where the project draws its own port/adapter line, and it means the hexagonal boundary isn't uniformly discoverable from one file.
+`LLMClient` (originally `src/llm/llm_client.py:15-23`) was structurally a port — a `Protocol` that `GenericLLMRerankAdapter` depends on — but lived in `src/llm/`, an adapter package, rather than in `src/core/ports.py` alongside `RetrievalPort`/`LLMRerankPort`. `core/` never referenced it directly (correctly — `ClassifyProduct` only knows `LLMRerankPort`), so this was not a boundary violation in the strict sense checked above, but it was an inconsistency in where the project drew its own port/adapter line.
 
-- **Fix would be:** move the `Protocol` definition to `src/core/ports.py`; leave `resolve_llm_client()` (a factory, correctly infrastructure) in `src/llm/llm_client.py`, importing the port from `core`.
-- **Trade-off:** touches imports in `src/llm/generic_llm_rerank_adapter.py`, `src/llm/gemini_client.py`, `src/api/dependencies.py`, and their tests — small in size but non-zero surface, and it's a pure rename/move with no behavior change.
-- **Recommendation:** worth doing, low complexity, but deferred — bundling it with the mechanical fixes in this pass would have mixed a structural rename into an otherwise trivial, easy-to-review commit set. Candidate for a dedicated single-commit PR.
+- **Fix applied:** the `Protocol` definition now lives in `src/core/ports.py`; `src/llm/llm_client.py` keeps only `resolve_llm_client()` (the factory, correctly infrastructure), importing the port back from `core`. `src/llm/generic_llm_rerank_adapter.py` updated its import accordingly.
+- **Verification:** pure move, no behavior change — full unit suite (350 tests) and the new `import-linter` contract both stayed green before and after.
 
 ### Composition root
 
@@ -67,10 +68,10 @@ The project has a single bounded context (NCM classification over the TIPI table
 
 350 unit tests (post Section 5 cleanup), consistently following a fakes-by-port pattern: `tests/unit/core/use_cases/test_classify_product.py` injects hand-rolled `FakeRetrieval`/`FakeRerank` implementing the `Protocol`s structurally, never a mock of a concrete library. `unittest.mock`/`MagicMock` does not appear anywhere in `tests/`. The four `monkeypatch` usages in the whole suite are all legitimate adapter-boundary doubles (env/settings, or `google.genai.Client` inside `test_gemini_client.py` — the one adapter whose job is to wrap that SDK). Test names read as behavior statements (`test_execute_with_verification_failing_top_candidate_forces_needs_review`), not implementation descriptions. This is a genuinely well-disciplined test suite for a hexagonal codebase — nothing to fix here.
 
-### Gaps (recommended, not implemented this round)
+### Gaps
 
-- **No architecture tests.** The hexagonal boundary (Section 2) is enforced by convention and by the `hexagonal-boundaries` skill, not by an automated check. An `import-linter` contract (`core` must not import `api`/`retrieval`/`llm`) would turn today's clean-by-discipline boundary into clean-by-construction, catching a violation at CI time instead of at the next manual audit. Low complexity (one `pyproject.toml` section, one CI step), genuinely worth adding — but out of scope for this pass, which focused on issues found by evidence rather than tooling not yet in place.
-- **No code coverage tooling.** `pytest-cov` is not configured and no coverage number is tracked anywhere. Given the fakes-by-port discipline already observed, this is a lower-priority gap than the architecture-test one: coverage percentage is a lagging indicator, and the project's existing discipline (write the test that expresses the behavior, not "hit more lines") already produces the outcome coverage-chasing tries to approximate. Recommend adding `pytest-cov` for visibility (not as a numeric gate) only if/when the domain model grows past what a reviewer can eyeball.
+- **No architecture tests — Implemented.** The hexagonal boundary (Section 2) was enforced by convention and by the `hexagonal-boundaries` skill only, not by an automated check. An `import-linter` "forbidden" contract now runs as part of `make lint` (and therefore CI): `src.core` must not import `src.api`/`src.retrieval`/`src.llm` or `fastapi`/`chromadb`/`google`/`sentence_transformers`. Verified to actually catch a violation (a temporary `import fastapi` added to `core/ports.py` broke the contract as expected, then reverted) before being committed.
+- **No code coverage tooling — Implemented (visibility only, as recommended).** `pytest-cov` is now a dev dependency with a `make coverage` target (`pytest --cov=src --cov-report=term-missing`). Deliberately **not** wired into CI as a numeric gate, matching the original recommendation: coverage percentage is a lagging indicator, and the project's existing fakes-by-port TDD discipline already produces the outcome coverage-chasing tries to approximate. Current baseline, for reference: 95% statement coverage on `src/` (`738` statements, `35` missed, concentrated in `chroma_client.py`'s CLI/rebuild paths, which unit tests correctly leave to integration coverage).
 
 ## 5. CI/CD & Production Readiness — Fixed This Round
 
