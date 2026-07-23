@@ -20,9 +20,7 @@ def _collection(docs: list[tuple[str, str]]) -> Collection:
         ids=[ncm.replace(".", "") for ncm, _ in docs],
         embeddings=[[0.1, 0.2, 0.3] for _ in docs],
         documents=[doc for _, doc in docs],
-        metadatas=[
-            {"ncm_dotted": ncm, "description": doc, "chapter": "22"} for ncm, doc in docs
-        ],
+        metadatas=[{"ncm_dotted": ncm, "description": doc, "chapter": "22"} for ncm, doc in docs],
     )
     return col
 

@@ -4,7 +4,6 @@ here). Exercises the real exception_handler registered in src/main.py."""
 
 from collections.abc import Iterator
 
-import pytest
 from fastapi.testclient import TestClient
 
 from src.api.dependencies import get_classify_use_case

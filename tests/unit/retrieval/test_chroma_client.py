@@ -58,7 +58,9 @@ def enriched_entry() -> dict:
     # mirrors 2204.21.00 in the enriched JSON schema
     return {
         "description": "-- Em recipientes de capacidade não superior a 2 l",
-        "heading_description": "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool",
+        "heading_description": (
+            "Vinhos de uvas frescas, incluindo os vinhos enriquecidos com álcool"
+        ),
         "subheading_description": "Outros vinhos; mostos de uvas",
         "ipi_rate": "6.5",
         "ex_tipi": None,

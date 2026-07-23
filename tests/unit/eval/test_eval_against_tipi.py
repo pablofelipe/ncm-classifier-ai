@@ -14,6 +14,7 @@ This single rule covers both v1 (corpus_chapters=[22]; a Ch.20 answer is
 out-of-scope, warned only) and v2 (corpus_chapters=[20, 21, 22]; every case is
 in-scope, any miss is a hard failure).
 """
+
 import json
 import warnings
 from pathlib import Path
@@ -264,9 +265,7 @@ def test_main_routes_to_beverage_corpus_for_multichapter(tmp_path, capsys) -> No
             }
         ],
     }
-    (tmp_path / "tipi_beverage_20260618.json").write_text(
-        json.dumps(corpus), encoding="utf-8"
-    )
+    (tmp_path / "tipi_beverage_20260618.json").write_text(json.dumps(corpus), encoding="utf-8")
     suite = {
         "version": "v2",
         "corpus_chapters": [20, 21, 22],

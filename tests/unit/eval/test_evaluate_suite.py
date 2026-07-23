@@ -3,6 +3,7 @@
 Uses a locally-declared FakeUseCase so these tests never load the TIPI JSON
 nor touch the real adapters: the measurement logic is exercised in isolation.
 """
+
 from eval.run_eval import evaluate_suite
 from eval.schema import EvalCase, EvalSuite
 from src.core.domain.ncm import (
@@ -24,12 +25,9 @@ class FakeUseCase:
     def execute(self, query: ProductQuery) -> ClassificationResult:
         ncms = self._predictions[query.product_name]
         candidates = [
-            ClassificationCandidate(ncm_code=ncm, description="x", score=0.0)
-            for ncm in ncms
+            ClassificationCandidate(ncm_code=ncm, description="x", score=0.0) for ncm in ncms
         ]
-        return ClassificationResult(
-            top_candidates=candidates, confidence_label="needs_review"
-        )
+        return ClassificationResult(top_candidates=candidates, confidence_label="needs_review")
 
 
 def _case(case_id: str, product_name: str, ncm: str) -> EvalCase:
@@ -88,9 +86,7 @@ def test_evaluate_suite_counts_top_3_hits_correctly() -> None:
 
 def test_evaluate_suite_reports_zero_hits_when_no_match() -> None:
     suite = _suite(_case("case-001", "cerveja", "2203.00.00"))
-    use_case = FakeUseCase(
-        {"cerveja": ["2202.10.00", "2201.10.00", "2206.00.90"]}
-    )
+    use_case = FakeUseCase({"cerveja": ["2202.10.00", "2201.10.00", "2206.00.90"]})
     report = evaluate_suite(suite, use_case)
     assert report.top_1_hits == 0
     assert report.top_3_hits == 0

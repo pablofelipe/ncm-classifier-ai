@@ -196,8 +196,7 @@ def test_multi_level_chain_concatenated_general_to_specific() -> None:
     ]
     entries = parse_tipi_rows(rows)
     assert entries[0].subheading_description == (
-        "Outros vinhos; mostos de uvas. "
-        "Em recipientes de capacidade superior a 2 l. Vinhos"
+        "Outros vinhos; mostos de uvas. Em recipientes de capacidade superior a 2 l. Vinhos"
     )
 
 
@@ -335,18 +334,14 @@ def test_no_hierarchical_line_leaked_into_entries(latest_entries: list[dict]) ->
 @pytest.mark.parametrize(
     "ncm, term",
     [
-        ("2204.21.00", "vinhos"),    # ADR-0004 anchor: wine absent from own text
+        ("2204.21.00", "vinhos"),  # ADR-0004 anchor: wine absent from own text
         ("2205.10.00", "vermutes"),  # ADR-0004 anchor: vermouth absent
-        ("2208.30.20", "uísques"),   # ADR-0004 anchor: whisky absent
+        ("2208.30.20", "uísques"),  # ADR-0004 anchor: whisky absent
     ],
 )
 def test_anchor_ncm_gains_parent_context_term(
     latest_entries: list[dict], ncm: str, term: str
 ) -> None:
     entry = next(e for e in latest_entries if e["ncm"] == ncm)
-    context = (
-        entry.get("heading_description", "")
-        + " "
-        + entry.get("subheading_description", "")
-    )
+    context = entry.get("heading_description", "") + " " + entry.get("subheading_description", "")
     assert term in context.lower()

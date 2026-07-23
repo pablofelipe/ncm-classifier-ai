@@ -5,6 +5,7 @@ against differs (detected on the suite via ``corpus_chapters``). v1 carries the
 rich text fields (product_description / rationale / source); v2 leaves them
 empty. The ``id`` pattern accepts both ``case-NNN`` (v1) and ``cNNN`` (v2).
 """
+
 import json
 from pathlib import Path
 
