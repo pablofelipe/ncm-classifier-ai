@@ -30,6 +30,9 @@ dev = [
     # deterministic across machines and CI. Bump deliberately, not implicitly.
     "ruff==0.15.16",
     "mypy==2.1.0",
+    # Enforces the hexagonal dependency rule (src/core never imports
+    # api/retrieval/llm or a framework SDK) as a CI check, not just convention.
+    "import-linter>=2.0",
 ]
 scripts = [
     "openpyxl>=3.1",
@@ -68,3 +71,21 @@ plugins = ["pydantic.mypy"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests/unit"]
+
+[tool.importlinter]
+root_package = "src"
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "core stays framework- and adapter-free"
+type = "forbidden"
+source_modules = ["src.core"]
+forbidden_modules = [
+    "src.api",
+    "src.retrieval",
+    "src.llm",
+    "fastapi",
+    "chromadb",
+    "google",
+    "sentence_transformers",
+]

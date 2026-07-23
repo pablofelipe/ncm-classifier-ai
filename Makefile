@@ -52,10 +52,11 @@ eval-subheading:  ## ADR-0006 experiment: reindex + eval with SUBHEADING_ONLY
 	ENRICH_STRATEGY=subheading_only python -m src.retrieval.chroma_client rebuild
 	ENRICH_STRATEGY=subheading_only python -m eval.run_eval eval/v1_cases.json
 
-lint:  ## ruff check + format check + mypy
+lint:  ## ruff check + format check + mypy + architecture boundary check
 	ruff check src eval
 	ruff format --check src eval
 	mypy src
+	lint-imports
 
 fmt:  ## auto-format and auto-fix (ruff)
 	ruff format src eval
