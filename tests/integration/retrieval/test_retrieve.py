@@ -46,7 +46,7 @@ def real_adapter() -> ChromaRetrievalAdapter:
 def test_retrieves_near_verbatim_match(real_adapter: ChromaRetrievalAdapter) -> None:
     """Plumbing smoke test: a product worded like the TIPI entry is found."""
     query = ProductQuery(product_name="água mineral natural", description="sem gás")
-    top3 = [c.ncm_code for c in real_adapter.retrieve_candidates(query, k=3)]
+    top3 = [c.ncm_code.value for c in real_adapter.retrieve_candidates(query, k=3)]
     assert "2201.10.00" in top3
 
 
@@ -64,5 +64,5 @@ def test_retrieves_colloquial_product_name(
     """Documented limitation: a brand/colloquial name should map to 2202.10.00
     (sweetened/flavoured waters — soft drinks) but does not yet rank top-3."""
     query = ProductQuery(product_name="Coca-Cola", description="lata 350ml")
-    top3 = [c.ncm_code for c in real_adapter.retrieve_candidates(query, k=3)]
+    top3 = [c.ncm_code.value for c in real_adapter.retrieve_candidates(query, k=3)]
     assert "2202.10.00" in top3
